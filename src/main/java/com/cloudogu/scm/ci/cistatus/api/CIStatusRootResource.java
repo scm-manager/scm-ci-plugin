@@ -81,7 +81,7 @@ public class CIStatusRootResource {
         List<CIStatus> list = (List<CIStatus>) ciStatusService.getAll(repository, changeSetId);
         List<CIStatusDto> dtoList = list
                 .stream()
-                .map(ciStatus -> mapper.map(repository, changeSetId, Collections.singletonList(ciStatus)))
+                .map(ciStatus -> mapper.map(repository, changeSetId, ciStatus))
                 .collect(Collectors.toList());
         boolean permission = PermissionCheck.mayRead(repository);
         return Response.ok(createCollection(uriInfo, permission, dtoList, "ciStatusList")).build();

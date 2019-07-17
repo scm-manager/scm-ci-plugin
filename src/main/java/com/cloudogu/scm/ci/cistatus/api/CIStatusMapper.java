@@ -11,7 +11,7 @@ import java.util.List;
 public interface CIStatusMapper {
 
     @Mapping(target = "attributes", ignore = true) // We do not map HAL attributes
-    CIStatusDto map(@Context Repository repository, @Context String changeSetId, List<CIStatus> ciStatus);
+    CIStatusDto map(@Context Repository repository, @Context String changeSetId, CIStatus ciStatus);
 
     CIStatus map(CIStatusDto ciStatusDto);
 }

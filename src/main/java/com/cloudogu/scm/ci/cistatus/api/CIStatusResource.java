@@ -16,7 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +38,9 @@ public class CIStatusResource {
   public Response get(@Context UriInfo uriInfo, @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changeSetId") String changeSetId, @PathParam("type") String type) {
     Repository repository = repositoryResolver.resolve(new NamespaceAndName(namespace, name));
     PermissionCheck.checkRead(repository);
-    List<CIStatus> ciStatus = new ArrayList<>(ciStatusService.get(repository, changeSetId, type));
-    return Response.ok(mapper.map(repository, changeSetId, ciStatus)).build();
+//    CIStatus ciStatus = ciStatusService.get(repository, changeSetId, type);
+//    return Response.ok(mapper.map(repository, changeSetId, ciStatus)).build();
+    return null;
   }
 
   @GET
@@ -53,6 +53,7 @@ public class CIStatusResource {
       .stream()
       .filter(ciStatus1 -> ciStatus1.getName().equals(ciName))
       .collect(Collectors.toList());
-    return Response.ok(mapper.map(repository, changeSetId, ciStatus)).build();
+//    return Response.ok(mapper.map(repository, changeSetId, ciStatus)).build();
+    return null;
   }
 }
