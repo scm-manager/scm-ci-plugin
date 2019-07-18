@@ -18,6 +18,10 @@ public class RepositoryResolver {
     this.manager = manager;
   }
 
+  public Repository resolve(String namespace, String name) {
+    return resolve(new NamespaceAndName(namespace, name));
+  }
+
   public Repository resolve(NamespaceAndName namespaceAndName) {
     Repository repository = manager.get(namespaceAndName);
     if (repository == null) {

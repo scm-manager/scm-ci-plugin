@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import sonia.scm.store.DataStore;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 
@@ -17,8 +16,8 @@ public class CIStatusStore {
         this.store = store;
     }
 
-    public Collection<CIStatus> getByType(String type) {
-        return Collections.singletonList(store.get(type));
+    public Collection<CIStatus> get(String type, String name) {
+        return null;
     }
 
     public Map<String, CIStatus> getAll() {

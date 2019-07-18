@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CIStatusCollection implements Iterable<CIStatus> {
@@ -26,6 +27,10 @@ public class CIStatusCollection implements Iterable<CIStatus> {
   @Override
   public Iterator<CIStatus> iterator() {
     return ciStatusList.values().iterator();
+  }
+
+  public Stream<CIStatus> stream() {
+    return ciStatusList.values().stream();
   }
 
   @Data

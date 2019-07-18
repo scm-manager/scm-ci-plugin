@@ -7,6 +7,8 @@ import javax.xml.bind.JAXB;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,6 +67,20 @@ class CIStatusCollectionTest {
 
     assertThat(unmarshalled.get("jenkins", "build1")).isEqualTo(build1);
     assertThat(unmarshalled.get("jenkins", "build2")).isEqualTo(build2);
+  }
+
+  @Test
+  void shouldStream() {
+    CIStatusCollection ciStatusCollection = new CIStatusCollection();
+    ciStatusCollection.put(createCiStatus("build1", Status.PENDING));
+    ciStatusCollection.put(createCiStatus("build2", Status.PENDING));
+
+    List<String> results = ciStatusCollection
+      .stream()
+      .map(CIStatus::getName)
+      .collect(Collectors.toList());
+
+    assertThat(results).contains("build1", "build2");
   }
 
 

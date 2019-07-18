@@ -1,32 +1,32 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
-import com.google.inject.Inject;
 import sonia.scm.repository.Repository;
+import sonia.scm.store.DataStore;
+import sonia.scm.store.DataStoreFactory;
 
-import java.util.Collection;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class CIStatusService {
 
-    private CIStatusStoreFactory storeFactory;
+  private final DataStoreFactory dataStoreFactory;
 
-    @Inject
-    public CIStatusService(CIStatusStoreFactory storeFactory) {
-        this.storeFactory = storeFactory;
-    }
+  @Inject
+  public CIStatusService(DataStoreFactory dataStoreFactory) {
+    this.dataStoreFactory = dataStoreFactory;
+  }
 
-    public void add(Repository repository, String changeSetId, CIStatus ciStatus) {
-       getStore(repository, changeSetId).store(ciStatus.getType(), ciStatus);
-    }
+  public void put(Repository repository, String changeset, CIStatusCollection collection) {
+    getStore(repository).put(changeset, collection);
+  }
 
-    public Collection<CIStatus> get(Repository repository, String changeSetId, String type) {
-        return getStore(repository, changeSetId).getByType(type);
-    }
+  public CIStatusCollection get(Repository repository, String changeset) {
+    CIStatusCollection collection = getStore(repository).get(changeset);
+    return  collection != null ? collection : new CIStatusCollection();
+  }
 
-    public Collection<CIStatus> getAll(Repository repository, String changeSetId) {
-        return getStore(repository, changeSetId).getAll().values();
-    }
-
-    private CIStatusStore getStore(Repository repository, String changeSetId) {
-        return storeFactory.create(repository, changeSetId);
-    }
+  private DataStore<CIStatusCollection> getStore(Repository repository) {
+    return dataStoreFactory.withType(CIStatusCollection.class).withName("ciStatus").forRepository(repository).build();
+  }
 }
