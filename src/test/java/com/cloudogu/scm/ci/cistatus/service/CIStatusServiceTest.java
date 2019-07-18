@@ -1,6 +1,6 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
-import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.AfterEach;
@@ -31,30 +31,33 @@ class CIStatusServiceTest {
 
   private CIStatusService ciStatusService;
 
-  @Mock
-  private Subject subject;
+  @Nested
+  class WithoutPermission {
 
-  @BeforeEach
-  void setUpDataStoreFactory() {
-    ciStatusService = new CIStatusService(new TestingDataStoreFactory());
-    ThreadContext.bind(subject);
-    when(subject.isPermitted(any(String.class))).thenReturn(false);
+    @Mock
+    private Subject subject;
+
+    @BeforeEach
+    void setUpDataStoreFactory() {
+      ciStatusService = new CIStatusService(new TestingDataStoreFactory());
+      ThreadContext.bind(subject);
+      when(subject.isPermitted(any(String.class))).thenReturn(false);
+    }
+
+    @AfterEach
+    void tearDownSubject() {
+      ThreadContext.unbindSubject();
+    }
+
+    @Test
+    void shouldThrowAuthorizationExceptionWhenMissingPermissions() {
+      Repository repository = createHeartOfGold();
+      repository.setId("42");
+
+      assertThrows(UnauthorizedException.class, () -> ciStatusService.get(repository, "1234"));
+      assertThrows(UnauthorizedException.class, () -> ciStatusService.put(repository, "1234", new CIStatusCollection()));
+    }
   }
-
-  @AfterEach
-  void tearDownSubject() {
-    ThreadContext.unbindSubject();
-  }
-
-  @Test
-  void shouldThrowAuthorizationExceptionWhenMissingPermissions() {
-    Repository repository = createHeartOfGold();
-    repository.setId("42");
-
-    assertThrows(AuthorizationException.class, () -> ciStatusService.get(repository, "1234"));
-    assertThrows(AuthorizationException.class, () -> ciStatusService.put(repository, "1234", new CIStatusCollection()));
-  }
-
 
   @Nested
   class WithPermission {
