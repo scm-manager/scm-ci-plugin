@@ -29,11 +29,11 @@ class CIStatusResourceTest {
   @Mock
   private CIStatusMapper mapper;
 
+  private Repository repository = createHeartOfGold();
+  private String changesetId = "42";
+
   @Test
   void shouldGetAll() {
-    Repository repository = createHeartOfGold();
-    String changesetId = "42";
-
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
     CIStatus ciStatusOne = new CIStatus("jenkins", "build1", Status.PENDING, "http://test.de");
     ciStatusCollection.put(ciStatusOne);
@@ -55,8 +55,6 @@ class CIStatusResourceTest {
 
   @Test
   void shouldGet() {
-    Repository repository = createHeartOfGold();
-    String changesetId = "42";
     String type = "sonartype";
     String ciName = "analyze1";
 
@@ -77,8 +75,6 @@ class CIStatusResourceTest {
 
   @Test
   void shouldPut() {
-    Repository repository = createHeartOfGold();
-    String changesetId = "42";
     String type = "sonartype";
     String ciName = "analyze1";
 
@@ -103,13 +99,11 @@ class CIStatusResourceTest {
 
   @Test
   void shouldReturnBadRequest() {
-    Repository repository = createHeartOfGold();
-    String changesetId = "42";
     String type = "sonartype";
     String ciName = "analyze1";
 
     CIStatusDto dtoOne = new CIStatusDto();
-    dtoOne.setName("123456");
+    dtoOne.setName("analyze2");
 
     CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, repository, changesetId);
 

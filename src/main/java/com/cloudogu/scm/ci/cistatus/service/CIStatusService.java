@@ -1,5 +1,6 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
+import com.cloudogu.scm.ci.PermissionCheck;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
@@ -17,12 +18,14 @@ public class CIStatusService {
     this.dataStoreFactory = dataStoreFactory;
   }
 
-  public void put(Repository repository, String changeset, CIStatusCollection collection) {
-    getStore(repository).put(changeset, collection);
+  public void put(Repository repository, String changesetId, CIStatusCollection collection) {
+    PermissionCheck.checkWrite(repository);
+    getStore(repository).put(changesetId, collection);
   }
 
-  public CIStatusCollection get(Repository repository, String changeset) {
-    CIStatusCollection collection = getStore(repository).get(changeset);
+  public CIStatusCollection get(Repository repository, String changesetId) {
+    PermissionCheck.checkRead(repository);
+    CIStatusCollection collection = getStore(repository).get(changesetId);
     return  collection != null ? collection : new CIStatusCollection();
   }
 

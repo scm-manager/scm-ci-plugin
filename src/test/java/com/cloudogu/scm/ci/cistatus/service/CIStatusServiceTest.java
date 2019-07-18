@@ -1,8 +1,14 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.DataStore;
@@ -14,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static sonia.scm.repository.RepositoryTestData.createHeartOfGold;
 import static sonia.scm.repository.RepositoryTestData.createRestaurantAtTheEndOfTheUniverse;
 
@@ -22,72 +31,111 @@ class CIStatusServiceTest {
 
   private CIStatusService ciStatusService;
 
+  @Mock
+  private Subject subject;
+
   @BeforeEach
   void setUpDataStoreFactory() {
     ciStatusService = new CIStatusService(new TestingDataStoreFactory());
+    ThreadContext.bind(subject);
+    when(subject.isPermitted(any(String.class))).thenReturn(false);
+  }
+
+  @AfterEach
+  void tearDownSubject() {
+    ThreadContext.unbindSubject();
   }
 
   @Test
-  void shouldReturnEmptyCollection() {
+  void shouldThrowAuthorizationExceptionWhenMissingPermissions() {
     Repository repository = createHeartOfGold();
     repository.setId("42");
 
-    CIStatusCollection ciStatusCollection = ciStatusService.get(repository, "1234");
-    assertThat(ciStatusCollection).isNotNull().isEmpty();
+    assertThrows(AuthorizationException.class, () -> ciStatusService.get(repository, "1234"));
+    assertThrows(AuthorizationException.class, () -> ciStatusService.put(repository, "1234", new CIStatusCollection()));
   }
 
-  @Test
-  void shouldPutAndGetOneRepositoryAndOneChangeSet() {
-    Repository repository = createHeartOfGold();
-    repository.setId("42");
 
-    CIStatusCollection ciStatusCollection = new CIStatusCollection();
+  @Nested
+  class WithPermission {
 
-    ciStatusService.put(repository, "123456", ciStatusCollection);
+    @Mock
+    private Subject subject;
 
-    CIStatusCollection result = ciStatusService.get(repository, "123456");
+    @BeforeEach
+    void setUpDataStoreFactory() {
+      ciStatusService = new CIStatusService(new TestingDataStoreFactory());
+      ThreadContext.bind(subject);
+      when(subject.isPermitted(any(String.class))).thenReturn(true);
+    }
 
-    assertThat(result).isSameAs(ciStatusCollection);
-  }
+    @AfterEach
+    void tearDownSubject() {
+      ThreadContext.unbindSubject();
+    }
 
-  @Test
-  void shouldPutAndGetOneRepositoryAndTwoChangeSets() {
-    Repository repository = createHeartOfGold();
-    repository.setId("42");
+    @Test
+    void shouldReturnEmptyCollection() {
+      Repository repository = createHeartOfGold();
+      repository.setId("42");
 
-    CIStatusCollection ciStatusCollection = new CIStatusCollection();
-    ciStatusCollection.put(new CIStatus("test", "name", Status.PENDING, "http://abc.de"));
+      CIStatusCollection ciStatusCollection = ciStatusService.get(repository, "1234");
+      assertThat(ciStatusCollection).isNotNull().isEmpty();
+    }
 
-    ciStatusService.put(repository, "123456", ciStatusCollection);
-    ciStatusService.put(repository, "654321", ciStatusCollection);
+    @Test
+    void shouldPutAndGetOneRepositoryAndOneChangeSet() {
+      Repository repository = createHeartOfGold();
+      repository.setId("42");
+      CIStatusCollection ciStatusCollection = new CIStatusCollection();
 
-    CIStatusCollection result = ciStatusService.get(repository, "123456");
+      ciStatusService.put(repository, "123456", ciStatusCollection);
 
-    assertThat(result).isSameAs(ciStatusCollection);
-  }
+      CIStatusCollection result = ciStatusService.get(repository, "123456");
 
-  @Test
-  void shouldPutAndGetTwoRepositoriesAndOneChangeSetEach() {
-    Repository repository1 = createHeartOfGold();
-    repository1.setId("42");
+      assertThat(result).isSameAs(ciStatusCollection);
+    }
 
-    Repository repository2 = createRestaurantAtTheEndOfTheUniverse();
-    repository2.setId("24");
+    @Test
+    void shouldPutAndGetOneRepositoryAndTwoChangeSets() {
+      Repository repository = createHeartOfGold();
+      repository.setId("42");
 
-    CIStatusCollection ciStatusCollection1 = new CIStatusCollection();
-    ciStatusCollection1.put(new CIStatus("test", "name", Status.PENDING, "http://abc.de"));
+      CIStatusCollection ciStatusCollection = new CIStatusCollection();
+      ciStatusCollection.put(new CIStatus("test", "name", Status.PENDING, "http://abc.de"));
 
-    CIStatusCollection ciStatusCollection2 = new CIStatusCollection();
-    ciStatusCollection2.put(new CIStatus("test2", "name2", Status.PENDING, "http://abc.de"));
+      ciStatusService.put(repository, "123456", ciStatusCollection);
+      ciStatusService.put(repository, "654321", ciStatusCollection);
 
-    ciStatusService.put(repository1, "123456", ciStatusCollection1);
-    ciStatusService.put(repository2, "654321", ciStatusCollection2);
+      CIStatusCollection result = ciStatusService.get(repository, "123456");
 
-    CIStatusCollection resultWithRepo1 = ciStatusService.get(repository1, "123456");
-    CIStatusCollection resultWithRepo2 = ciStatusService.get(repository2, "654321");
+      assertThat(result).isSameAs(ciStatusCollection);
+    }
 
-    assertThat(resultWithRepo1).isSameAs(ciStatusCollection1);
-    assertThat(resultWithRepo2).isSameAs(ciStatusCollection2);
+    @Test
+    void shouldPutAndGetTwoRepositoriesAndOneChangeSetEach() {
+      Repository repository1 = createHeartOfGold();
+      repository1.setId("42");
+
+      Repository repository2 = createRestaurantAtTheEndOfTheUniverse();
+      repository2.setId("24");
+
+      CIStatusCollection ciStatusCollection1 = new CIStatusCollection();
+      ciStatusCollection1.put(new CIStatus("test", "name", Status.PENDING, "http://abc.de"));
+
+      CIStatusCollection ciStatusCollection2 = new CIStatusCollection();
+      ciStatusCollection2.put(new CIStatus("test2", "name2", Status.PENDING, "http://abc.de"));
+
+      ciStatusService.put(repository1, "123456", ciStatusCollection1);
+      ciStatusService.put(repository2, "654321", ciStatusCollection2);
+
+      CIStatusCollection resultWithRepo1 = ciStatusService.get(repository1, "123456");
+      CIStatusCollection resultWithRepo2 = ciStatusService.get(repository2, "654321");
+
+      assertThat(resultWithRepo1).isSameAs(ciStatusCollection1);
+      assertThat(resultWithRepo2).isSameAs(ciStatusCollection2);
+    }
+
   }
 
   @SuppressWarnings("unchecked")
@@ -100,5 +148,4 @@ class CIStatusServiceTest {
       return stores.computeIfAbsent(storeParameters.getRepositoryId(), (id) -> new InMemoryDataStore<>());
     }
   }
-
 }

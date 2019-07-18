@@ -15,10 +15,11 @@ public class CIStatusPathBuilder {
         this.pathInfoStore = pathInfoStore;
     }
 
-    String createCIStatusSelfUri(String namespace, String name, String pullRequestId) {
+    String createCIStatusSelfUri(String namespace, String name, String changesetId) {
         LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), CIStatusRootResource.class, CIStatusResource.class);
         return linkBuilder
-                .method("getCIStatusResource").parameters(namespace, name, pullRequestId)
+                .method("getCIStatusResource").parameters(namespace, name, changesetId)
+                .method("getAll").parameters()
                 .href();
     }
 }
