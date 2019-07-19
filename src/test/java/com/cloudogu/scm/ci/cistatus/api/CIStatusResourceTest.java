@@ -12,7 +12,6 @@ import sonia.scm.repository.Repository;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -49,8 +48,8 @@ class CIStatusResourceTest {
 
     CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, repository, changesetId);
 
-//    CIStatusDtoCollection ciStatusDtoCollection = ciStatusResource.getAll();
-//    assertThat(allCIStatus).containsOnly(dtoOne, dtoTwo);
+    CIStatusDtoCollection ciStatusDtoCollection = ciStatusResource.getAll();
+    assertThat(ciStatusDtoCollection.getCiStatusDtos()).contains(dtoOne, dtoTwo);
   }
 
   @Test
