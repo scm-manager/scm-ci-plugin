@@ -12,12 +12,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CIStatusResource {
+
+  private static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
@@ -42,7 +43,7 @@ public class CIStatusResource {
   }
 
   @GET
-  @Produces(MediaType.APPLICATION_JSON) // TODO vnd media type
+  @Produces(MEDIA_TYPE)
   @Path("")
   public CIStatusDtoCollection getAll() {
     CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
@@ -56,7 +57,7 @@ public class CIStatusResource {
 
   @GET
   @Path("{type}/{ciName}")
-  @Produces(MediaType.APPLICATION_JSON) // TODO vnd media type
+  @Produces(MEDIA_TYPE)
   public CIStatusDto get(
     @PathParam("type") String type,
     @PathParam("ciName") String ciName
@@ -66,7 +67,7 @@ public class CIStatusResource {
   }
 
   @PUT
-  @Consumes(MediaType.APPLICATION_JSON) // TODO vnd media type
+  @Consumes(MEDIA_TYPE)
   @Path("{type}/{ciName}")
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, CIStatusDto ciStatusDto) {
     if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
@@ -79,5 +80,4 @@ public class CIStatusResource {
 
     return Response.noContent().build();
   }
-
 }
