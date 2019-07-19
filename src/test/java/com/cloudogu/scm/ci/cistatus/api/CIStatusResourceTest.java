@@ -49,8 +49,8 @@ class CIStatusResourceTest {
 
     CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, repository, changesetId);
 
-    List<CIStatusDto> allCIStatus = ciStatusResource.getAll();
-    assertThat(allCIStatus).containsOnly(dtoOne, dtoTwo);
+//    CIStatusDtoCollection ciStatusDtoCollection = ciStatusResource.getAll();
+//    assertThat(allCIStatus).containsOnly(dtoOne, dtoTwo);
   }
 
   @Test

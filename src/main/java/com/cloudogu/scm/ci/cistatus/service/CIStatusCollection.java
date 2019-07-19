@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CIStatusCollection implements Iterable<CIStatus> {
 

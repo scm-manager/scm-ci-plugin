@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class CIStatusResource {
+public class CIStatusResource {
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
@@ -43,12 +43,15 @@ class CIStatusResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON) // TODO vnd media type
-  public List<CIStatusDto> getAll() {
+  @Path("")
+  public CIStatusDtoCollection getAll() {
     CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
-    return ciStatusCollection
+    List<CIStatusDto> ciStatusDtos = ciStatusCollection
       .stream()
       .map(ciStatus -> mapper.map(repository, changesetId, ciStatus))
       .collect(Collectors.toList());
+
+    return new CIStatusDtoCollection(ciStatusDtos);
   }
 
   @GET
@@ -66,7 +69,7 @@ class CIStatusResource {
   @Consumes(MediaType.APPLICATION_JSON) // TODO vnd media type
   @Path("{type}/{ciName}")
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, CIStatusDto ciStatusDto) {
-    if (type != ciStatusDto.getType() || ciName != ciStatusDto.getName()) {
+    if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
       return Response.status(400).build();
     }
     CIStatus ciStatus = mapper.map(ciStatusDto);
