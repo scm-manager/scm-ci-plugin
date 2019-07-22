@@ -15,7 +15,7 @@ type Props = {
 
 const styles = {
   modalRow: {
-    borderBottom: "2px solid lightgrey"
+    lineHeight: "2rem"
   }
 };
 
@@ -29,7 +29,7 @@ class CIStatusModalView extends React.Component<Props> {
     } = this.props;
 
     const body = (
-      <div className="content columns">
+      <div className={classNames(classes.modalRow, "content columns")}>
         <div className="column is-narrow">
           {ciStatus.map(ci =>
             ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name}/>):

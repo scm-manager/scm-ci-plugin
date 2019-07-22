@@ -13,6 +13,9 @@ const styles = {
   wrapper: {
     height: "35px",
     marginLeft: "0.75rem"
+  },
+  flex: {
+    lineHeight: "1.5rem"
   }
 };
 
@@ -85,7 +88,7 @@ class CIStatusSummary extends React.Component<Props, State> {
           <div className={classNames(classes.flex, "popover-content")}>
             {content}
           </div>
-          <div className="popover-trigger" onClick={() => this.setState({modalOpen: true})}>
+          <div className="popover-trigger" onClick={() => ciStatus.length > 0 && this.setState({modalOpen: true})}>
             {icon}
           </div>
         </div>
