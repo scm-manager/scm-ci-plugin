@@ -20,11 +20,11 @@ class StatusIcon extends React.Component<Props> {
   }
 }
 
-export const SuccessIcon = () => <StatusIcon color="success" icon="check-circle" size="2"/>;
-export const FailureIcon = () => <StatusIcon color="danger" icon="times-circle" size="2"/>;
-export const UnstableIcon = () => <StatusIcon color="warning" icon="exclamation-circle" size="2" />;
+export const SuccessIcon = () => <StatusIcon color="success" icon="check-circle" size="1.8"/>;
+export const FailureIcon = () => <StatusIcon color="danger" icon="times-circle" size="1.8"/>;
+export const UnstableIcon = () => <StatusIcon color="warning" icon="exclamation-circle" size="1.8" />;
 
-export const PlaceholderIcon = () => <StatusIcon color="light" icon="circle-notch" size="2" />;
+export const PlaceholderIcon = () => <StatusIcon color="light" icon="circle-notch" size="1.8" />;
 export const AbortedIcon = PlaceholderIcon;
 export const PendingIcon = PlaceholderIcon;
 

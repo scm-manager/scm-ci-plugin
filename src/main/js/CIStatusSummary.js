@@ -6,17 +6,12 @@ import injectSheet from "react-jss";
 import type {CIStatus} from "./CIStatus";
 import classNames from "classnames";
 import StatusIcon, {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
+import { translate } from "react-i18next";
 
 const styles = {
   wrapper: {
-    height: "45px",
+    height: "35px",
     marginLeft: "0.75rem"
-  },
-  flex: {
-    display: "flex"
-  },
-  popover: {
-    flexDirection: "row"
   }
 };
 
@@ -53,20 +48,18 @@ class CIStatusSummary extends React.Component<Props> {
 
     const content  = (
       <div>
-        {ciStatus.length === 0 && "ciPlugin.popover.noStatus"}
-        {
-          ciStatus.map(ci =>
-          ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.name}/>) :
-          ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.name}/>):
-          ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.name}/>):
-            (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.name}/>))
-        }
+        {ciStatus.length === 0 && t("ciPlugin.popover.noStatus")}
+        {ciStatus.map(ci =>
+            ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name}/>) :
+            ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + ci.name}/>):
+            ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.type + ": " + ci.name}/>):
+            (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.type + ": " + ci.name}/>))}
       </div>
     );
 
     return (
       <div className={classNames(classes.wrapper, "popover is-popover-top")}>
-        <div className={classNames("popover-content has-background-grey-dark has-text-white")}>
+        <div className={classNames(classes.flex, "popover-content")}>
           {content}
         </div>
         <div className="popover-trigger">
@@ -77,4 +70,4 @@ class CIStatusSummary extends React.Component<Props> {
   }
 }
 
-export default injectSheet(styles)(CIStatusSummary);
+export default injectSheet(styles)(translate("plugins")(CIStatusSummary));
