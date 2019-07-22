@@ -1,16 +1,22 @@
 // @flow
+
 import React from "react";
 import {Repository, Changeset} from "@scm-manager/ui-types";
-import { Tooltip } from "@scm-manager/ui-components";
 import injectSheet from "react-jss";
 import type {CIStatus} from "./CIStatus";
 import classNames from "classnames";
-import {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
+import StatusIcon, {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
 
 const styles = {
   wrapper: {
     height: "45px",
     marginLeft: "0.75rem"
+  },
+  flex: {
+    display: "flex"
+  },
+  popover: {
+    flexDirection: "row"
   }
 };
 
@@ -19,13 +25,14 @@ type Props = {
   changeset: Changeset,
 
   // context props
-  classes: any
+  classes: any,
+  t: string => string
 };
 
 class CIStatusSummary extends React.Component<Props> {
 
   render() {
-    const {changeset, classes} = this.props;
+    const {changeset, classes, t} = this.props;
     const ciStatus: CIStatus[] | undefined = changeset._embedded.ciStatus;
     if (!ciStatus) {
       return null;
@@ -44,20 +51,30 @@ class CIStatusSummary extends React.Component<Props> {
       icon = <PlaceholderIcon/>
     }
 
-    const message  = (
+    const content  = (
       <div>
-        <SuccessIcon/> Jenkins
-        <FailureIcon/> Sonar
+        {ciStatus.length === 0 && "ciPlugin.popover.noStatus"}
+        {
+          ciStatus.map(ci =>
+          ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.name}/>) :
+          ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.name}/>):
+          ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.name}/>):
+            (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.name}/>))
+        }
       </div>
     );
 
     return (
-      <Tooltip className={classNames(classes.wrapper, "is-tooltip")} location="top" message={ message }>
-        {icon}
-      </Tooltip>
+      <div className={classNames(classes.wrapper, "popover is-popover-top")}>
+        <div className={classNames("popover-content has-background-grey-dark has-text-white")}>
+          {content}
+        </div>
+        <div className="popover-trigger">
+          {icon}
+        </div>
+      </div>
     );
   }
-
 }
 
 export default injectSheet(styles)(CIStatusSummary);
