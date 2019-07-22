@@ -1,0 +1,11 @@
+{
+  "scm-ci-plugin": {
+    "modal": {
+      "details": "Details",
+      "title": "Build-Analysen"
+    },
+    "popover": {
+     "no-status" : "Kein Status verfügbar"
+    }
+  }
+}

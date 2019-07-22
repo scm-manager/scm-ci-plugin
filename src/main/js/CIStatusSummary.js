@@ -7,6 +7,7 @@ import type {CIStatus} from "./CIStatus";
 import classNames from "classnames";
 import StatusIcon, {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
 import { translate } from "react-i18next";
+import CIStatusModalView from "./CIStatusModalView";
 
 const styles = {
   wrapper: {
@@ -24,10 +25,23 @@ type Props = {
   t: string => string
 };
 
-class CIStatusSummary extends React.Component<Props> {
+type State = {
+  modalOpen: boolean
+}
+
+class CIStatusSummary extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      modalOpen: false
+    };
+  }
 
   render() {
-    const {changeset, classes, t} = this.props;
+    const { changeset, classes, t } = this.props;
+    const { modalOpen } = this.state;
     const ciStatus: CIStatus[] | undefined = changeset._embedded.ciStatus;
     if (!ciStatus) {
       return null;
@@ -46,9 +60,16 @@ class CIStatusSummary extends React.Component<Props> {
       icon = <PlaceholderIcon/>
     }
 
+    const ciStatusModalView = modalOpen ?
+      <CIStatusModalView
+        onClose={() => this.setState({ modalOpen: false })}
+        ciStatus={ciStatus}
+      />
+    : null;
+
     const content  = (
       <div>
-        {ciStatus.length === 0 && t("ciPlugin.popover.noStatus")}
+        {ciStatus.length === 0 && t("scm-ci-plugin.popover.no-status")}
         {ciStatus.map(ci =>
             ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name}/>) :
             ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + ci.name}/>):
@@ -59,10 +80,11 @@ class CIStatusSummary extends React.Component<Props> {
 
     return (
       <div className={classNames(classes.wrapper, "popover is-popover-top")}>
+        {ciStatusModalView}
         <div className={classNames(classes.flex, "popover-content")}>
           {content}
         </div>
-        <div className="popover-trigger">
+        <div className="popover-trigger" onClick={() => this.setState({modalOpen: true})}>
           {icon}
         </div>
       </div>
