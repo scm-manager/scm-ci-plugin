@@ -79,15 +79,17 @@ class CIStatusSummary extends React.Component<Props, State> {
     );
 
     return (
-      <div className={classNames(classes.wrapper, "popover is-popover-top")}>
+      <>
         {ciStatusModalView}
-        <div className={classNames(classes.flex, "popover-content")}>
-          {content}
+        <div className={classNames(classes.wrapper, "popover is-popover-top")}>
+          <div className={classNames(classes.flex, "popover-content")}>
+            {content}
+          </div>
+          <div className="popover-trigger" onClick={() => this.setState({modalOpen: true})}>
+            {icon}
+          </div>
         </div>
-        <div className="popover-trigger" onClick={() => this.setState({modalOpen: true})}>
-          {icon}
-        </div>
-      </div>
+      </>
     );
   }
 }

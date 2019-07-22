@@ -3,11 +3,20 @@ import React from "react";
 import { Modal } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import StatusIcon from "./StatusIcon";
+import classNames from "classnames";
+import injectSheet from "react-jss";
 
 type Props = {
   t: string => string,
   ciStatus: any,
-  onClose: () => void
+  onClose: () => void,
+  classes: any
+};
+
+const styles = {
+  modalRow: {
+    borderBottom: "2px solid lightgrey"
+  }
 };
 
 class CIStatusModalView extends React.Component<Props> {
@@ -15,19 +24,20 @@ class CIStatusModalView extends React.Component<Props> {
     const {
       onClose,
       ciStatus,
+      classes,
       t
     } = this.props;
 
     const body = (
       <div className="content columns">
-        <div className="column">
+        <div className="column is-narrow">
           {ciStatus.map(ci =>
             ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name}/>):
             ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + ci.name}/>):
             ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.type + ": " + ci.name}/>):
             (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.type + ": " + ci.name}/>))}
         </div>
-        <div className="column">
+        <div className="column is-narrow">
           {ciStatus.map(ci =>
             <div>
               <i className={"fas fa-chevron-right"}/>
@@ -48,4 +58,4 @@ class CIStatusModalView extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(CIStatusModalView);
+export default injectSheet(styles)(translate("plugins")(CIStatusModalView));
