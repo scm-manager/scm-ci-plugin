@@ -1,6 +1,5 @@
 import React from "react";
 
-
 type Props = {
   color: string,
   icon : string,
@@ -13,8 +12,8 @@ class StatusIcon extends React.Component<Props> {
     const { color, icon, size, title } = this.props;
     return (
       <div>
-        <i className={`fas fa-${size}x has-text-${color} fa-${icon}`} style={{paddingRight:"5px"}}/>
-        {title && <span className="">{title}</span>}
+        <i className={`fas fa-${size}x has-text-${color} fa-${icon}`}/>
+        {title && <span style={{paddingLeft:"0.25rem"}}>{title}</span>}
       </div>
     );
   }

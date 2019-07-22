@@ -1,5 +1,4 @@
 // @flow
-
 import React from "react";
 import {Repository, Changeset} from "@scm-manager/ui-types";
 import injectSheet from "react-jss";
