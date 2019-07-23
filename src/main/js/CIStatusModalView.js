@@ -26,7 +26,7 @@ class CIStatusModalView extends React.Component<Props> {
           {ciStatus.map(ci =>
             ci.status === "SUCCESS" ? (
               <ModalRow
-                status={<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name} />}
+                status={<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name} titleColor="white" />}
                 ciUrl={ci.url}
               />):
             ci.status === "FAILURE" ? (

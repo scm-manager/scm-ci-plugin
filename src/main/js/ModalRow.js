@@ -14,8 +14,8 @@ type Props = {
 
 const styles = {
   entry: {
-    borderBottom: "solid 1px rgba(10, 10, 10, 0.2)",
-    paddingBottom: "5px"
+    // borderBottom: "solid 1px rgba(10, 10, 10, 0.2)",
+    // paddingBottom: "5px"
   },
   paddingIcon: {
     paddingRight: "0.25rem"
@@ -27,8 +27,10 @@ class ModalRow extends React.Component<Props> {
     const { status, ciUrl, classes, t } = this.props;
     return (
       <div className={classNames(classes.entry, "level")}>
-        {status}
-        <div className={""}>
+        <div>
+          {status}
+        </div>
+        <div>
           <i className={classNames(classes.paddingIcon, "fas fa-chevron-right")}/>
           <a href={ciUrl}>{t("scm-ci-plugin.modal.details")}</a>
         </div>

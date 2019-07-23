@@ -5,8 +5,10 @@ import { translate } from "react-i18next";
 
 
 type Props = {
-  color: string,
+  backgroundColor: string,
   icon : string,
+  iconColor: string,
+  titleColor: string,
   onClick: () => void,
   ciStatus: any,
   classes: any
@@ -16,20 +18,23 @@ const styles = {
   bar: {
     lineHeight: "2.5rem",
     margin: "1rem 0rem",
-    paddingLeft: "0.5rem"
+    paddingLeft: "0.75rem"
   },
   message: {
     margin: "0rem 0.25rem",
+  },
+  icon: {
+    paddingRight: "0.25rem"
   }
 };
 
 class StatusBar extends React.Component<Props> {
   render() {
-    const { color, icon, ciStatus, onClick, classes, t } = this.props;
+    const { backgroundColor, icon, titleColor, iconColor, ciStatus, onClick, classes, t } = this.props;
     const errors = (ciStatus && ciStatus.length > 0 ? ciStatus.filter(ci => ci.status === "FAILURE" || ci.status === "UNSTABLE").length : 0);
     return (
-      <div className={classNames(classes.bar, `is-full-width has-background-${color} has-text-white`)} onClick={onClick}>
-        <i className={`fas fa-1x fa-${icon}`}/>
+      <div className={classNames(classes.bar, `is-full-width has-background-${backgroundColor} has-text-${titleColor}`)} onClick={onClick}>
+        <i className={classNames(classes.icon, `fas fa-1x fa-${icon} has-text-${iconColor}`)}/>
         <span className={classNames(classes.message, "has-text-weight-bold")}>
           {(ciStatus && ciStatus.length)} {t("scm-review-plugin.pull-request.ci-status-bar.analysis-message")}
         </span>

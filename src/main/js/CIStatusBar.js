@@ -91,7 +91,8 @@ class CIStatusBar extends React.Component<Props, State> {
       return <Loading/>
     }
 
-    console.log(icon, color);
+    const success = (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS"));
+
     return (
       <>
         {
@@ -105,7 +106,9 @@ class CIStatusBar extends React.Component<Props, State> {
           color && icon &&
           <StatusBar
             icon={icon}
-            color={color}
+            backgroundColor={success ? "white-ter" : color}
+            iconColor={success ? color : "white"}
+            titleColor={success ? "dark" : "white"}
             onClick={this.openModal}
             ciStatus={ciStatus}
           />
