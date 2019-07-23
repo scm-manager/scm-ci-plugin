@@ -7,4 +7,4 @@ import CIStatusBar from "./CIStatusBar";
 
 binder.bind("changeset.information", CIStatusModalView);
 binder.bind("changeset.right", CIStatusSummary);
-binder.bind("changeset.status", CIStatusBar)
+binder.bind("changeset.status", CIStatusBar);
