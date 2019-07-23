@@ -3,46 +3,46 @@ import React from "react";
 import { Modal } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import StatusIcon from "./StatusIcon";
-import classNames from "classnames";
-import injectSheet from "react-jss";
+import ModalRow from "./ModalRow";
 
 type Props = {
   t: string => string,
   ciStatus: any,
   onClose: () => void,
-  classes: any
 };
 
-const styles = {
-  modalRow: {
-    lineHeight: "2rem"
-  }
-};
 
 class CIStatusModalView extends React.Component<Props> {
   render() {
     const {
       onClose,
       ciStatus,
-      classes,
       t
     } = this.props;
 
     const body = (
-      <div className={classNames(classes.modalRow, "content columns")}>
-        <div className="column is-narrow">
+      <div className="content columns">
+        <div className="column">
           {ciStatus.map(ci =>
-            ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name}/>):
-            ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + ci.name}/>):
-            ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.type + ": " + ci.name}/>):
-            (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.type + ": " + ci.name}/>))}
-        </div>
-        <div className="column is-narrow">
-          {ciStatus.map(ci =>
-            <div>
-              <i className={"fas fa-chevron-right"}/>
-              <a href={ci.url}>{t("scm-ci-plugin.modal.details")}</a>
-            </div>)}
+            ci.status === "SUCCESS" ? (
+              <ModalRow
+                status={<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name} />}
+                ciUrl={ci.url}
+              />):
+            ci.status === "FAILURE" ? (
+              <ModalRow
+                status={<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + ci.name} />}
+                ciUrl={ci.url}
+              />):
+            ci.status === "UNSTABLE" ? (
+              <ModalRow
+                status={<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.type + ": " + ci.name} />}
+                ciUrl={ci.url} />):
+            (<ModalRow
+              status={<StatusIcon color="light" size="1" icon="circle-notch" title={ci.type + ": " + ci.name} />}
+              ciUrl={ci.url}
+              />
+              ))}
         </div>
       </div>
     );
@@ -58,4 +58,4 @@ class CIStatusModalView extends React.Component<Props> {
   }
 }
 
-export default injectSheet(styles)(translate("plugins")(CIStatusModalView));
+export default (translate("plugins")(CIStatusModalView));

@@ -15,11 +15,11 @@ type Props = {
 const styles = {
   bar: {
     lineHeight: "2.5rem",
-    margin: "10px 0px",
-    paddingLeft: "10px"
+    margin: "1rem 0rem",
+    paddingLeft: "0.5rem"
   },
   message: {
-    margin: "0px 5px",
+    margin: "0rem 0.25rem",
   }
 };
 
