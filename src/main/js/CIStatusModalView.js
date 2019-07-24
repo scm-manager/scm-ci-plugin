@@ -41,6 +41,7 @@ class CIStatusModalView extends React.Component<Props> {
           {ciStatus.map(ci =>
             <div>
               <i className={"fas fa-chevron-right"}/>
+              {" "}
               <a href={ci.url}>{t("scm-ci-plugin.modal.details")}</a>
             </div>)}
         </div>
