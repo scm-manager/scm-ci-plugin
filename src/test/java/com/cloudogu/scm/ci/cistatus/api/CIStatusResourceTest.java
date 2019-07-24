@@ -89,7 +89,6 @@ class CIStatusResourceTest {
     String type = "sonartype";
     String ciName = "analyze1";
 
-    CIStatusCollection ciStatusCollection = new CIStatusCollection();
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
     dtoOne.setName(ciName);
     dtoOne.setType(type);
@@ -97,28 +96,12 @@ class CIStatusResourceTest {
     CIStatus ciStatusOne = new CIStatus(type, ciName, Status.PENDING, "http://test.de");
 
     when(mapper.map(dtoOne)).thenReturn(ciStatusOne);
-    when(ciStatusService.get(repository, changesetId)).thenReturn(ciStatusCollection);
 
     CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
 
     Response response = ciStatusResource.put(type, ciName, dtoOne);
 
-    assertThat(ciStatusCollection).contains(ciStatusOne);
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
-    verify(ciStatusService).put(repository, changesetId, ciStatusCollection);
-  }
-
-  @Test
-  void shouldReturnBadRequest() {
-    String type = "sonartype";
-    String ciName = "analyze1";
-
-    CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
-    dtoOne.setName("analyze2");
-
-    CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
-
-    Response response = ciStatusResource.put(type, ciName, dtoOne);
-    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_BAD_REQUEST);
+    verify(ciStatusService).put(repository, changesetId, ciStatusOne);
   }
 }

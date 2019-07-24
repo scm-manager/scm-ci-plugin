@@ -18,9 +18,11 @@ public class CIStatusService {
     this.dataStoreFactory = dataStoreFactory;
   }
 
-  public void put(Repository repository, String changesetId, CIStatusCollection collection) {
+  public void put(Repository repository, String changesetId, CIStatus ciStatus) {
     PermissionCheck.checkWrite(repository);
-    getStore(repository).put(changesetId, collection);
+    CIStatusCollection ciStatusCollection = get(repository, changesetId);
+    ciStatusCollection.put(ciStatus);
+    getStore(repository).put(changesetId, ciStatusCollection);
   }
 
   public CIStatusCollection get(Repository repository, String changesetId) {

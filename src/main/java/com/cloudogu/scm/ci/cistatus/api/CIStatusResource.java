@@ -7,6 +7,7 @@ import com.google.common.annotations.VisibleForTesting;
 import de.otto.edison.hal.HalRepresentation;
 import sonia.scm.repository.Repository;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -54,10 +55,7 @@ public class CIStatusResource {
   @GET
   @Path("{type}/{ciName}")
   @Produces(MEDIA_TYPE)
-  public CIStatusDto get(
-    @PathParam("type") String type,
-    @PathParam("ciName") String ciName
-  ) {
+  public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
     CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
     return mapper.map(repository, changesetId, ciStatusCollection.get(type, ciName));
   }
@@ -65,14 +63,9 @@ public class CIStatusResource {
   @PUT
   @Consumes(MEDIA_TYPE)
   @Path("{type}/{ciName}")
-  public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, CIStatusDto ciStatusDto) {
-    if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
-      return Response.status(400).build();
-    }
+  public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
     CIStatus ciStatus = mapper.map(ciStatusDto);
-    CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
-    ciStatusCollection.put(ciStatus);
-    ciStatusService.put(repository, changesetId, ciStatusCollection);
+    ciStatusService.put(repository, changesetId, ciStatus);
 
     return Response.noContent().build();
   }
