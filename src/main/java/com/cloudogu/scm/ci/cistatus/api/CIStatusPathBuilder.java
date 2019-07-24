@@ -6,7 +6,7 @@ import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
 import javax.inject.Provider;
 
-public class CIStatusPathBuilder {
+class CIStatusPathBuilder {
 
   private final Provider<ScmPathInfoStore> pathInfoStore;
 
