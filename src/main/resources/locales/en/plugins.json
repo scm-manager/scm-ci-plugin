@@ -4,8 +4,14 @@
       "details": "Details",
       "title": "Build-Analysis"
     },
+    "statusbar": {
+      "analysis": "{{count}} analysis",
+      "analysis_plural": "{{count}} analyzes",
+      "result": "{{count}} result",
+      "result_plural": "{{count}} results"
+    },
     "popover": {
-      "no-status" : "No status available"
+      "noStatus" : "No status available"
     }
   }
 }

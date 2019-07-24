@@ -36,11 +36,11 @@ class StatusBar extends React.Component<Props> {
       <div className={classNames(classes.bar, `is-full-width has-background-${backgroundColor} has-text-${titleColor}`)} onClick={onClick}>
         <i className={classNames(classes.icon, `fas fa-1x fa-${icon} has-text-${iconColor}`)}/>
         <span className={classNames(classes.message, "has-text-weight-bold")}>
-          {(ciStatus && ciStatus.length)} {t("scm-review-plugin.pull-request.ci-status-bar.analysis-message")}
+          {t("scm-ci-plugin.statusbar.analysis", {count: (ciStatus && ciStatus.length) ? ciStatus : 0})}
         </span>
         <i className={"fas fa-chevron-right"}/>
         <span className={classNames(classes.message)}>
-          {errors} {t("scm-review-plugin.pull-request.ci-status-bar.result-message")}
+          {t("scm-ci-plugin.statusbar.result", {count: errors})}
         </span>
       </div>
     )
