@@ -36,7 +36,7 @@ class StatusBar extends React.Component<Props> {
       <div className={classNames(classes.bar, `is-full-width has-background-${backgroundColor} has-text-${titleColor}`)} onClick={onClick}>
         <i className={classNames(classes.icon, `fas fa-1x fa-${icon} has-text-${iconColor}`)}/>
         <span className={classNames(classes.message, "has-text-weight-bold")}>
-          {t("scm-ci-plugin.statusbar.analysis", {count: (ciStatus && ciStatus.length) ? ciStatus : 0})}
+          {t("scm-ci-plugin.statusbar.analysis", {count: (ciStatus && ciStatus.length)})}
         </span>
         <i className={"fas fa-chevron-right"}/>
         <span className={classNames(classes.message)}>
