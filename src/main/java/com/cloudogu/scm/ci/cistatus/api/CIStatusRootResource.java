@@ -16,18 +16,20 @@ public class CIStatusRootResource {
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
+  private final CIStatusCollectionDtoMapper collectionDtoMapper;
   private final RepositoryResolver repositoryResolver;
 
   @Inject
-  public CIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, RepositoryResolver repositoryResolver) {
+  public CIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, RepositoryResolver repositoryResolver) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
+    this.collectionDtoMapper = collectionDtoMapper;
     this.repositoryResolver = repositoryResolver;
   }
 
   @Path("{namespace}/{name}/changesets/{changeSetId}")
   public CIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changeSetId") String changeSetId) {
     Repository repository = repositoryResolver.resolve(namespace, name);
-    return new CIStatusResource(ciStatusService, mapper, repository, changeSetId);
+    return new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changeSetId);
   }
 }

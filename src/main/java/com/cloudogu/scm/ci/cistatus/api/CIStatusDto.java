@@ -12,14 +12,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CIStatusDto extends HalRepresentation {
-    private String name;
-    private String type;
-    private Status status;
-    private String url;
+  private String name;
+  private String type;
+  private Status status;
+  private String url;
 
-    @Override
-    @SuppressWarnings("squid:S1185") // We want to have this method available in this package
-    protected HalRepresentation add(Links links) {
-        return super.add(links);
-    }
+  public CIStatusDto(Links links) {
+    super(links);
+  }
 }
