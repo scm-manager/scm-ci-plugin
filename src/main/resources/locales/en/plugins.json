@@ -7,5 +7,17 @@
     "popover": {
       "no-status" : "No status available"
     }
+  },
+  "verbs": {
+    "repository": {
+      "readCIStatus": {
+        "displayName": "read CI status",
+        "description": "May read status tags from CI servers"
+      },
+      "writeCIStatus": {
+        "displayName": "set CI status",
+        "description": "May set status tags for CI servers"
+      }
+    }
   }
 }
