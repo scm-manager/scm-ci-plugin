@@ -21,8 +21,7 @@ class CIStatusModalView extends React.Component<Props> {
     } = this.props;
 
     const body = (
-      <div className="content columns">
-        <div className="column">
+        <div>
           {ciStatus.map(ci =>
             ci.status === "SUCCESS" ? (
               <ModalRow
@@ -44,7 +43,6 @@ class CIStatusModalView extends React.Component<Props> {
               />
               ))}
         </div>
-      </div>
     );
 
     return (

@@ -14,8 +14,13 @@ type Props = {
 
 const styles = {
   entry: {
-    // borderBottom: "solid 1px rgba(10, 10, 10, 0.2)",
-    // paddingBottom: "5px"
+    borderBottom: "solid 1px rgba(10, 10, 10, 0.2)",
+    padding: "1rem 0rem",
+    display: "flex",
+    flexDirection: "row"
+  },
+  left: {
+    flex: "1"
   },
   paddingIcon: {
     paddingRight: "0.25rem"
@@ -26,11 +31,11 @@ class ModalRow extends React.Component<Props> {
   render() {
     const { status, ciUrl, classes, t } = this.props;
     return (
-      <div className={classNames(classes.entry, "level")}>
-        <div>
+      <div className={classNames(classes.entry)}>
+        <div className={classes.left}>
           {status}
         </div>
-        <div>
+        <div className={"is-pulled-right"}>
           <i className={classNames(classes.paddingIcon, "fas fa-chevron-right")}/>
           <a href={ciUrl}>{t("scm-ci-plugin.modal.details")}</a>
         </div>
