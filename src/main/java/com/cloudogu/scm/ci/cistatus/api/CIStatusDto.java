@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuppressWarnings("squid:S2637") // constraints are used for input validation, only
 public class CIStatusDto extends HalRepresentation {
   @NotNull
   @Size(min = 1)
