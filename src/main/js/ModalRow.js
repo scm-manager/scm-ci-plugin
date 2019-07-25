@@ -37,7 +37,7 @@ class ModalRow extends React.Component<Props> {
         </div>
         <div className={"is-pulled-right"}>
           <i className={classNames(classes.paddingIcon, "fas fa-chevron-right")}/>
-          <a href={ciUrl}>{t("scm-ci-plugin.modal.details")}</a>
+          <a target={"_blank"} href={ciUrl}>{t("scm-ci-plugin.modal.details")}</a>
         </div>
       </div>
     );
