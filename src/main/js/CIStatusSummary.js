@@ -7,6 +7,7 @@ import classNames from "classnames";
 import StatusIcon, {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
 import { translate } from "react-i18next";
 import CIStatusModalView from "./CIStatusModalView";
+import {getDisplayName} from "./CIStatus";
 
 const styles = {
   wrapper: {
@@ -76,10 +77,10 @@ class CIStatusSummary extends React.Component<Props, State> {
       <div>
         {ciStatus.length === 0 && t("scm-ci-plugin.popover.noStatus")}
         {ciStatus.map(ci =>
-            ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name}/>) :
-            ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + ci.name}/>):
-            ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.type + ": " + ci.name}/>):
-            (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.type + ": " + ci.name}/>))}
+            ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + getDisplayName(ci)}/>) :
+            ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + getDisplayName(ci)}/>):
+            ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.type + ": " + getDisplayName(ci)}/>):
+            (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.type + ": " + getDisplayName(ci)}/>))}
       </div>
     );
 

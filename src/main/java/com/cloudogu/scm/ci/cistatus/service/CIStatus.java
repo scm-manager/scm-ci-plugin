@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class CIStatus {
     private String type;
     private String name;
+    private String displayName;
     private Status status;
     private String url;
 }

@@ -4,6 +4,7 @@ import { Modal } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
 import ModalRow from "./ModalRow";
+import {getDisplayName} from "./CIStatus";
 
 type Props = {
   t: string => string,
@@ -25,20 +26,20 @@ class CIStatusModalView extends React.Component<Props> {
           {ciStatus.map(ci =>
             ci.status === "SUCCESS" ? (
               <ModalRow
-                status={<SuccessIcon title={ci.type + ": " + ci.name} />}
+                status={<SuccessIcon title={ci.type + ": " + getDisplayName(ci)} />}
                 ciUrl={ci.url}
               />):
             ci.status === "FAILURE" ? (
               <ModalRow
-                status={<FailureIcon title={ci.type + ": " + ci.name} />}
+                status={<FailureIcon title={ci.type + ": " + getDisplayName(ci)} />}
                 ciUrl={ci.url}
               />):
             ci.status === "UNSTABLE" ? (
               <ModalRow
-                status={<UnstableIcon title={ci.type + ": " + ci.name} />}
+                status={<UnstableIcon title={ci.type + ": " + getDisplayName(ci)} />}
                 ciUrl={ci.url} />):
             (<ModalRow
-              status={<PlaceholderIcon title={ci.type + ": " + ci.name} />}
+              status={<PlaceholderIcon title={ci.type + ": " + getDisplayName(ci)} />}
               ciUrl={ci.url}
               />
               ))}

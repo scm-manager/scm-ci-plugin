@@ -19,6 +19,7 @@ public class CIStatusDto extends HalRepresentation {
   @NotNull
   @Size(min = 1)
   private String name;
+  private String displayName;
   @NotNull
   @Size(min = 1)
   private String type;
