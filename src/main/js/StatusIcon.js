@@ -24,6 +24,30 @@ class StatusIcon extends React.Component<Props> {
   }
 }
 
+export const getColor = (ciStatus) => {
+  if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
+    return "warning";
+  } else if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
+    return "danger";
+  } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
+    return "success";
+  } else {
+    return "grey-lighter";
+  }
+};
+
+export const getIcon = (ciStatus) => {
+  if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
+    return "exclamation-circle";
+  } else if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
+    return "times-circle";
+  } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
+    return "check-circle";
+  } else {
+    return "circle-notch";
+  }
+};
+
 export const SuccessIcon: React.SFC<BaseProps> = (props) => <StatusIcon color="success" icon="check-circle" size="1" {...props} />;
 export const FailureIcon: React.SFC<BaseProps> = (props) => <StatusIcon color="danger" icon="times-circle" size="1" {...props}/>;
 export const UnstableIcon: React.SFC<BaseProps> = (props) => <StatusIcon color="warning" icon="exclamation-circle" size="1" {...props} />;

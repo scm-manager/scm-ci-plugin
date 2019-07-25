@@ -4,6 +4,7 @@ import CIStatusModalView from "./CIStatusModalView";
 import {getCIStatus} from "./cistatus";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import StatusBar from "./StatusBar";
+import {getColor, getIcon} from "./StatusIcon";
 
 type Props = {
   repository: any,
@@ -58,19 +59,7 @@ class CIStatusBar extends React.Component<Props, State> {
 
   setStatus = () => {
     const { ciStatus } = this.state;
-
-    if(ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
-      this.setState({ icon: "exclamation-circle", color: "warning" });
-    }
-    else if(ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
-      this.setState({ icon: "times-circle", color: "danger" });
-    }
-    else if(ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
-      this.setState({ icon: "check-circle", color: "success" });
-    }
-    else {
-      this.setState({icon: "circle-notch", color: "grey-lighter" });
-    }
+    this.setState({ icon: getIcon(ciStatus), color: getColor(ciStatus) });
   };
 
   onClose = () => {
