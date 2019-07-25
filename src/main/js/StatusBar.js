@@ -18,7 +18,8 @@ const styles = {
   bar: {
     lineHeight: "2.5rem",
     margin: "1rem 0rem",
-    paddingLeft: "0.75rem"
+    paddingLeft: "0.75rem",
+    cursor: "pointer"
   },
   message: {
     margin: "0rem 0.25rem",

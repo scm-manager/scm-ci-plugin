@@ -8,18 +8,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Getter
 @Setter
 @NoArgsConstructor
+@SuppressWarnings("squid:S2637") // constraints are used for input validation, only
 public class CIStatusDto extends HalRepresentation {
-    private String name;
-    private String type;
-    private Status status;
-    private String url;
+  @NotNull
+  @Size(min = 1)
+  private String name;
+  @NotNull
+  @Size(min = 1)
+  private String type;
+  @NotNull
+  private Status status;
+  @NotNull
+  @Size(min = 1)
+  private String url;
 
-    @Override
-    @SuppressWarnings("squid:S1185") // We want to have this method available in this package
-    protected HalRepresentation add(Links links) {
-        return super.add(links);
-    }
+  public CIStatusDto(Links links) {
+    super(links);
+  }
 }

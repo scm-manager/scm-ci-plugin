@@ -19,13 +19,15 @@ public class CIStatusRootResource {
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
+  private final CIStatusCollectionDtoMapper collectionDtoMapper;
   private final RepositoryResolver repositoryResolver;
   private final RepositoryServiceFactory repositoryServiceFactory;
 
   @Inject
-  public CIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, RepositoryResolver repositoryResolver, RepositoryServiceFactory repositoryServiceFactory) {
+  public CIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, RepositoryResolver repositoryResolver, RepositoryServiceFactory repositoryServiceFactory) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
+    this.collectionDtoMapper = collectionDtoMapper;
     this.repositoryResolver = repositoryResolver;
     this.repositoryServiceFactory = repositoryServiceFactory;
   }
@@ -33,8 +35,9 @@ public class CIStatusRootResource {
   @Path("{namespace}/{name}/changesets/{changeSetId}")
   public CIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changeSetId") String changeSetId) throws IOException {
     Repository repository = repositoryResolver.resolve(namespace, name);
-    RepositoryService repositoryService = repositoryServiceFactory.create(repository);
-    String resolvedChangeSetId = repositoryService.getLogCommand().getChangeset(changeSetId).getId();
-    return new CIStatusResource(ciStatusService, mapper, repository, resolvedChangeSetId);
+    try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
+      String resolvedChangeSetId = repositoryService.getLogCommand().getChangeset(changeSetId).getId();
+      return new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, resolvedChangeSetId);
+    }
   }
 }

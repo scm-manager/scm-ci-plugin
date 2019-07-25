@@ -6,7 +6,7 @@ import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
 import javax.inject.Provider;
 
-public class CIStatusPathBuilder {
+class CIStatusPathBuilder {
 
   private final Provider<ScmPathInfoStore> pathInfoStore;
 
@@ -20,6 +20,14 @@ public class CIStatusPathBuilder {
     return linkBuilder
       .method("getCIStatusResource").parameters(namespace, name, changesetId)
       .method("get").parameters(type, ciName)
+      .href();
+  }
+
+  String createCollectionUri(String namespace, String name, String changesetId) {
+    LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), CIStatusRootResource.class, CIStatusResource.class);
+    return linkBuilder
+      .method("getCIStatusResource").parameters(namespace, name, changesetId)
+      .method("getAll").parameters()
       .href();
   }
 }
