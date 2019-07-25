@@ -74,7 +74,7 @@ class CIStatusSummary extends React.Component<Props, State> {
 
     const content  = (
       <div>
-        {ciStatus.length === 0 && t("scm-ci-plugin.popover.no-status")}
+        {ciStatus.length === 0 && t("scm-ci-plugin.popover.noStatus")}
         {ciStatus.map(ci =>
             ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + ci.name}/>) :
             ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + ci.name}/>):

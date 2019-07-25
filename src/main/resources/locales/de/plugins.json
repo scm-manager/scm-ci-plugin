@@ -4,8 +4,14 @@
       "details": "Details",
       "title": "Build-Analysen"
     },
+    "statusbar": {
+      "analysis": "{{count}} Analyse",
+      "analysis_plural": "{{count}} Analysen",
+      "error": "{{count}} Fehler",
+      "error_plural": "{{count}} Fehler"
+    },
     "popover": {
-     "no-status" : "Kein Status verfügbar"
+      "noStatus" : "Kein Status verfügbar"
     }
   },
   "verbs": {

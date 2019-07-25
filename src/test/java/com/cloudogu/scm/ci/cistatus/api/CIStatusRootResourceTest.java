@@ -2,15 +2,25 @@ package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.RepositoryResolver;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
+import sonia.scm.repository.api.LogCommandBuilder;
+import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.repository.api.RepositoryServiceFactory;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,18 +35,31 @@ class CIStatusRootResourceTest {
   @Mock
   private RepositoryResolver resolver;
 
+  @Mock
+  private RepositoryServiceFactory repositoryServiceFactory;
+
+  @Mock
+  private LogCommandBuilder logCommandBuilder;
+
+  @Mock
+  private RepositoryService repositoryService;
+
   @InjectMocks
   private CIStatusRootResource rootResource;
 
   @Test
-  void shouldReturnCiStatusResource() {
+  void shouldReturnCiStatusResource() throws IOException {
     Repository repository = RepositoryTestData.createHeartOfGold();
+    Changeset changeset = new Changeset();
+    changeset.setId("42");
     when(resolver.resolve("hitchhiker", "heart-of-gold")).thenReturn(repository);
+    when(repositoryServiceFactory.create(any(Repository.class))).thenReturn(repositoryService);
+    when(repositoryService.getLogCommand()).thenReturn(logCommandBuilder);
+    when(logCommandBuilder.getChangeset("42")).thenReturn(changeset);
 
     CIStatusResource resource = rootResource.getCIStatusResource("hitchhiker", "heart-of-gold", "42");
 
     assertThat(resource.getRepository()).isSameAs(repository);
     assertThat(resource.getChangesetId()).isEqualTo("42");
   }
-
 }
