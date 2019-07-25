@@ -7,8 +7,8 @@
     "statusbar": {
       "analysis": "{{count}} Analyse",
       "analysis_plural": "{{count}} Analysen",
-      "result": "{{count}} Ergebnis",
-      "result_plural": "{{count}} Ergebnisse"
+      "error": "{{count}} Fehler",
+      "error_plural": "{{count}} Fehler"
     },
     "popover": {
       "noStatus" : "Kein Status verfügbar"

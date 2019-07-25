@@ -41,7 +41,7 @@ class StatusBar extends React.Component<Props> {
         </span>
         <i className={"fas fa-chevron-right"}/>
         <span className={classNames(classes.message)}>
-          {t("scm-ci-plugin.statusbar.result", {count: errors})}
+          {t("scm-ci-plugin.statusbar.error", {count: errors})}
         </span>
       </div>
     )
