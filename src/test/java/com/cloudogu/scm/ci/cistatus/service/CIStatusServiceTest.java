@@ -92,7 +92,7 @@ class CIStatusServiceTest {
       Repository repository = createHeartOfGold();
       repository.setId("42");
 
-      CIStatus ciStatus = new CIStatus("test", "name", Status.PENDING, "http://abc.de");
+      CIStatus ciStatus = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
       ciStatusService.put(repository, "123456", ciStatus);
       ciStatusService.put(repository, "654321", ciStatus);
 
@@ -109,9 +109,9 @@ class CIStatusServiceTest {
       Repository repository2 = createRestaurantAtTheEndOfTheUniverse();
       repository2.setId("24");
 
-      CIStatus ciStatus1 = new CIStatus("test", "name", Status.PENDING, "http://abc.de");
+      CIStatus ciStatus1 = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
       ciStatusService.put(repository1, "123456", ciStatus1);
-      CIStatus ciStatus2 = new CIStatus("test2", "name2", Status.PENDING, "http://abc.de");
+      CIStatus ciStatus2 = new CIStatus("test2", "name2", null, Status.PENDING, "http://abc.de");
       ciStatusService.put(repository2, "654321", ciStatus2);
 
       CIStatusCollection resultWithRepo1 = ciStatusService.get(repository1, "123456");

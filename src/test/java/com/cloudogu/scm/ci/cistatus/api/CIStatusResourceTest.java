@@ -45,9 +45,9 @@ class CIStatusResourceTest {
     when(pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).thenReturn("http://scm/status");
 
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
-    CIStatus ciStatusOne = new CIStatus("jenkins", "build1", Status.PENDING, "http://test.de");
+    CIStatus ciStatusOne = new CIStatus("jenkins", "build1", null, Status.PENDING, "http://test.de");
     ciStatusCollection.put(ciStatusOne);
-    CIStatus ciStatusTwo = new CIStatus("jenkins", "build2", Status.PENDING, "http://test.de");
+    CIStatus ciStatusTwo = new CIStatus("jenkins", "build2", null, Status.PENDING, "http://test.de");
     ciStatusCollection.put(ciStatusTwo);
 
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
@@ -70,7 +70,7 @@ class CIStatusResourceTest {
     String ciName = "analyze1";
 
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
-    CIStatus ciStatusOne = new CIStatus(type, ciName, Status.PENDING, "http://test.de");
+    CIStatus ciStatusOne = new CIStatus(type, ciName, null, Status.PENDING, "http://test.de");
     ciStatusCollection.put(ciStatusOne);
 
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
@@ -93,7 +93,7 @@ class CIStatusResourceTest {
     dtoOne.setName(ciName);
     dtoOne.setType(type);
 
-    CIStatus ciStatusOne = new CIStatus(type, ciName, Status.PENDING, "http://test.de");
+    CIStatus ciStatusOne = new CIStatus(type, ciName, null, Status.PENDING, "http://test.de");
 
     when(mapper.map(dtoOne)).thenReturn(ciStatusOne);
 

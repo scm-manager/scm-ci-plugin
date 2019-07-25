@@ -85,7 +85,7 @@ class CIStatusCollectionTest {
 
 
   private CIStatus createCiStatus(String name, Status success) {
-    return new CIStatus("jenkins", name, success, "https://test.de");
+    return new CIStatus("jenkins", name, null, success, "https://test.de");
   }
 
   private CIStatus createCiStatus(Status success) {

@@ -84,7 +84,7 @@ class ChangeSetStatusEnricherTest {
   void shouldEmbedStatus() {
     when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
     CIStatusCollection collection = new CIStatusCollection();
-    CIStatus ciStatus = new CIStatus("ci", "status", Status.PENDING, "http://ci.com");
+    CIStatus ciStatus = new CIStatus("ci", "status", null, Status.PENDING, "http://ci.com");
     collection.put(ciStatus);
     when(ciStatusService.get(REPOSITORY, CHANGESET.getId())).thenReturn(collection);
     when(pathBuilder.createCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
