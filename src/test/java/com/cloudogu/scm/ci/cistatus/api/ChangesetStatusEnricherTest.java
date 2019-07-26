@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ChangeSetStatusEnricherTest {
+class ChangesetStatusEnricherTest {
 
   static final Repository REPOSITORY = new Repository("1", "git", "space", "X");
   static final Changeset CHANGESET = new Changeset("123", System.currentTimeMillis(), null);
@@ -43,7 +43,7 @@ class ChangeSetStatusEnricherTest {
   CIStatusPathBuilder pathBuilder;
 
   @InjectMocks
-  ChangeSetStatusEnricher enricher;
+  ChangesetStatusEnricher enricher;
 
   @Mock
   HalEnricherContext context;

@@ -88,7 +88,7 @@ class CIStatusServiceTest {
     }
 
     @Test
-    void shouldPutAndGetOneRepositoryAndTwoChangeSets() {
+    void shouldPutAndGetOneRepositoryAndTwoChangesets() {
       Repository repository = createHeartOfGold();
       repository.setId("42");
 
@@ -102,7 +102,7 @@ class CIStatusServiceTest {
     }
 
     @Test
-    void shouldPutAndGetTwoRepositoriesAndOneChangeSetEach() {
+    void shouldPutAndGetTwoRepositoriesAndOneChangesetEach() {
       Repository repository1 = createHeartOfGold();
       repository1.setId("42");
 
