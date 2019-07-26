@@ -17,7 +17,7 @@ public abstract class CIStatusMapper {
   private CIStatusPathBuilder ciStatusPathBuilder;
 
   @Mapping(target = "attributes", ignore = true) // We do not map HAL attributes
-  public abstract CIStatusDto map(@Context Repository repository, @Context String changeSetId, CIStatus ciStatus);
+  public abstract CIStatusDto map(@Context Repository repository, @Context String changesetId, CIStatus ciStatus);
 
   public abstract CIStatus map(CIStatusDto ciStatusDto);
 

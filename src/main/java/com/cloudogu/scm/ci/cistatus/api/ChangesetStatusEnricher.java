@@ -16,14 +16,14 @@ import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
 
 @Extension
 @Enrich(Changeset.class)
-public class ChangeSetStatusEnricher implements HalEnricher {
+public class ChangesetStatusEnricher implements HalEnricher {
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
   private final CIStatusPathBuilder pathBuilder;
 
   @Inject
-  public ChangeSetStatusEnricher(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusPathBuilder pathBuilder) {
+  public ChangesetStatusEnricher(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusPathBuilder pathBuilder) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
     this.pathBuilder = pathBuilder;

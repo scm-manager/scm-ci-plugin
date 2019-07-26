@@ -32,12 +32,12 @@ public class CIStatusRootResource {
     this.repositoryServiceFactory = repositoryServiceFactory;
   }
 
-  @Path("{namespace}/{name}/changesets/{changeSetId}")
-  public CIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changeSetId") String changeSetId) throws IOException {
+  @Path("{namespace}/{name}/changesets/{changesetId}")
+  public CIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changesetId") String changesetId) throws IOException {
     Repository repository = repositoryResolver.resolve(namespace, name);
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
-      String resolvedChangeSetId = repositoryService.getLogCommand().getChangeset(changeSetId).getId();
-      return new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, resolvedChangeSetId);
+      String resolvedChangesetId = repositoryService.getLogCommand().getChangeset(changesetId).getId();
+      return new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, resolvedChangesetId);
     }
   }
 }
