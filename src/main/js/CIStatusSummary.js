@@ -1,18 +1,22 @@
 // @flow
 import React from "react";
-import {Repository, Changeset} from "@scm-manager/ui-types";
+import { Repository, Changeset } from "@scm-manager/ui-types";
 import injectSheet from "react-jss";
-import type {CIStatus} from "./CIStatus";
+import type { CIStatus } from "./CIStatus";
 import classNames from "classnames";
-import StatusIcon, {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
+import StatusIcon, {
+  FailureIcon,
+  PlaceholderIcon,
+  SuccessIcon,
+  UnstableIcon
+} from "./StatusIcon";
 import { translate } from "react-i18next";
 import CIStatusModalView from "./CIStatusModalView";
-import {getDisplayName} from "./CIStatus";
+import { getDisplayName } from "./CIStatus";
 
 const styles = {
   wrapper: {
-    height: "35px",
-    marginLeft: "0.75rem"
+    margin: "0 0.35rem 0 1.1rem"
   },
   flex: {
     lineHeight: "1.5rem"
@@ -33,10 +37,9 @@ type Props = {
 
 type State = {
   modalOpen: boolean
-}
+};
 
 class CIStatusSummary extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
 
@@ -55,32 +58,58 @@ class CIStatusSummary extends React.Component<Props, State> {
 
     let icon = null;
     if (ciStatus.length === 0) {
-      icon = <PlaceholderIcon/>;
-    } else if ( ciStatus.filter(ci => ci.status === "FAILURE").length > 0 ) {
-      icon = <FailureIcon/>;
+      icon = <PlaceholderIcon />;
+    } else if (ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
+      icon = <FailureIcon />;
     } else if (ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
-      icon = <UnstableIcon/>
-    } else if(ciStatus.every(ci => ci.status === "SUCCESS")) {
-      icon = <SuccessIcon/>;
+      icon = <UnstableIcon />;
+    } else if (ciStatus.every(ci => ci.status === "SUCCESS")) {
+      icon = <SuccessIcon />;
     } else {
-      icon = <PlaceholderIcon/>
+      icon = <PlaceholderIcon />;
     }
 
-    const ciStatusModalView = modalOpen ?
+    const ciStatusModalView = modalOpen ? (
       <CIStatusModalView
         onClose={() => this.setState({ modalOpen: false })}
         ciStatus={ciStatus}
       />
-    : null;
+    ) : null;
 
-    const content  = (
+    const content = (
       <div>
         {ciStatus.length === 0 && t("scm-ci-plugin.popover.noStatus")}
         {ciStatus.map(ci =>
-            ci.status === "SUCCESS" ? (<StatusIcon color="success" size="1" icon="check-circle" title={ci.type + ": " + getDisplayName(ci)}/>) :
-            ci.status === "FAILURE" ? (<StatusIcon color="danger" size="1" icon="times-circle" title={ci.type + ": " + getDisplayName(ci)}/>):
-            ci.status === "UNSTABLE" ? (<StatusIcon color="warning" size="1" icon="exclamation-circle" title={ci.type + ": " + getDisplayName(ci)}/>):
-            (<StatusIcon color="light" size="1" icon="circle-notch" title={ci.type + ": " + getDisplayName(ci)}/>))}
+          ci.status === "SUCCESS" ? (
+            <StatusIcon
+              color="success"
+              size="1"
+              icon="check-circle"
+              title={ci.type + ": " + getDisplayName(ci)}
+            />
+          ) : ci.status === "FAILURE" ? (
+            <StatusIcon
+              color="danger"
+              size="1"
+              icon="times-circle"
+              title={ci.type + ": " + getDisplayName(ci)}
+            />
+          ) : ci.status === "UNSTABLE" ? (
+            <StatusIcon
+              color="warning"
+              size="1"
+              icon="exclamation-circle"
+              title={ci.type + ": " + getDisplayName(ci)}
+            />
+          ) : (
+            <StatusIcon
+              color="light"
+              size="1"
+              icon="circle-notch"
+              title={ci.type + ": " + getDisplayName(ci)}
+            />
+          )
+        )}
       </div>
     );
 
@@ -91,7 +120,12 @@ class CIStatusSummary extends React.Component<Props, State> {
           <div className={classNames(classes.flex, "popover-content")}>
             {content}
           </div>
-          <div className={classNames(classes.trigger, "popover-trigger")} onClick={() => ciStatus.length > 0 && this.setState({modalOpen: true})}>
+          <div
+            className={classNames(classes.trigger, "popover-trigger")}
+            onClick={() =>
+              ciStatus.length > 0 && this.setState({ modalOpen: true })
+            }
+          >
             {icon}
           </div>
         </div>
