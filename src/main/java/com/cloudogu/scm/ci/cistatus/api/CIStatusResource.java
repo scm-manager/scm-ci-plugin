@@ -5,6 +5,8 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.common.annotations.VisibleForTesting;
 import de.otto.edison.hal.HalRepresentation;
+import sonia.scm.ContextEntry;
+import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.repository.Repository;
 
 import javax.validation.Valid;
@@ -64,6 +66,10 @@ public class CIStatusResource {
   @Consumes(MEDIA_TYPE)
   @Path("{type}/{ciName}")
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
+    if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
+      throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
+        ciStatusDto.getName() + ":" + ciStatusDto.getType()), "changing identifier attributes is not allowed");
+    }
     CIStatus ciStatus = mapper.map(ciStatusDto);
     ciStatusService.put(repository, changesetId, ciStatus);
 
