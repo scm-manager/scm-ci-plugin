@@ -1,7 +1,7 @@
 //@flow
 import React from "react";
 import CIStatusModalView from "./CIStatusModalView";
-import {getCIStatus} from "./cistatus";
+import {getCIStatus} from "./getCIStatus";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import StatusBar from "./StatusBar";
 import {getColor, getIcon} from "./StatusIcon";
