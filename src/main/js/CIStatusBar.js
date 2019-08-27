@@ -36,14 +36,12 @@ class CIStatusBar extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.fetchCIStatus();
+    this.props.repository._links.ciStatus && this.fetchCIStatus();
   };
 
   fetchCIStatus = () => {
     const { repository, pullRequest } = this.props;
-    console.log(repository._links.ciStatus);
     const url = repository._links.ciStatus.href.replace("{revision}", encodeURIComponent(pullRequest.source));
-    console.log(url);
     this.setState({ loading : true });
     getCIStatus(url)
       .then(response => response.json())
