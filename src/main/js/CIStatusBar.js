@@ -36,7 +36,7 @@ class CIStatusBar extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.fetchCIStatus();
+    this.props.repository._links.ciStatus && this.fetchCIStatus();
   };
 
   fetchCIStatus = () => {
