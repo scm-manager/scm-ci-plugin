@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.repository.Repository;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Response;
 
 import static de.otto.edison.hal.Links.emptyLinks;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -103,5 +105,19 @@ class CIStatusResourceTest {
 
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
     verify(ciStatusService).put(repository, changesetId, ciStatusOne);
+  }
+
+  @Test
+  void shouldThrowIllegalIdentifierChangeException() {
+    String type = "sonartype";
+    String ciName = "analyze1";
+
+    CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
+    dtoOne.setName(ciName);
+    dtoOne.setType(type);
+
+    CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
+
+    assertThrows(IllegalIdentifierChangeException.class, () -> ciStatusResource.put("jenkins", ciName, dtoOne));
   }
 }
