@@ -13,13 +13,13 @@
   <version>2.0.0-SNAPSHOT</version>
   <name>scm-ci-plugin</name>
   <packaging>smp</packaging>
-  <url>https://bitbucket.org/scm-manager/scm-ci-plugin</url>
+  <url>https://github.com/scm-manager/scm-ci-plugin</url>
   <description>Accepts analysis status and displays it</description>
 
   <scm>
-    <connection>scm:hg:http://bitbucket.org/scm-manager/scm-ci-plugin</connection>
-    <developerConnection>scm:hg:https://bitbucket.org/scm-manager/scm-ci-plugin</developerConnection>
-    <url>http://bitbucket.org/scm-manager/scm-ci-plugin</url>
+    <connection>scm:git:https://github.com/scm-manager/scm-ci-plugin</connection>
+    <developerConnection>scm:git:https://github.com/scm-manager/scm-ci-plugin</developerConnection>
+    <url>https://github.com/scm-manager/scm-ci-plugin</url>
   </scm>
 
   <dependencies>
