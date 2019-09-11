@@ -34,11 +34,11 @@ class ModalRow extends React.Component<Props> {
     return (
       <div className={classNames(classes.entry)}>
         <div className={classes.left}>{status}</div>
-        <div className={"is-pulled-right"}>
+        <div className="is-pulled-right">
           <i
             className={classNames(classes.paddingIcon, "fas fa-chevron-right")}
           />
-          <a target={"_blank"} href={ciUrl}>
+          <a href={ciUrl} target="_blank" rel="noopener noreferrer">
             {t("scm-ci-plugin.modal.details")}
           </a>
         </div>
