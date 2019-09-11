@@ -93,7 +93,9 @@ class CIStatusBar extends React.Component<Props, State> {
           <StatusBar
             icon={icon}
             backgroundColor={success ? "secondary" : color}
-            iconColor={success ? color : "white"}
+            iconColor={
+              success ? color : color === "secondary" ? "grey-lighter" : "white"
+            }
             onClick={this.openModal}
             ciStatus={ciStatus}
           />
