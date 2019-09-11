@@ -15,10 +15,10 @@ type Props = {
 
 const styles = {
   entry: {
-    borderBottom: "solid 1px rgba(10, 10, 10, 0.2)",
-    padding: "1rem 0rem",
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    padding: "1rem 0rem",
+    borderBottom: "1px solid rgba(219, 219, 219, 0.5)"
   },
   left: {
     flex: "1"
@@ -36,7 +36,7 @@ class ModalRow extends React.Component<Props> {
         <div className={classes.left}>{status}</div>
         <div className="is-pulled-right">
           <i
-            className={classNames(classes.paddingIcon, "fas fa-chevron-right")}
+            className={classNames(classes.paddingIcon, "fas fa-angle-right")}
           />
           <a href={ciUrl} target="_blank" rel="noopener noreferrer">
             {t("scm-ci-plugin.modal.details")}
