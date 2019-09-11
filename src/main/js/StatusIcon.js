@@ -3,8 +3,7 @@ import React from "react";
 
 type BaseProps = {
   titleType?: string,
-  title?: string,
-  titleColor?: string
+  title?: string
 };
 type Props = BaseProps & {
   color: string,
@@ -36,28 +35,28 @@ class StatusIcon extends React.Component<Props> {
 }
 
 export const getColor = ciStatus => {
-  if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
-    return "warning";
+  if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
+    return "danger";
   } else if (
     ciStatus &&
-    ciStatus.filter(ci => ci.status === "FAILURE").length > 0
+    ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0
   ) {
-    return "danger";
+    return "warning";
   } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
     return "success";
   } else {
-    return "grey-lighter";
+    return "secondary";
   }
 };
 
 export const getIcon = ciStatus => {
-  if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
-    return "exclamation-circle";
+  if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
+    return "times-circle";
   } else if (
     ciStatus &&
-    ciStatus.filter(ci => ci.status === "FAILURE").length > 0
+    ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0
   ) {
-    return "times-circle";
+    return "exclamation-circle";
   } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
     return "check-circle";
   } else {

@@ -61,7 +61,7 @@ class CIStatusBar extends React.Component<Props, State> {
 
   setStatus = () => {
     const { ciStatus } = this.state;
-    this.setState({ icon: getIcon(ciStatus), color: getColor(ciStatus) });
+    this.setState({ color: getColor(ciStatus), icon: getIcon(ciStatus) });
   };
 
   onClose = () => {
@@ -92,9 +92,8 @@ class CIStatusBar extends React.Component<Props, State> {
         {color && icon && (
           <StatusBar
             icon={icon}
-            backgroundColor={success ? "white-ter" : color}
+            backgroundColor={success ? "secondary" : color}
             iconColor={success ? color : "white"}
-            titleColor={success ? "dark" : "white"}
             onClick={this.openModal}
             ciStatus={ciStatus}
           />

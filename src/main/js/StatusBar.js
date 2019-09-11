@@ -8,7 +8,6 @@ type Props = {
   backgroundColor: string,
   icon: string,
   iconColor: string,
-  titleColor: string,
   onClick: () => void,
   ciStatus: any,
 
@@ -18,17 +17,17 @@ type Props = {
 };
 
 const styles = {
-  bar: {
-    lineHeight: "2.5rem",
+  notification: {
     margin: "1rem 0rem",
-    paddingLeft: "0.75rem",
+    padding: "1rem 1.25rem",
+    lineHeight: "0.75rem",
     cursor: "pointer"
   },
-  message: {
-    margin: "0rem 0.25rem"
-  },
   icon: {
-    paddingRight: "0.25rem"
+    paddingRight: "0.5rem"
+  },
+  angleRight: {
+    margin: "0 0.5rem"
   }
 };
 
@@ -37,7 +36,6 @@ class StatusBar extends React.Component<Props> {
     const {
       backgroundColor,
       icon,
-      titleColor,
       iconColor,
       ciStatus,
       onClick,
@@ -53,26 +51,26 @@ class StatusBar extends React.Component<Props> {
     return (
       <div
         className={classNames(
-          classes.bar,
-          `is-full-width has-background-${backgroundColor} has-text-${titleColor}`
+          `notification is-${backgroundColor}`,
+          classes.notification
         )}
         onClick={onClick}
       >
         <i
           className={classNames(
             classes.icon,
-            `fas fa-${icon} has-text-${iconColor}`
+            `fas fa-${icon} fa-lg has-text-${iconColor}`
           )}
         />
-        <span className={classNames(classes.message, "has-text-weight-bold")}>
+        <span className="has-text-weight-bold">
           {t("scm-ci-plugin.statusbar.analysis", {
             count: ciStatus && ciStatus.length
           })}
         </span>
-        <i className={"fas fa-chevron-right"} />
-        <span className={classNames(classes.message)}>
-          {t("scm-ci-plugin.statusbar.error", { count: errors })}
-        </span>
+        <i
+          className={classNames("fas", "fa-angle-right", classes.angleRight)}
+        />
+        <span>{t("scm-ci-plugin.statusbar.error", { count: errors })}</span>
       </div>
     );
   }
