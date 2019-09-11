@@ -1,49 +1,75 @@
 //@flow
 import React from "react";
-import { Modal } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
-import {FailureIcon, PlaceholderIcon, SuccessIcon, UnstableIcon} from "./StatusIcon";
+import { Modal } from "@scm-manager/ui-components";
+import StatusIcon, {
+  SuccessIcon,
+  FailureIcon,
+  UnstableIcon
+} from "./StatusIcon";
 import ModalRow from "./ModalRow";
-import {getDisplayName} from "./CIStatus";
+import { getDisplayName } from "./CIStatus";
 
 type Props = {
   t: string => string,
   ciStatus: any,
-  onClose: () => void,
+  onClose: () => void
 };
-
 
 class CIStatusModalView extends React.Component<Props> {
   render() {
-    const {
-      onClose,
-      ciStatus,
-      t
-    } = this.props;
+    const { onClose, ciStatus, t } = this.props;
 
     const body = (
-        <div>
-          {ciStatus.map(ci =>
-            ci.status === "SUCCESS" ? (
-              <ModalRow
-                status={<SuccessIcon title={ci.type + ": " + getDisplayName(ci)} />}
-                ciUrl={ci.url}
-              />):
-            ci.status === "FAILURE" ? (
-              <ModalRow
-                status={<FailureIcon title={ci.type + ": " + getDisplayName(ci)} />}
-                ciUrl={ci.url}
-              />):
-            ci.status === "UNSTABLE" ? (
-              <ModalRow
-                status={<UnstableIcon title={ci.type + ": " + getDisplayName(ci)} />}
-                ciUrl={ci.url} />):
-            (<ModalRow
-              status={<PlaceholderIcon title={ci.type + ": " + getDisplayName(ci)} />}
+      <div>
+        {ciStatus.map(ci =>
+          ci.status === "SUCCESS" ? (
+            <ModalRow
+              status={
+                <SuccessIcon
+                  titleType={ci.type}
+                  title={getDisplayName(ci)}
+                  size="lg"
+                />
+              }
               ciUrl={ci.url}
-              />
-              ))}
-        </div>
+            />
+          ) : ci.status === "FAILURE" ? (
+            <ModalRow
+              status={
+                <FailureIcon
+                  titleType={ci.type}
+                  title={getDisplayName(ci)}
+                  size="lg"
+                />
+              }
+              ciUrl={ci.url}
+            />
+          ) : ci.status === "UNSTABLE" ? (
+            <ModalRow
+              status={
+                <UnstableIcon
+                  titleType={ci.type}
+                  title={getDisplayName(ci)}
+                  size="lg"
+                />
+              }
+              ciUrl={ci.url}
+            />
+          ) : (
+            <ModalRow
+              status={
+                <StatusIcon
+                  titleType={ci.type}
+                  title={getDisplayName(ci)}
+                  size="lg"
+                />
+              }
+              ciUrl={ci.url}
+            />
+          )
+        )}
+      </div>
     );
 
     return (
@@ -57,4 +83,4 @@ class CIStatusModalView extends React.Component<Props> {
   }
 }
 
-export default (translate("plugins")(CIStatusModalView));
+export default translate("plugins")(CIStatusModalView);
