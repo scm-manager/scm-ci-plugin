@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import classNames from "classnames";
 import injectSheet from "react-jss";
@@ -5,7 +6,7 @@ import { translate } from "react-i18next";
 
 type Props = {
   status: any,
-  ciUrl : any,
+  ciUrl: any,
 
   //context props
   classes: any,
@@ -32,16 +33,18 @@ class ModalRow extends React.Component<Props> {
     const { status, ciUrl, classes, t } = this.props;
     return (
       <div className={classNames(classes.entry)}>
-        <div className={classes.left}>
-          {status}
-        </div>
+        <div className={classes.left}>{status}</div>
         <div className={"is-pulled-right"}>
-          <i className={classNames(classes.paddingIcon, "fas fa-chevron-right")}/>
-          <a target={"_blank"} href={ciUrl}>{t("scm-ci-plugin.modal.details")}</a>
+          <i
+            className={classNames(classes.paddingIcon, "fas fa-chevron-right")}
+          />
+          <a target={"_blank"} href={ciUrl}>
+            {t("scm-ci-plugin.modal.details")}
+          </a>
         </div>
       </div>
     );
   }
 }
 
-export default injectSheet(styles)(translate("plugins")(ModalRow))
+export default injectSheet(styles)(translate("plugins")(ModalRow));
