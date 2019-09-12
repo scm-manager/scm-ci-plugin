@@ -1,6 +1,7 @@
 //@flow
 import React from "react";
 import { translate } from "react-i18next";
+import injectSheet from "react-jss";
 import { Modal } from "@scm-manager/ui-components";
 import StatusIcon, {
   SuccessIcon,
@@ -11,14 +12,25 @@ import ModalRow from "./ModalRow";
 import { getDisplayName } from "./CIStatus";
 
 type Props = {
-  t: string => string,
   ciStatus: any,
-  onClose: () => void
+  onClose: () => void,
+
+  //context props
+  classes: any,
+  t: string => string
+};
+
+const styles = {
+  headDanger: {
+    "& .modal-card-head": {
+      backgroundColor: "var(--danger-25)"
+    }
+  }
 };
 
 class CIStatusModalView extends React.Component<Props> {
   render() {
-    const { onClose, ciStatus, t } = this.props;
+    const { onClose, ciStatus, classes, t } = this.props;
 
     const body = (
       <div>
@@ -92,9 +104,10 @@ class CIStatusModalView extends React.Component<Props> {
         closeFunction={() => onClose()}
         body={body}
         active={true}
+        className={errors > 0 ? classes.headDanger : ""}
       />
     );
   }
 }
 
-export default translate("plugins")(CIStatusModalView);
+export default injectSheet(styles)(translate("plugins")(CIStatusModalView));
