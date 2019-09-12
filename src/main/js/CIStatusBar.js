@@ -16,11 +16,11 @@ type Props = {
 };
 
 type State = {
-  ciStatus: any,
-  icon: string,
-  color: string,
+  ciStatus?: any,
+  icon?: string,
+  color?: string,
   modalOpen: boolean,
-  error: Error,
+  error?: Error,
   loading: any
 };
 
@@ -94,7 +94,11 @@ class CIStatusBar extends React.Component<Props, State> {
             icon={icon}
             backgroundColor={success ? "secondary" : color}
             iconColor={
-              success ? color : color === "secondary" ? "grey-lighter" : "white"
+              success
+                ? color
+                : color === "secondary"
+                ? "grey-lighter"
+                : "undefined"
             }
             onClick={this.openModal}
             ciStatus={ciStatus}
