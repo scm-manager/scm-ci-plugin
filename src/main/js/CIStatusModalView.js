@@ -71,10 +71,24 @@ class CIStatusModalView extends React.Component<Props> {
         )}
       </div>
     );
+    const errors =
+      ciStatus && ciStatus.length > 0
+        ? ciStatus.filter(
+            ci => ci.status === "FAILURE" || ci.status === "UNSTABLE"
+          ).length
+        : 0;
 
     return (
       <Modal
-        title={t("scm-ci-plugin.modal.title")}
+        title={
+          <strong
+            className={errors > 0 ? "has-text-danger" : "has-text-success"}
+          >
+            {t("scm-ci-plugin.modal.title", {
+              count: errors
+            })}
+          </strong>
+        }
         closeFunction={() => onClose()}
         body={body}
         active={true}
