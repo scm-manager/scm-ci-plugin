@@ -20,8 +20,7 @@ const styles = {
   notification: {
     margin: "1rem 0rem",
     padding: "1rem 1.25rem",
-    lineHeight: "0.75rem",
-    cursor: "pointer"
+    lineHeight: "0.75rem"
   },
   icon: {
     paddingRight: "0.5rem"
@@ -48,13 +47,15 @@ class StatusBar extends React.Component<Props> {
             ci => ci.status === "FAILURE" || ci.status === "UNSTABLE"
           ).length
         : 0;
+    const hasAnalyzes = ciStatus && ciStatus.length !== 0;
     return (
       <div
         className={classNames(
           `notification is-${backgroundColor}`,
-          classes.notification
+          classes.notification,
+          hasAnalyzes ? "has-cursor-pointer" : ""
         )}
-        onClick={onClick}
+        onClick={hasAnalyzes ? onClick : ""}
       >
         <i
           className={classNames(

@@ -19,9 +19,6 @@ const styles = {
   },
   flex: {
     lineHeight: "1.5rem"
-  },
-  trigger: {
-    cursor: "pointer"
   }
 };
 
@@ -92,6 +89,8 @@ class CIStatusSummary extends React.Component<Props, State> {
       </div>
     );
 
+    const hasAnalyzes = ciStatus && ciStatus.length !== 0;
+
     return (
       <>
         {ciStatusModalView}
@@ -100,9 +99,15 @@ class CIStatusSummary extends React.Component<Props, State> {
             {content}
           </div>
           <div
-            className={classNames(classes.trigger, "popover-trigger")}
-            onClick={() =>
-              ciStatus.length > 0 && this.setState({ modalOpen: true })
+            className={classNames(
+              "popover-trigger",
+              hasAnalyzes ? "has-cursor-pointer" : ""
+            )}
+            onClick={
+              hasAnalyzes
+                ? () =>
+                    ciStatus.length > 0 && this.setState({ modalOpen: true })
+                : ""
             }
           >
             {icon}
