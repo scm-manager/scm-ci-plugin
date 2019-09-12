@@ -34,7 +34,7 @@ class StatusIcon extends React.Component<Props> {
   }
 }
 
-export const getColor = ciStatus => {
+export const getColor = (ciStatus: any) => {
   if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     return "danger";
   } else if (
@@ -49,7 +49,7 @@ export const getColor = ciStatus => {
   }
 };
 
-export const getIcon = ciStatus => {
+export const getIcon = (ciStatus: any) => {
   if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     return "times-circle";
   } else if (
