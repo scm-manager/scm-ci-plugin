@@ -64,12 +64,10 @@ class CIStatusBar extends React.Component<Props, State> {
     this.setState({ color: getColor(ciStatus), icon: getIcon(ciStatus) });
   };
 
-  onClose = () => {
-    this.setState({ modalOpen: false });
-  };
-
-  openModal = () => {
-    this.setState({ modalOpen: true });
+  toggleModal = () => {
+    this.setState(prevState => ({
+      modalOpen: !prevState.modalOpen
+    }));
   };
 
   render() {
@@ -87,7 +85,7 @@ class CIStatusBar extends React.Component<Props, State> {
     return (
       <>
         {modalOpen && (
-          <CIStatusModalView onClose={this.onClose} ciStatus={ciStatus} />
+          <CIStatusModalView onClose={this.toggleModal} ciStatus={ciStatus} />
         )}
         {color && icon && (
           <StatusBar
@@ -100,7 +98,7 @@ class CIStatusBar extends React.Component<Props, State> {
                 ? "grey-lighter"
                 : "undefined"
             }
-            onClick={this.openModal}
+            onClick={this.toggleModal}
             ciStatus={ciStatus}
           />
         )}
