@@ -23,8 +23,11 @@ const styles = {
   left: {
     flex: "1"
   },
-  paddingIcon: {
+  iconPadding: {
     paddingRight: "0.25rem"
+  },
+  linkColor: {
+    color: "initial"
   }
 };
 
@@ -36,9 +39,14 @@ class ModalRow extends React.Component<Props> {
         <div className={classes.left}>{status}</div>
         <div className="is-pulled-right">
           <i
-            className={classNames(classes.paddingIcon, "fas fa-angle-right")}
+            className={classNames("fas", "fa-angle-right", classes.iconPadding)}
           />
-          <a href={ciUrl} target="_blank" rel="noopener noreferrer">
+          <a
+            className={classes.linkColor}
+            href={ciUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {t("scm-ci-plugin.modal.details")}
           </a>
         </div>
