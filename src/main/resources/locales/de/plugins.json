@@ -2,7 +2,7 @@
   "scm-ci-plugin": {
     "modal": {
       "details": "Details",
-      "title": "Build-Analysen: {{count}} Fehler gefunden"
+      "title": "Analysen: {{count}} Fehler gefunden"
     },
     "statusbar": {
       "analysis": "{{count}} Analyse",
