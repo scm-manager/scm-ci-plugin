@@ -18,9 +18,10 @@ type Props = {
 
 const styles = {
   notification: {
-    margin: "1rem 0rem",
+    marginBottom: "0 !important",
     padding: "1rem 1.25rem",
-    lineHeight: "0.75rem"
+    lineHeight: "0.75rem",
+    borderTop: "none !important"
   },
   icon: {
     paddingRight: "0.5rem"
@@ -51,6 +52,7 @@ class StatusBar extends React.Component<Props> {
     return (
       <div
         className={classNames(
+          "media",
           `notification is-${backgroundColor}`,
           classes.notification,
           hasAnalyzes ? "has-cursor-pointer" : ""
