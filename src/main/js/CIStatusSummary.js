@@ -73,7 +73,7 @@ class CIStatusSummary extends React.Component<Props, State> {
     ) : null;
 
     const content = (
-      <div>
+      <>
         {ciStatus.length === 0 && t("scm-ci-plugin.popover.noStatus")}
         {ciStatus.map(ci =>
           ci.status === "SUCCESS" ? (
@@ -86,7 +86,7 @@ class CIStatusSummary extends React.Component<Props, State> {
             <StatusIcon titleType={ci.type} title={getDisplayName(ci)} />
           )
         )}
-      </div>
+      </>
     );
 
     const hasAnalyzes = ciStatus && ciStatus.length !== 0;

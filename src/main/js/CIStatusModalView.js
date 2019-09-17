@@ -33,7 +33,7 @@ class CIStatusModalView extends React.Component<Props> {
     const { onClose, ciStatus, classes, t } = this.props;
 
     const body = (
-      <div>
+      <>
         {ciStatus.map(ci =>
           ci.status === "SUCCESS" ? (
             <ModalRow
@@ -81,7 +81,7 @@ class CIStatusModalView extends React.Component<Props> {
             />
           )
         )}
-      </div>
+      </>
     );
     const errors =
       ciStatus && ciStatus.length > 0
