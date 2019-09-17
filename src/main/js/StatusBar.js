@@ -18,6 +18,7 @@ type Props = {
 
 const styles = {
   notification: {
+    marginTop: "1rem",
     marginBottom: "0 !important",
     padding: "1rem 1.25rem",
     lineHeight: "1",
