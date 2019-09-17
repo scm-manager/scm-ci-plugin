@@ -20,7 +20,7 @@ const styles = {
   notification: {
     marginBottom: "0 !important",
     padding: "1rem 1.25rem",
-    lineHeight: "0.75rem",
+    lineHeight: "1",
     borderTop: "none !important"
   },
   icon: {
