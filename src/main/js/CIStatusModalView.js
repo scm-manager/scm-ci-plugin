@@ -1,7 +1,6 @@
 //@flow
 import React from "react";
 import { translate } from "react-i18next";
-import injectSheet from "react-jss";
 import { Modal } from "@scm-manager/ui-components";
 import StatusIcon, {
   SuccessIcon,
@@ -10,27 +9,19 @@ import StatusIcon, {
 } from "./StatusIcon";
 import ModalRow from "./ModalRow";
 import { getDisplayName } from "./CIStatus";
+import { getColor } from "./StatusIcon";
 
 type Props = {
   ciStatus: any,
   onClose: () => void,
 
   //context props
-  classes: any,
   t: string => string
-};
-
-const styles = {
-  headDanger: {
-    "& .modal-card-head": {
-      backgroundColor: "var(--danger-25)"
-    }
-  }
 };
 
 class CIStatusModalView extends React.Component<Props> {
   render() {
-    const { onClose, ciStatus, classes, t } = this.props;
+    const { onClose, ciStatus, t } = this.props;
 
     const body = (
       <>
@@ -89,13 +80,12 @@ class CIStatusModalView extends React.Component<Props> {
             ci => ci.status === "FAILURE" || ci.status === "UNSTABLE"
           ).length
         : 0;
+    const color = ciStatus && ciStatus.length > 0 ? getColor(ciStatus) : "";
 
     return (
       <Modal
         title={
-          <strong
-            className={errors > 0 ? "has-text-danger" : "has-text-success"}
-          >
+          <strong className={`has-text-${color}`}>
             {t("scm-ci-plugin.modal.title", {
               count: errors
             })}
@@ -104,10 +94,10 @@ class CIStatusModalView extends React.Component<Props> {
         closeFunction={() => onClose()}
         body={body}
         active={true}
-        className={errors > 0 ? classes.headDanger : ""}
+        headColor={`${color}-25`}
       />
     );
   }
 }
 
-export default injectSheet(styles)(translate("plugins")(CIStatusModalView));
+export default translate("plugins")(CIStatusModalView);
