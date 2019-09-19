@@ -1,10 +1,10 @@
 //@flow
 import React from "react";
-import CIStatusModalView from "./CIStatusModalView";
-import {getCIStatus} from "./getCIStatus";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
+import CIStatusModalView from "./CIStatusModalView";
+import { getCIStatus } from "./getCIStatus";
 import StatusBar from "./StatusBar";
-import {getColor, getIcon} from "./StatusIcon";
+import { getColor, getIcon } from "./StatusIcon";
 
 type Props = {
   repository: any,
@@ -16,16 +16,15 @@ type Props = {
 };
 
 type State = {
-  ciStatus: any,
-  icon: string,
-  color: string,
+  ciStatus?: any,
+  icon?: string,
+  color?: string,
   modalOpen: boolean,
-  error: Error,
+  error?: Error,
   loading: any
-}
+};
 
 class CIStatusBar extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
 
@@ -37,73 +36,74 @@ class CIStatusBar extends React.Component<Props, State> {
 
   componentDidMount() {
     this.props.repository._links.ciStatus && this.fetchCIStatus();
-  };
+  }
 
   fetchCIStatus = () => {
     const { repository, pullRequest } = this.props;
-    const url = repository._links.ciStatus.href.replace("{revision}", encodeURIComponent(pullRequest.source));
-    this.setState({ loading : true });
+    const url = repository._links.ciStatus.href.replace(
+      "{revision}",
+      encodeURIComponent(pullRequest.source)
+    );
+    this.setState({ loading: true });
     getCIStatus(url)
       .then(response => response.json())
       .then(json => {
-          this.setState({
-            ciStatus: json._embedded.ciStatus,
-            loading: false
-          });
-          this.setStatus();
+        this.setState({
+          ciStatus: json._embedded.ciStatus,
+          loading: false
+        });
+        this.setStatus();
       })
       .catch(error => {
-        this.setState({error, loading: false});
+        this.setState({ error, loading: false });
       });
   };
 
   setStatus = () => {
     const { ciStatus } = this.state;
-    this.setState({ icon: getIcon(ciStatus), color: getColor(ciStatus) });
+    this.setState({ color: getColor(ciStatus), icon: getIcon(ciStatus) });
   };
 
-  onClose = () => {
-    this.setState({ modalOpen: false });
-  };
-
-  openModal = () => {
-    this.setState({ modalOpen: true });
+  toggleModal = () => {
+    this.setState(prevState => ({
+      modalOpen: !prevState.modalOpen
+    }));
   };
 
   render() {
     const { ciStatus, modalOpen, color, icon, loading, error } = this.state;
 
     if (error) {
-      return <ErrorNotification error={error}/>
+      return <ErrorNotification error={error} />;
     }
     if (loading) {
-      return <Loading/>
+      return <Loading />;
     }
 
-    const success = (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS"));
+    const success = ciStatus && ciStatus.every(ci => ci.status === "SUCCESS");
 
     return (
       <>
-        {
-          modalOpen &&
-          <CIStatusModalView
-            onClose={this.onClose}
-            ciStatus={ciStatus}
-          />
-        }
-        {
-          color && icon &&
+        {modalOpen && (
+          <CIStatusModalView onClose={this.toggleModal} ciStatus={ciStatus} />
+        )}
+        {color && icon && (
           <StatusBar
             icon={icon}
-            backgroundColor={success ? "white-ter" : color}
-            iconColor={success ? color : "white"}
-            titleColor={success ? "dark" : "white"}
-            onClick={this.openModal}
+            backgroundColor={success ? "secondary" : color}
+            iconColor={
+              success
+                ? color
+                : color === "secondary"
+                ? "grey-lighter"
+                : "undefined"
+            }
+            onClick={this.toggleModal}
             ciStatus={ciStatus}
           />
-        }
+        )}
       </>
-    )
+    );
   }
 }
 

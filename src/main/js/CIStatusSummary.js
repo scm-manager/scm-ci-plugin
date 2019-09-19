@@ -1,16 +1,15 @@
 // @flow
 import React from "react";
-import { Repository, Changeset } from "@scm-manager/ui-types";
+import { translate } from "react-i18next";
 import injectSheet from "react-jss";
-import type { CIStatus } from "./CIStatus";
 import classNames from "classnames";
+import type { Repository, Changeset } from "@scm-manager/ui-types";
+import type { CIStatus } from "./CIStatus";
 import StatusIcon, {
-  FailureIcon,
-  PlaceholderIcon,
   SuccessIcon,
+  FailureIcon,
   UnstableIcon
 } from "./StatusIcon";
-import { translate } from "react-i18next";
 import CIStatusModalView from "./CIStatusModalView";
 import { getDisplayName } from "./CIStatus";
 
@@ -20,9 +19,6 @@ const styles = {
   },
   flex: {
     lineHeight: "1.5rem"
-  },
-  trigger: {
-    cursor: "pointer"
   }
 };
 
@@ -58,7 +54,7 @@ class CIStatusSummary extends React.Component<Props, State> {
 
     let icon = null;
     if (ciStatus.length === 0) {
-      icon = <PlaceholderIcon />;
+      icon = <StatusIcon />;
     } else if (ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
       icon = <FailureIcon />;
     } else if (ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
@@ -66,7 +62,7 @@ class CIStatusSummary extends React.Component<Props, State> {
     } else if (ciStatus.every(ci => ci.status === "SUCCESS")) {
       icon = <SuccessIcon />;
     } else {
-      icon = <PlaceholderIcon />;
+      icon = <StatusIcon />;
     }
 
     const ciStatusModalView = modalOpen ? (
@@ -77,41 +73,23 @@ class CIStatusSummary extends React.Component<Props, State> {
     ) : null;
 
     const content = (
-      <div>
+      <>
         {ciStatus.length === 0 && t("scm-ci-plugin.popover.noStatus")}
         {ciStatus.map(ci =>
           ci.status === "SUCCESS" ? (
-            <StatusIcon
-              color="success"
-              size="1"
-              icon="check-circle"
-              title={ci.type + ": " + getDisplayName(ci)}
-            />
+            <SuccessIcon titleType={ci.type} title={getDisplayName(ci)} />
           ) : ci.status === "FAILURE" ? (
-            <StatusIcon
-              color="danger"
-              size="1"
-              icon="times-circle"
-              title={ci.type + ": " + getDisplayName(ci)}
-            />
+            <FailureIcon titleType={ci.type} title={getDisplayName(ci)} />
           ) : ci.status === "UNSTABLE" ? (
-            <StatusIcon
-              color="warning"
-              size="1"
-              icon="exclamation-circle"
-              title={ci.type + ": " + getDisplayName(ci)}
-            />
+            <UnstableIcon titleType={ci.type} title={getDisplayName(ci)} />
           ) : (
-            <StatusIcon
-              color="light"
-              size="1"
-              icon="circle-notch"
-              title={ci.type + ": " + getDisplayName(ci)}
-            />
+            <StatusIcon titleType={ci.type} title={getDisplayName(ci)} />
           )
         )}
-      </div>
+      </>
     );
+
+    const hasAnalyzes = ciStatus && ciStatus.length !== 0;
 
     return (
       <>
@@ -121,9 +99,15 @@ class CIStatusSummary extends React.Component<Props, State> {
             {content}
           </div>
           <div
-            className={classNames(classes.trigger, "popover-trigger")}
-            onClick={() =>
-              ciStatus.length > 0 && this.setState({ modalOpen: true })
+            className={classNames(
+              "popover-trigger",
+              hasAnalyzes ? "has-cursor-pointer" : ""
+            )}
+            onClick={
+              hasAnalyzes
+                ? () =>
+                    ciStatus.length > 0 && this.setState({ modalOpen: true })
+                : ""
             }
           >
             {icon}

@@ -1,6 +1,4 @@
-import {
-  apiClient
-} from "@scm-manager/ui-components";
+import { apiClient } from "@scm-manager/ui-components";
 
 export function getCIStatus(url: string) {
   return apiClient
@@ -9,6 +7,6 @@ export function getCIStatus(url: string) {
       return response;
     })
     .catch(err => {
-      return {error : err};
+      return { error: err };
     });
 }

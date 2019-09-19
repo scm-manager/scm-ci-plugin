@@ -7,4 +7,5 @@ export type CIStatus = {
   url: string
 };
 
-export const getDisplayName = (ciStatus: CIStatus) => ciStatus.displayName ? ciStatus.displayName : ciStatus.name;
+export const getDisplayName = (ciStatus: CIStatus) =>
+  ciStatus.displayName ? ciStatus.displayName : ciStatus.name;
