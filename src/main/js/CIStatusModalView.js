@@ -85,7 +85,15 @@ class CIStatusModalView extends React.Component<Props> {
     return (
       <Modal
         title={
-          <strong className={`has-text-${color}`}>
+          <strong
+            className={`has-text-${
+              color === "warning"
+                ? "brown"
+                : color === "secondary"
+                ? "text"
+                : "white"
+            }`}
+          >
             {t("scm-ci-plugin.modal.title", {
               count: errors
             })}
@@ -94,7 +102,7 @@ class CIStatusModalView extends React.Component<Props> {
         closeFunction={() => onClose()}
         body={body}
         active={true}
-        headColor={`${color}-25`}
+        headColor={color}
       />
     );
   }
