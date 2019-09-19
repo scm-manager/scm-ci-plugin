@@ -90,7 +90,7 @@ class CIStatusModalView extends React.Component<Props> {
               color === "warning"
                 ? "brown"
                 : color === "secondary"
-                ? "text"
+                ? "default"
                 : "white"
             }`}
           >
