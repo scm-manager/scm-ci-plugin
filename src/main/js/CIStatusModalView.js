@@ -16,7 +16,7 @@ type Props = {
   onClose: () => void,
 
   //context props
-  t: string => string
+  t: (key: string, params?: Object) => string
 };
 
 class CIStatusModalView extends React.Component<Props> {

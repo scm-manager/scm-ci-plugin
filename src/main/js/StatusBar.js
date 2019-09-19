@@ -13,7 +13,7 @@ type Props = {
 
   //context props
   classes: any,
-  t: string => string
+  t: (key: string, params?: Object) => string
 };
 
 const styles = {
