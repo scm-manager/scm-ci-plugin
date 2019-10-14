@@ -14,6 +14,22 @@
       "noStatus" : "Kein Status verfügbar"
     }
   },
+  "permissions": {
+    "repository": {
+      "readCIStatus": {
+        "*": {
+          "displayName": "CI-Status lesen",
+          "description": "Darf CI-Status aus allen Repositories lesen"
+        }
+      },
+      "readCIStatus,writeCIStatus": {
+        "*": {
+          "displayName": "CI-Status setzen",
+          "description": "Darf CI-Status für alle Repositories setzen bzw. ändern"
+        }
+      }
+    }
+  },
   "verbs": {
     "repository": {
       "readCIStatus": {

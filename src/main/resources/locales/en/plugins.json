@@ -15,6 +15,22 @@
       "noStatus" : "No status available"
     }
   },
+  "permissions": {
+    "repository": {
+      "readCIStatus": {
+        "*": {
+          "displayName": "Read CI status",
+          "description": "May see CI status results for all repositories"
+        }
+      },
+      "readCIStatus,writeCIStatus": {
+        "*": {
+          "displayName": "Modify and set CI status",
+          "description": "May modify and set CI status results for all repositories"
+        }
+      }
+    }
+  },
   "verbs": {
     "repository": {
       "readCIStatus": {

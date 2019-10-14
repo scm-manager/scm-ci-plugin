@@ -1,0 +1,8 @@
+<permissions>
+  <permission>
+    <value>repository:readCIStatus:*</value>
+  </permission>
+  <permission>
+    <value>repository:readCIStatus,writeCIStatus:*</value>
+  </permission>
+</permissions>
