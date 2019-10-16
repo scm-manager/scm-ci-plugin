@@ -1,8 +1,8 @@
 // @flow
 import React from "react";
 import classNames from "classnames";
-import injectSheet from "react-jss";
 import { translate } from "react-i18next";
+import styled from "styled-components";
 
 type Props = {
   backgroundColor: string,
@@ -12,25 +12,24 @@ type Props = {
   ciStatus: any,
 
   //context props
-  classes: any,
   t: (key: string, params?: Object) => string
 };
 
-const styles = {
-  notification: {
-    marginTop: "1rem",
-    marginBottom: "0 !important",
-    padding: "1rem 1.25rem",
-    lineHeight: "1",
-    borderTop: "none !important"
-  },
-  icon: {
-    paddingRight: "0.5rem"
-  },
-  angleRight: {
-    margin: "0 0.5rem"
-  }
-};
+const Notification = styled.div`
+  margin-top: 1rem;
+  margin-bottom: 0 !important;
+  padding: 1rem 1.25rem;
+  line-height: 1;
+  border-top: none !important;
+`;
+
+const Icon = styled.i`
+  padding-right: 0.5rem;
+`;
+
+const AngleRight = styled.i`
+  margin: 0 0.5rem;
+`;
 
 class StatusBar extends React.Component<Props> {
   render() {
@@ -40,7 +39,6 @@ class StatusBar extends React.Component<Props> {
       iconColor,
       ciStatus,
       onClick,
-      classes,
       t
     } = this.props;
     const errors =
@@ -51,33 +49,25 @@ class StatusBar extends React.Component<Props> {
         : 0;
     const hasAnalyzes = ciStatus && ciStatus.length !== 0;
     return (
-      <div
+      <Notification
         className={classNames(
           "media",
           `notification is-${backgroundColor}`,
-          classes.notification,
           hasAnalyzes ? "has-cursor-pointer" : ""
         )}
         onClick={hasAnalyzes ? onClick : ""}
       >
-        <i
-          className={classNames(
-            classes.icon,
-            `fas fa-${icon} fa-lg has-text-${iconColor}`
-          )}
-        />
+        <Icon className={`fas fa-${icon} fa-lg has-text-${iconColor}`} />
         <span className="has-text-weight-bold">
           {t("scm-ci-plugin.statusbar.analysis", {
             count: ciStatus && ciStatus.length
           })}
         </span>
-        <i
-          className={classNames("fas", "fa-angle-right", classes.angleRight)}
-        />
+        <AngleRight className="fas fa-angle-right" />
         <span>{t("scm-ci-plugin.statusbar.error", { count: errors })}</span>
-      </div>
+      </Notification>
     );
   }
 }
 
-export default injectSheet(styles)(translate("plugins")(StatusBar));
+export default translate("plugins")(StatusBar);

@@ -1,7 +1,6 @@
 // @flow
 import React from "react";
 import { translate } from "react-i18next";
-import injectSheet from "react-jss";
 import classNames from "classnames";
 import type { Repository, Changeset } from "@scm-manager/ui-types";
 import type { CIStatus } from "./CIStatus";
@@ -12,22 +11,21 @@ import StatusIcon, {
 } from "./StatusIcon";
 import CIStatusModalView from "./CIStatusModalView";
 import { getDisplayName } from "./CIStatus";
+import styled from "styled-components";
 
-const styles = {
-  wrapper: {
-    margin: "0 0.35rem 0 1.1rem"
-  },
-  flex: {
-    lineHeight: "1.5rem"
-  }
-};
+const Wrapper = styled.div`
+    margin: 0 0.35rem 0 1.1rem;
+`;
+
+const Flex = styled.div`
+  line-height: 1.5rem;
+`;
 
 type Props = {
   repository: Repository,
   changeset: Changeset,
 
   // context props
-  classes: any,
   t: string => string
 };
 
@@ -45,7 +43,7 @@ class CIStatusSummary extends React.Component<Props, State> {
   }
 
   render() {
-    const { changeset, classes, t } = this.props;
+    const { changeset, t } = this.props;
     const { modalOpen } = this.state;
     const ciStatus: CIStatus[] | undefined = changeset._embedded.ciStatus;
     if (!ciStatus) {
@@ -94,10 +92,10 @@ class CIStatusSummary extends React.Component<Props, State> {
     return (
       <>
         {ciStatusModalView}
-        <div className={classNames(classes.wrapper, "popover is-popover-top")}>
-          <div className={classNames(classes.flex, "popover-content")}>
+        <Wrapper className="popover is-popover-top">
+          <Flex className="popover-content">
             {content}
-          </div>
+          </Flex>
           <div
             className={classNames(
               "popover-trigger",
@@ -112,10 +110,10 @@ class CIStatusSummary extends React.Component<Props, State> {
           >
             {icon}
           </div>
-        </div>
+        </Wrapper>
       </>
     );
   }
 }
 
-export default injectSheet(styles)(translate("plugins")(CIStatusSummary));
+export default translate("plugins")(CIStatusSummary);

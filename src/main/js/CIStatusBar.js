@@ -11,8 +11,7 @@ type Props = {
   pullRequest: any,
 
   // context props
-  t: string => string,
-  classes: any
+  t: string => string
 };
 
 type State = {
