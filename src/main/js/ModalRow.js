@@ -1,7 +1,12 @@
 // @flow
 import React from "react";
-import { translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
+
+type Props = WithTranslation & {
+  status: any,
+  ciUrl: any,
+};
 
 const Entry = styled.div`
   display: flex;
@@ -22,14 +27,6 @@ const LinkColor = styled.a`
   color: initial;
 `;
 
-type Props = {
-  status: any,
-  ciUrl: any,
-
-  //context props
-  t: string => string
-};
-
 class ModalRow extends React.Component<Props> {
   render() {
     const { status, ciUrl, t } = this.props;
@@ -47,4 +44,4 @@ class ModalRow extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(ModalRow);
+export default withTranslation("plugins")(ModalRow);

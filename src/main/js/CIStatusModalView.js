@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import { translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { Modal } from "@scm-manager/ui-components";
 import StatusIcon, {
   SuccessIcon,
@@ -11,12 +11,9 @@ import ModalRow from "./ModalRow";
 import { getDisplayName } from "./CIStatus";
 import { getColor } from "./StatusIcon";
 
-type Props = {
+type Props = WithTranslation & {
   ciStatus: any,
-  onClose: () => void,
-
-  //context props
-  t: (key: string, params?: Object) => string
+  onClose: () => void
 };
 
 class CIStatusModalView extends React.Component<Props> {
@@ -108,4 +105,4 @@ class CIStatusModalView extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(CIStatusModalView);
+export default withTranslation("plugins")(CIStatusModalView);

@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import classNames from "classnames";
 import type { Repository, Changeset } from "@scm-manager/ui-types";
 import type { CIStatus } from "./CIStatus";
@@ -13,6 +13,15 @@ import CIStatusModalView from "./CIStatusModalView";
 import { getDisplayName } from "./CIStatus";
 import styled from "styled-components";
 
+type Props = WithTranslation & {
+  repository: Repository,
+  changeset: Changeset
+};
+
+type State = {
+  modalOpen: boolean
+};
+
 const Wrapper = styled.div`
     margin: 0 0.35rem 0 1.1rem;
 `;
@@ -20,18 +29,6 @@ const Wrapper = styled.div`
 const Flex = styled.div`
   line-height: 1.5rem;
 `;
-
-type Props = {
-  repository: Repository,
-  changeset: Changeset,
-
-  // context props
-  t: string => string
-};
-
-type State = {
-  modalOpen: boolean
-};
 
 class CIStatusSummary extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -45,7 +42,7 @@ class CIStatusSummary extends React.Component<Props, State> {
   render() {
     const { changeset, t } = this.props;
     const { modalOpen } = this.state;
-    const ciStatus: CIStatus[] | undefined = changeset._embedded.ciStatus;
+    const ciStatus: CIStatus[] = changeset._embedded.ciStatus;
     if (!ciStatus) {
       return null;
     }
@@ -116,4 +113,4 @@ class CIStatusSummary extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(CIStatusSummary);
+export default withTranslation("plugins")(CIStatusSummary);

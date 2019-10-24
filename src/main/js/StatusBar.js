@@ -1,18 +1,15 @@
 // @flow
 import React from "react";
 import classNames from "classnames";
-import { translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
 
-type Props = {
+type Props = WithTranslation & {
   backgroundColor: string,
   icon: string,
   iconColor: string,
   onClick: () => void,
-  ciStatus: any,
-
-  //context props
-  t: (key: string, params?: Object) => string
+  ciStatus: any
 };
 
 const Notification = styled.div`
@@ -70,4 +67,4 @@ class StatusBar extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(StatusBar);
+export default withTranslation("plugins")(StatusBar);
