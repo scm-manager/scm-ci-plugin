@@ -1,14 +1,13 @@
-//@flow
 import React from "react";
 
 type BaseProps = {
-  titleType?: string,
-  title?: string
+  titleType?: string;
+  title?: string;
 };
 type Props = BaseProps & {
-  color: string,
-  icon: string,
-  size: string
+  color: string;
+  icon: string;
+  size: string;
 };
 
 class StatusIcon extends React.Component<Props> {
@@ -24,7 +23,11 @@ class StatusIcon extends React.Component<Props> {
       <>
         <i className={`fas fa-${size} has-text-${color} fa-${icon}`} />
         {(titleType || title) && (
-          <span style={{ paddingLeft: "0.5rem" }}>
+          <span
+            style={{
+              paddingLeft: "0.5rem"
+            }}
+          >
             {titleType && <strong>{titleType}: </strong>}
             {title && title}
           </span>
@@ -37,10 +40,7 @@ class StatusIcon extends React.Component<Props> {
 export const getColor = (ciStatus: any) => {
   if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     return "danger";
-  } else if (
-    ciStatus &&
-    ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0
-  ) {
+  } else if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
     return "warning";
   } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
     return "success";
@@ -52,10 +52,7 @@ export const getColor = (ciStatus: any) => {
 export const getIcon = (ciStatus: any) => {
   if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     return "times-circle";
-  } else if (
-    ciStatus &&
-    ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0
-  ) {
+  } else if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
     return "exclamation-circle";
   } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
     return "check-circle";
@@ -64,12 +61,8 @@ export const getIcon = (ciStatus: any) => {
   }
 };
 
-export const SuccessIcon: React.SFC<BaseProps> = props => (
-  <StatusIcon color="success" icon="check-circle" {...props} />
-);
-export const FailureIcon: React.SFC<BaseProps> = props => (
-  <StatusIcon color="danger" icon="times-circle" {...props} />
-);
+export const SuccessIcon: React.SFC<BaseProps> = props => <StatusIcon color="success" icon="check-circle" {...props} />;
+export const FailureIcon: React.SFC<BaseProps> = props => <StatusIcon color="danger" icon="times-circle" {...props} />;
 export const UnstableIcon: React.SFC<BaseProps> = props => (
   <StatusIcon color="warning" icon="exclamation-circle" {...props} />
 );

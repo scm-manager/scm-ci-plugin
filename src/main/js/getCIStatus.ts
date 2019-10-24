@@ -7,6 +7,8 @@ export function getCIStatus(url: string) {
       return response;
     })
     .catch(err => {
-      return { error: err };
+      return {
+        error: err
+      };
     });
 }

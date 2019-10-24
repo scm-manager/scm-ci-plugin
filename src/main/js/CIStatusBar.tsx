@@ -1,32 +1,28 @@
-//@flow
 import React from "react";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import CIStatusModalView from "./CIStatusModalView";
 import { getCIStatus } from "./getCIStatus";
 import StatusBar from "./StatusBar";
 import { getColor, getIcon } from "./StatusIcon";
+import { Repository } from "@scm-manager/ui-types";
 
 type Props = {
-  repository: any,
-  pullRequest: any,
-
-  // context props
-  t: string => string
+  repository: Repository;
+  pullRequest: any;
 };
 
 type State = {
-  ciStatus?: any,
-  icon?: string,
-  color?: string,
-  modalOpen: boolean,
-  error?: Error,
-  loading: any
+  ciStatus?: any;
+  icon?: string;
+  color?: string;
+  modalOpen: boolean;
+  error?: Error;
+  loading: boolean;
 };
 
-class CIStatusBar extends React.Component<Props, State> {
+export default class CIStatusBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-
     this.state = {
       modalOpen: false,
       loading: false
@@ -39,11 +35,10 @@ class CIStatusBar extends React.Component<Props, State> {
 
   fetchCIStatus = () => {
     const { repository, pullRequest } = this.props;
-    const url = repository._links.ciStatus.href.replace(
-      "{revision}",
-      encodeURIComponent(pullRequest.source)
-    );
-    this.setState({ loading: true });
+    const url = repository._links.ciStatus.href.replace("{revision}", encodeURIComponent(pullRequest.source));
+    this.setState({
+      loading: true
+    });
     getCIStatus(url)
       .then(response => response.json())
       .then(json => {
@@ -54,13 +49,19 @@ class CIStatusBar extends React.Component<Props, State> {
         this.setStatus();
       })
       .catch(error => {
-        this.setState({ error, loading: false });
+        this.setState({
+          error,
+          loading: false
+        });
       });
   };
 
   setStatus = () => {
     const { ciStatus } = this.state;
-    this.setState({ color: getColor(ciStatus), icon: getIcon(ciStatus) });
+    this.setState({
+      color: getColor(ciStatus),
+      icon: getIcon(ciStatus)
+    });
   };
 
   toggleModal = () => {
@@ -83,20 +84,12 @@ class CIStatusBar extends React.Component<Props, State> {
 
     return (
       <>
-        {modalOpen && (
-          <CIStatusModalView onClose={this.toggleModal} ciStatus={ciStatus} />
-        )}
+        {modalOpen && <CIStatusModalView onClose={this.toggleModal} ciStatus={ciStatus} />}
         {color && icon && (
           <StatusBar
             icon={icon}
             backgroundColor={success ? "secondary" : color}
-            iconColor={
-              success
-                ? color
-                : color === "secondary"
-                ? "grey-lighter"
-                : "undefined"
-            }
+            iconColor={success ? color : color === "secondary" ? "grey-lighter" : "undefined"}
             onClick={this.toggleModal}
             ciStatus={ciStatus}
           />
@@ -105,5 +98,3 @@ class CIStatusBar extends React.Component<Props, State> {
     );
   }
 }
-
-export default CIStatusBar;

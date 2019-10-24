@@ -1,11 +1,10 @@
-// @flow
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
 
 type Props = WithTranslation & {
-  status: any,
-  ciUrl: any,
+  status: any;
+  ciUrl: any;
 };
 
 const Entry = styled.div`

@@ -1,29 +1,24 @@
-// @flow
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import classNames from "classnames";
-import type { Repository, Changeset } from "@scm-manager/ui-types";
-import type { CIStatus } from "./CIStatus";
-import StatusIcon, {
-  SuccessIcon,
-  FailureIcon,
-  UnstableIcon
-} from "./StatusIcon";
+import { Repository, Changeset } from "@scm-manager/ui-types";
+import { CIStatus } from "./CIStatus";
+import StatusIcon, { SuccessIcon, FailureIcon, UnstableIcon } from "./StatusIcon";
 import CIStatusModalView from "./CIStatusModalView";
 import { getDisplayName } from "./CIStatus";
 import styled from "styled-components";
 
 type Props = WithTranslation & {
-  repository: Repository,
-  changeset: Changeset
+  repository: Repository;
+  changeset: Changeset;
 };
 
 type State = {
-  modalOpen: boolean
+  modalOpen: boolean;
 };
 
 const Wrapper = styled.div`
-    margin: 0 0.35rem 0 1.1rem;
+  margin: 0 0.35rem 0 1.1rem;
 `;
 
 const Flex = styled.div`
@@ -62,7 +57,11 @@ class CIStatusSummary extends React.Component<Props, State> {
 
     const ciStatusModalView = modalOpen ? (
       <CIStatusModalView
-        onClose={() => this.setState({ modalOpen: false })}
+        onClose={() =>
+          this.setState({
+            modalOpen: false
+          })
+        }
         ciStatus={ciStatus}
       />
     ) : null;
@@ -90,18 +89,16 @@ class CIStatusSummary extends React.Component<Props, State> {
       <>
         {ciStatusModalView}
         <Wrapper className="popover is-popover-top">
-          <Flex className="popover-content">
-            {content}
-          </Flex>
+          <Flex className="popover-content">{content}</Flex>
           <div
-            className={classNames(
-              "popover-trigger",
-              hasAnalyzes ? "has-cursor-pointer" : ""
-            )}
+            className={classNames("popover-trigger", hasAnalyzes ? "has-cursor-pointer" : "")}
             onClick={
               hasAnalyzes
                 ? () =>
-                    ciStatus.length > 0 && this.setState({ modalOpen: true })
+                    ciStatus.length > 0 &&
+                    this.setState({
+                      modalOpen: true
+                    })
                 : ""
             }
           >
