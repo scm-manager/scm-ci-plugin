@@ -11,7 +11,11 @@ const Entry = styled.div`
   display: flex;
   flex-direction: row;
   padding: 1rem 0rem;
-  border-bottom: 1px solid rgba(219, 219, 219, 0.5);
+
+  // css adjacent with same component
+  & + & {
+    border-top: 1px solid rgba(219, 219, 219, 0.5);
+  }
 `;
 
 const Left = styled.div`
