@@ -48,7 +48,7 @@ class CIStatusModalView extends React.Component<Props> {
     return (
       <Modal
         title={
-          <strong className={`has-text-${color === "warning" ? "brown" : color === "secondary" ? "default" : "white"}`}>
+          <strong className={`has-text-${color === "warning" ? "warning-invert" : color === "secondary" ? "default" : "white"}`}>
             {t("scm-ci-plugin.modal.title", {
               count: errors
             })}
