@@ -69,17 +69,20 @@ class CIStatusSummary extends React.Component<Props, State> {
     const content = (
       <>
         {ciStatus.length === 0 && t("scm-ci-plugin.popover.noStatus")}
-        {ciStatus.map(ci =>
-          ci.status === "SUCCESS" ? (
-            <SuccessIcon titleType={ci.type} title={getDisplayName(ci)} />
-          ) : ci.status === "FAILURE" ? (
-            <FailureIcon titleType={ci.type} title={getDisplayName(ci)} />
-          ) : ci.status === "UNSTABLE" ? (
-            <UnstableIcon titleType={ci.type} title={getDisplayName(ci)} />
-          ) : (
-            <StatusIcon titleType={ci.type} title={getDisplayName(ci)} />
-          )
-        )}
+        {ciStatus.map(ci => (
+          <>
+            {ci.status === "SUCCESS" ? (
+              <SuccessIcon titleType={ci.type} title={getDisplayName(ci)} />
+            ) : ci.status === "FAILURE" ? (
+              <FailureIcon titleType={ci.type} title={getDisplayName(ci)} />
+            ) : ci.status === "UNSTABLE" ? (
+              <UnstableIcon titleType={ci.type} title={getDisplayName(ci)} />
+            ) : (
+              <StatusIcon titleType={ci.type} title={getDisplayName(ci)} />
+            )}
+            <br />
+          </>
+        ))}
       </>
     );
 
