@@ -20,7 +20,7 @@ class StatusIcon extends React.Component<Props> {
   render() {
     const { color, icon, size, titleType, title } = this.props;
     return (
-      <>
+      <div>
         <i className={`fas fa-${size} has-text-${color} fa-${icon}`} />
         {(titleType || title) && (
           <span
@@ -32,7 +32,7 @@ class StatusIcon extends React.Component<Props> {
             {title && title}
           </span>
         )}
-      </>
+      </div>
     );
   }
 }
