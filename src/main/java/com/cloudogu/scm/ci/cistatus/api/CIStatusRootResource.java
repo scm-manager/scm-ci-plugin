@@ -3,6 +3,7 @@ package com.cloudogu.scm.ci.cistatus.api;
 import com.cloudogu.scm.ci.RepositoryResolver;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.inject.Inject;
+import sonia.scm.NotFoundException;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
@@ -36,8 +37,16 @@ public class CIStatusRootResource {
   public CIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changesetId") String changesetId) throws IOException {
     Repository repository = repositoryResolver.resolve(namespace, name);
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
-      String resolvedChangesetId = repositoryService.getLogCommand().getChangeset(changesetId).getId();
+      String resolvedChangesetId = resolveChangesetId(repositoryService, changesetId);
       return new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, resolvedChangesetId);
+    }
+  }
+
+  private String resolveChangesetId(RepositoryService repositoryService, String changesetId) throws IOException {
+    try {
+      return repositoryService.getLogCommand().getChangeset(changesetId).getId();
+    } catch (NotFoundException ex) {
+      return "";
     }
   }
 }

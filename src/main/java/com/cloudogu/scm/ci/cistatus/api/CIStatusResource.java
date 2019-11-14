@@ -4,8 +4,8 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import de.otto.edison.hal.HalRepresentation;
-import sonia.scm.ContextEntry;
 import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.repository.Repository;
 
@@ -17,6 +17,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+
+import static sonia.scm.ContextEntry.ContextBuilder.entity;
 
 public class CIStatusResource {
 
@@ -50,6 +52,9 @@ public class CIStatusResource {
   @Produces(MEDIA_TYPE)
   @Path("")
   public HalRepresentation getAll() {
+    if (Strings.isNullOrEmpty(changesetId)) {
+      return collectionDtoMapper.map(new CIStatusCollection().stream(), repository, changesetId);
+    }
     CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
     return collectionDtoMapper.map(ciStatusCollection.stream(), repository, changesetId);
   }
@@ -67,7 +72,7 @@ public class CIStatusResource {
   @Path("{type}/{ciName}")
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
     if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
-      throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
+      throw new IllegalIdentifierChangeException(entity(CIStatusDto.class,
         ciStatusDto.getName() + ":" + ciStatusDto.getType()), "changing identifier attributes is not allowed");
     }
     CIStatus ciStatus = mapper.map(ciStatusDto);
