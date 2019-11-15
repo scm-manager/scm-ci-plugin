@@ -1,7 +1,6 @@
 import React from "react";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, Loading, NotFoundError } from "@scm-manager/ui-components";
 import CIStatusModalView from "./CIStatusModalView";
-import { getCIStatus } from "./getCIStatus";
 import StatusBar from "./StatusBar";
 import { getColor, getIcon } from "./StatusIcon";
 import { Repository } from "@scm-manager/ui-types";
@@ -39,20 +38,26 @@ export default class CIStatusBar extends React.Component<Props, State> {
     this.setState({
       loading: true
     });
-    getCIStatus(url)
+    apiClient.get(url)
       .then(response => response.json())
       .then(json => {
         this.setState({
           ciStatus: json._embedded.ciStatus,
           loading: false
-        });
-        this.setStatus();
+        }, this.setStatus);
       })
       .catch(error => {
-        this.setState({
-          error,
-          loading: false
-        });
+        if (error instanceof NotFoundError) {
+          this.setState({
+            loading: false
+          });
+        } else {
+          this.setState({
+            error,
+            loading: false
+          });
+        }
+
       });
   };
 
