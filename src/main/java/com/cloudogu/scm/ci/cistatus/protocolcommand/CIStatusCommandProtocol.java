@@ -7,7 +7,11 @@ import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.protocolcommand.ScmCommandProtocol;
 
 import javax.inject.Inject;
-import java.io.IOException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.InputStream;
+
+import static javax.xml.bind.JAXBContext.newInstance;
 
 public class CIStatusCommandProtocol implements ScmCommandProtocol {
   private CIStatusService service;
@@ -18,7 +22,25 @@ public class CIStatusCommandProtocol implements ScmCommandProtocol {
   }
 
   @Override
-  public void handle(CommandContext context, RepositoryContext repositoryContext) throws IOException {
-    service.put(repositoryContext.getRepository(), context.getArgs()[1], new CIStatus());
+  public void handle(CommandContext context, RepositoryContext repositoryContext) {
+    try {
+      JAXBContext jaxbContext = newInstance(CIStatus.class);
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+      InputStream in = context.getInputStream();
+      CIStatus ciStatus = (CIStatus) unmarshaller.unmarshal(in);
+      service.put(repositoryContext.getRepository(), extractRevision(context), ciStatus);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private String extractRevision(CommandContext context) {
+    String[] args = context.getArgs();
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].equals("--revision")) {
+        return args[i + 1];
+      }
+    }
+    throw new IllegalArgumentException("missing revision");
   }
 }

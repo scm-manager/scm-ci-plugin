@@ -3,29 +3,33 @@ package com.cloudogu.scm.ci.cistatus.protocolcommand;
 import sonia.scm.plugin.Extension;
 import sonia.scm.protocolcommand.CommandInterpreter;
 import sonia.scm.protocolcommand.CommandInterpreterFactory;
-import sonia.scm.protocolcommand.RepositoryContextResolver;
-import sonia.scm.protocolcommand.ScmCommandProtocol;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Optional;
 
 import static java.util.Optional.of;
 
 @Extension
 public class CIStatusCommandInterpreterFactory implements CommandInterpreterFactory {
-  private final RepositoryContextResolver repositoryContextResolver;
-  private final ScmCommandProtocol protocolHandler;
+  private final CIStatusRepositoryContextResolver repositoryContextResolver;
+  private final CIStatusCommandProtocol protocolHandler;
 
   @Inject
-  public CIStatusCommandInterpreterFactory(RepositoryContextResolver repositoryContextResolver, ScmCommandProtocol protocolHandler) {
+  public CIStatusCommandInterpreterFactory(CIStatusRepositoryContextResolver repositoryContextResolver, CIStatusCommandProtocol protocolHandler) {
     this.repositoryContextResolver = repositoryContextResolver;
     this.protocolHandler = protocolHandler;
   }
 
   @Override
   public Optional<CommandInterpreter> canHandle(String command) {
-    String[] args = CIStatusCommandParser.parse(command);
-    if (command.startsWith("scm ci")) {
+    String[] args = new String[0];
+    try {
+      args = CIStatusCommandParser.parse(command);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    if (command.startsWith("scm ci-update")) {
       return of(new CIStatusCommandInterpreter(repositoryContextResolver, protocolHandler, args));
     }
     return Optional.empty();
