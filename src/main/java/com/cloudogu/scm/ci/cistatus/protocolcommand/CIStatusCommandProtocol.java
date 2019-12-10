@@ -28,7 +28,7 @@ public class CIStatusCommandProtocol implements ScmCommandProtocol {
       CIStatus ciStatus = unmarshalCIStatus(context);
       service.put(repositoryContext.getRepository(), extractRevision(context), ciStatus);
     } catch (JAXBException e) {
-      throw new IllegalArgumentException("could not unmarshal ciStatus object");
+      throw new IllegalArgumentException("could not unmarshal ciStatus object", e);
     }
   }
 

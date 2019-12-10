@@ -43,6 +43,6 @@ public class CIStatusRepositoryContextResolver implements RepositoryContextResol
     if (ns != null && name != null) {
       return new NamespaceAndName(ns, name);
     }
-    return null;
+    throw new IllegalArgumentException("missing repository namespace or repository name in scm ci-update command");
   }
 }
