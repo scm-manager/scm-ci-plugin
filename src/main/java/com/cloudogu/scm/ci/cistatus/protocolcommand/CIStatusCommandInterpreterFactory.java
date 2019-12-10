@@ -5,7 +5,6 @@ import sonia.scm.protocolcommand.CommandInterpreter;
 import sonia.scm.protocolcommand.CommandInterpreterFactory;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.Optional;
 
 import static java.util.Optional.of;
@@ -23,14 +22,8 @@ public class CIStatusCommandInterpreterFactory implements CommandInterpreterFact
 
   @Override
   public Optional<CommandInterpreter> canHandle(String command) {
-    String[] args = new String[0];
-    try {
-      args = CIStatusCommandParser.parse(command);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     if (command.startsWith("scm ci-update")) {
-      return of(new CIStatusCommandInterpreter(repositoryContextResolver, protocolHandler, args));
+      return of(new CIStatusCommandInterpreter(repositoryContextResolver, protocolHandler, CIStatusCommandParser.parse(command)));
     }
     return Optional.empty();
   }
