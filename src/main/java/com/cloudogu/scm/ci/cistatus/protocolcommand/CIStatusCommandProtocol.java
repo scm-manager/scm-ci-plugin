@@ -7,36 +7,22 @@ import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.protocolcommand.ScmCommandProtocol;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
-
-import static javax.xml.bind.JAXBContext.newInstance;
 
 public class CIStatusCommandProtocol implements ScmCommandProtocol {
-  private CIStatusService service;
+
+  private final CIStatusService service;
+  private final CIStatusUnmarshaller unmarshaller;
 
   @Inject
-  public CIStatusCommandProtocol(CIStatusService service) {
+  public CIStatusCommandProtocol(CIStatusService service, CIStatusUnmarshaller unmarshaller) {
     this.service = service;
+    this.unmarshaller = unmarshaller;
   }
 
   @Override
   public void handle(CommandContext context, RepositoryContext repositoryContext) {
-    try {
-      CIStatus ciStatus = unmarshalCIStatus(context);
+      CIStatus ciStatus = unmarshaller.unmarshal(context.getInputStream());
       service.put(repositoryContext.getRepository(), extractRevision(context), ciStatus);
-    } catch (JAXBException e) {
-      throw new IllegalArgumentException("could not unmarshal ciStatus object", e);
-    }
-  }
-
-  private CIStatus unmarshalCIStatus(CommandContext context) throws JAXBException {
-    JAXBContext jaxbContext = newInstance(CIStatus.class);
-    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-    InputStream in = context.getInputStream();
-    return (CIStatus) unmarshaller.unmarshal(in);
   }
 
   private String extractRevision(CommandContext context) {

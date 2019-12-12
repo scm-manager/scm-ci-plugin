@@ -1,8 +1,11 @@
 package com.cloudogu.scm.ci.cistatus.protocolcommand;
 
-public class CIStatusCommandParser {
+class CIStatusCommandParser {
 
-  static String[] parse (String command) {
+  private CIStatusCommandParser() {
+  }
+
+  static String[] parse(String command) {
     return command.split(" ");
   }
 }

@@ -35,7 +35,7 @@ public class CIStatusCommandProtocolTest {
 
   @BeforeEach
   void initCommandProtocol() {
-    commandProtocol = new CIStatusCommandProtocol(service);
+    commandProtocol = new CIStatusCommandProtocol(service, new CIStatusUnmarshaller());
     repositoryContext = createRepositoryContext();
   }
 
