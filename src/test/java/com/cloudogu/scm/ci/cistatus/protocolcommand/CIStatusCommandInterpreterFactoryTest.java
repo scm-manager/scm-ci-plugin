@@ -23,14 +23,14 @@ public class CIStatusCommandInterpreterFactoryTest {
   @Test
   void shouldReturnCommandInterpreter() {
     factory = new CIStatusCommandInterpreterFactory(repositoryContextResolver, commandProtocol);
-    Optional<CommandInterpreter> commandInterpreter = factory.canHandle("scm ci-update */*/*");
+    Optional<CommandInterpreter> commandInterpreter = factory.canHandle("scm-ci-update */*/*");
     assertThat(commandInterpreter.isPresent()).isTrue();
   }
 
   @Test
   void shouldReturnEmptyIfCommandDoesNotMatch() {
     factory = new CIStatusCommandInterpreterFactory(repositoryContextResolver, commandProtocol);
-    Optional<CommandInterpreter> commandInterpreter = factory.canHandle("scm ci update */*/*");
+    Optional<CommandInterpreter> commandInterpreter = factory.canHandle("scm-ci update */*/*");
     assertThat(commandInterpreter.isPresent()).isFalse();
   }
 }

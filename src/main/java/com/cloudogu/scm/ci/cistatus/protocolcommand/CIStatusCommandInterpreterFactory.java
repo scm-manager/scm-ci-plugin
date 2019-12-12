@@ -22,7 +22,7 @@ public class CIStatusCommandInterpreterFactory implements CommandInterpreterFact
 
   @Override
   public Optional<CommandInterpreter> canHandle(String command) {
-    if (command.startsWith("scm ci-update")) {
+    if (command.startsWith("scm-ci-update")) {
       return of(new CIStatusCommandInterpreter(repositoryContextResolver, protocolHandler, CIStatusCommandParser.parse(command)));
     }
     return Optional.empty();
