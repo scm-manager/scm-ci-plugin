@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cistatus>
+  <name>scm-plugin</name>
+  <displayName>scm-plugin</displayName>
+  <url>http://localhost:8080/jenkins/job/scm-plugin/11/</url>
+  <type>jenkins</type>
+  <status>SUCCESS</status>
+</cistatus>
