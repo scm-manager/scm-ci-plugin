@@ -5,12 +5,10 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.common.annotations.VisibleForTesting;
 import de.otto.edison.hal.HalRepresentation;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import sonia.scm.ContextEntry;
 import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.api.v2.resources.ErrorDto;
@@ -26,9 +24,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(tags = {
-  @Tag(name = "CI Plugin", description = "CI plugin provided endpoints")
-})
 public class CIStatusResource {
 
   private static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";

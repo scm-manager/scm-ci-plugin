@@ -3,6 +3,8 @@ package com.cloudogu.scm.ci.cistatus.api;
 import com.cloudogu.scm.ci.RepositoryResolver;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.inject.Inject;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
@@ -11,7 +13,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.io.IOException;
 
-
+@OpenAPIDefinition(tags = {
+  @Tag(name = "CI Plugin", description = "CI plugin provided endpoints")
+})
 @Path(CIStatusRootResource.CI_PATH_V2)
 public class CIStatusRootResource {
 
