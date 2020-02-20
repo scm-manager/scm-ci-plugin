@@ -5,9 +5,17 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.common.annotations.VisibleForTesting;
 import de.otto.edison.hal.HalRepresentation;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import sonia.scm.ContextEntry;
 import sonia.scm.IllegalIdentifierChangeException;
+import sonia.scm.api.v2.resources.ErrorDto;
 import sonia.scm.repository.Repository;
+import sonia.scm.web.VndMediaType;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -18,6 +26,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+@OpenAPIDefinition(tags = {
+  @Tag(name = "CI Plugin", description = "CI plugin provided endpoints")
+})
 public class CIStatusResource {
 
   private static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";
@@ -49,6 +60,25 @@ public class CIStatusResource {
   @GET
   @Produces(MEDIA_TYPE)
   @Path("")
+  @Operation(summary = "Get all ci status", description = "Returns all ci status for a changeset.", tags = "CI Plugin")
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MEDIA_TYPE,
+      schema = @Schema(implementation = HalRepresentation.class)
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the \"readCIStatus\" privilege")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public HalRepresentation getAll() {
     CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
     return collectionDtoMapper.map(ciStatusCollection.stream(), repository, changesetId);
@@ -57,6 +87,26 @@ public class CIStatusResource {
   @GET
   @Path("{type}/{ciName}")
   @Produces(MEDIA_TYPE)
+  @Operation(summary = "Get single ci status", description = "Returns single ci status for a changeset.", tags = "CI Plugin")
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MEDIA_TYPE,
+      schema = @Schema(implementation = CIStatusDto.class)
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized / the current user does not have the \"readCIStatus\" privilege")
+  @ApiResponse(responseCode = "404", description = "not found / ci status by given name not available")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
     CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
     return mapper.map(repository, changesetId, ciStatusCollection.get(type, ciName));
@@ -65,6 +115,18 @@ public class CIStatusResource {
   @PUT
   @Consumes(MEDIA_TYPE)
   @Path("{type}/{ciName}")
+  @Operation(summary = "Update ci status", description = "Updates single ci status.", tags = "CI Plugin")
+  @ApiResponse(responseCode = "204", description = "update success")
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the \"writeCIStatus\" privilege")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
     if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
       throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
