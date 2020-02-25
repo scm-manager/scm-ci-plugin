@@ -22,6 +22,20 @@
     <url>https://github.com/scm-manager/scm-ci-plugin</url>
   </scm>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.openapitools.swagger</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <configuration>
+          <resourcePackages>
+            <resourcePackage>com.cloudogu.scm.ci.cistatus.api</resourcePackage>
+          </resourcePackages>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
 
     <dependency>
