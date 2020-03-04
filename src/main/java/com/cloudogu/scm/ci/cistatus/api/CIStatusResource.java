@@ -55,7 +55,12 @@ public class CIStatusResource {
   @GET
   @Produces(MEDIA_TYPE)
   @Path("")
-  @Operation(summary = "Get all ci status", description = "Returns all ci status for a changeset.", tags = "CI Plugin")
+  @Operation(
+    summary = "Get all ci status",
+    description = "Returns all ci status for a changeset.",
+    tags = "CI Plugin",
+    operationId = "ci_get_all_status"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -82,7 +87,12 @@ public class CIStatusResource {
   @GET
   @Path("{type}/{ciName}")
   @Produces(MEDIA_TYPE)
-  @Operation(summary = "Get single ci status", description = "Returns single ci status for a changeset.", tags = "CI Plugin")
+  @Operation(
+    summary = "Get single ci status",
+    description = "Returns single ci status for a changeset.",
+    tags = "CI Plugin",
+    operationId = "ci_get_single_status"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -110,7 +120,12 @@ public class CIStatusResource {
   @PUT
   @Consumes(MEDIA_TYPE)
   @Path("{type}/{ciName}")
-  @Operation(summary = "Update ci status", description = "Updates single ci status.", tags = "CI Plugin")
+  @Operation(
+    summary = "Update ci status",
+    description = "Updates single ci status.",
+    tags = "CI Plugin",
+    operationId = "ci_put_status"
+  )
   @ApiResponse(responseCode = "204", description = "update success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the \"writeCIStatus\" privilege")
