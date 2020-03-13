@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>scm-ci-plugin</artifactId>
-  <version>2.0.0-rc2</version>
+  <version>2.0.0-SNAPSHOT</version>
   <name>scm-ci-plugin</name>
   <packaging>smp</packaging>
   <url>https://github.com/scm-manager/scm-ci-plugin</url>
