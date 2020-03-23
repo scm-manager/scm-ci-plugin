@@ -7,3 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Add swagger rest annotations to generate openAPI specs for the scm-openapi-plugin. ([#2](https://github.com/scm-manager/scm-ci-plugin/pull/5))
+
+### Changed
+- Changeover to MIT license ([#6](https://github.com/scm-manager/scm-ci-plugin/pull/6))
