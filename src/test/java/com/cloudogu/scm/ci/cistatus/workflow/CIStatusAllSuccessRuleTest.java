@@ -47,6 +47,9 @@ import static org.mockito.Mockito.when;
 class CIStatusAllSuccessRuleTest {
 
   @Mock
+  private SourceRevisionResolver revisionResolver;
+
+  @Mock
   private CIStatusService ciStatusService;
 
   @InjectMocks
@@ -109,7 +112,9 @@ class CIStatusAllSuccessRuleTest {
     Repository heartOfGold = RepositoryTestData.createHeartOfGold();
 
     PullRequest pullRequest = Mockito.mock(PullRequest.class);
-    when(pullRequest.getSourceRevision()).thenReturn("42");
+    when(pullRequest.getSource()).thenReturn("feature/spaceship");
+
+    when(revisionResolver.resolve(heartOfGold, "feature/spaceship")).thenReturn("42");
 
     when(context.getRepository()).thenReturn(heartOfGold);
     when(context.getPullRequest()).thenReturn(pullRequest);

@@ -41,17 +41,19 @@ import javax.inject.Inject;
 @Requires("scm-review-plugin")
 public class CIStatusAllSuccessRule implements Rule {
 
+  private final SourceRevisionResolver sourceRevisionResolver;
   private final CIStatusService ciStatusService;
 
   @Inject
-  public CIStatusAllSuccessRule(CIStatusService ciStatusService) {
+  public CIStatusAllSuccessRule(SourceRevisionResolver sourceRevisionResolver, CIStatusService ciStatusService) {
+    this.sourceRevisionResolver = sourceRevisionResolver;
     this.ciStatusService = ciStatusService;
   }
 
   @Override
   public Result validate(Context context) {
     PullRequest pullRequest = context.getPullRequest();
-    String sourceRevision = pullRequest.getSourceRevision();
+    String sourceRevision = sourceRevisionResolver.resolve(context.getRepository(), pullRequest.getSource());
 
     CIStatusCollection ciStatuses = ciStatusService.get(context.getRepository(), sourceRevision);
     for (CIStatus status : ciStatuses) {
