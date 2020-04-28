@@ -46,10 +46,10 @@
   "workflow": {
     "rule": {
       "CIStatusAllSuccessRule": {
-        "name": "All CI Status Success",
-        "description": "Check if all retrieved CI Status messages are successful.",
-        "success": "All ci status message are successful.",
-        "failed": "At least one CI Status is not successful."
+        "name": "All CI status successful",
+        "description": "Check if all retrieved CI status messages are successful.",
+        "success": "All CI status messages are successful.",
+        "failed": "At least one CI status is not successful."
       }
     }
   }

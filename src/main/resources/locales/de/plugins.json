@@ -46,7 +46,7 @@
     "rule": {
       "CIStatusAllSuccessRule": {
         "name": "Alle CI-Status Meldungen erfolgreich",
-        "description": "Stellt sicher das alle CI-Status Meldungen erfolgreich sind.",
+        "description": "Stellt sicher, dass alle CI-Status Meldungen erfolgreich sind.",
         "success": "Alle CI-Status Meldungen waren erfolgreich.",
         "failed": "Mindestens eine CI-Status Meldung war nicht erfolgreich."
       }
