@@ -23,12 +23,15 @@
  */
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.NotFoundException;
 import sonia.scm.repository.Changeset;
+import sonia.scm.repository.InternalRepositoryException;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.repository.api.LogCommandBuilder;
@@ -39,6 +42,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,20 +60,32 @@ class SourceRevisionResolverTest {
   @Mock
   private LogCommandBuilder logCommand;
 
-  @Test
-  void shouldReturnIdOfChangeset() throws IOException {
-    // revisionResolver = new SourceRevisionResolver(repositoryServiceFactory);
+  private final Repository repository = RepositoryTestData.createHeartOfGold();
 
-    Repository repository = RepositoryTestData.createHeartOfGold();
-
+  @BeforeEach
+  void setUpRepositoryService() {
     when(repositoryServiceFactory.create(repository)).thenReturn(repositoryService);
     when(repositoryService.getLogCommand()).thenReturn(logCommand);
+  }
 
+  @Test
+  void shouldReturnIdOfChangeset() throws IOException {
     Changeset changeset = new Changeset("42", 1L, null);
     when(logCommand.getChangeset("feature/spaceship")).thenReturn(changeset);
 
     String sourceRevision = revisionResolver.resolve(repository, "feature/spaceship");
     assertThat(sourceRevision).isEqualTo("42");
+  }
+
+  @Test
+  void shouldThrowNotFoundExceptionIfChangesetCouldNotBeFound() {
+    assertThrows(NotFoundException.class, () ->revisionResolver.resolve(repository, "feature/spaceship"));
+  }
+
+  @Test
+  void shouldThrowInternalRepositoryExceptionOnFailure() throws IOException {
+    when(logCommand.getChangeset(anyString())).thenThrow(new IOException("failure"));
+    assertThrows(InternalRepositoryException.class, () ->revisionResolver.resolve(repository, "feature/spaceship"));
   }
 
 }

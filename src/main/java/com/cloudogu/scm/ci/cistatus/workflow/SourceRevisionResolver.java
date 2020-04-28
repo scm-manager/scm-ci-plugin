@@ -24,12 +24,18 @@
 
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import sonia.scm.ContextEntry;
+import sonia.scm.NotFoundException;
+import sonia.scm.repository.Changeset;
+import sonia.scm.repository.InternalRepositoryException;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
+
+import static sonia.scm.ContextEntry.ContextBuilder.entity;
 
 public class SourceRevisionResolver {
 
@@ -42,10 +48,18 @@ public class SourceRevisionResolver {
 
   public String resolve(Repository repository, String source) {
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
-      return repositoryService.getLogCommand().getChangeset(source).getId();
+      Changeset changeset = repositoryService.getLogCommand().getChangeset(source);
+      if (changeset == null) {
+        throw NotFoundException.notFound(context(repository, source));
+      }
+      return changeset.getId();
     } catch (IOException ex) {
-      throw new RuntimeException(ex);
+      throw new InternalRepositoryException(context(repository, source), "failed to fetch changeset");
     }
+  }
+
+  private ContextEntry.ContextBuilder context(Repository repository, String source) {
+    return entity(Changeset.class, source).in(repository);
   }
 
 }
