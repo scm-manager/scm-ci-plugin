@@ -42,5 +42,15 @@
         "description": "May set status tags for CI servers"
       }
     }
+  },
+  "workflow": {
+    "rule": {
+      "CIStatusAllSuccessRule": {
+        "name": "All CI status successful",
+        "description": "Check if all retrieved CI status messages are successful.",
+        "success": "All CI status messages are successful.",
+        "failed": "At least one CI status is not successful."
+      }
+    }
   }
 }
