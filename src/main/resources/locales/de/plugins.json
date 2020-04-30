@@ -45,10 +45,25 @@
   "workflow": {
     "rule": {
       "CIStatusAllSuccessRule": {
-        "name": "Alle CI-Status Meldungen erfolgreich",
+        "name": "Alle CI-Status Meldungen erfolgreich.",
         "description": "Stellt sicher, dass alle CI-Status Meldungen erfolgreich sind.",
         "success": "Alle CI-Status Meldungen waren erfolgreich.",
-        "failed": "Mindestens eine CI-Status Meldung war nicht erfolgreich."
+        "failed": "Mindestens eine CI-Status Meldung war nicht erfolgreich.",
+        "obstacle": "Mindestens eine CI-Status Meldung war nicht erfolgreich."
+      },
+      "CIStatusXSuccessRule": {
+        "name": "X CI-Status Meldungen",
+        "description": "Stellt sicher, dass {{ numberOfSuccessful }} CI-Status Meldungen erfolgreich sind.",
+        "success": "Ausreichend CI-Status Meldungen erfolgreich.",
+        "failed": "Nur {{ current }} von {{ expected }} erfolreichen CI-Status Meldungen vorhanden.",
+        "obstacle": "Nicht genug erfolgreiche CI-Status Meldungen vorhanden (current: {{ current }} from expected: {{ expected }}.).",
+        "form": {
+          "numberOfSuccessful": {
+            "label": "Anzahl",
+            "helpText": "Anzahl erfolgreicher CI-Status Meldungen.",
+            "errorMessage": "Die Anzahl muss größer 0 sein."
+          }
+        }
       }
     }
   }

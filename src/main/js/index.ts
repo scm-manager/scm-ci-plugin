@@ -24,6 +24,9 @@
 import { binder } from "@scm-manager/ui-extensions";
 import CIStatusSummary from "./CIStatusSummary";
 import CIStatusBar from "./CIStatusBar";
+import CIStatusXSuccessRuleConfiguration from "./workflow/CIStatusXSuccessRuleConfiguration";
 
 binder.bind("changeset.right", CIStatusSummary);
 binder.bind("reviewPlugin.pullrequest.top", CIStatusBar);
+
+binder.bind("reviewPlugin.workflow.config.CIStatusXSuccessRule", CIStatusXSuccessRuleConfiguration);
