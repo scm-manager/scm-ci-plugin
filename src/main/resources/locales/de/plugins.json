@@ -56,7 +56,7 @@
         "description": "Stellt sicher, dass {{ numberOfSuccessful }} CI-Status Meldungen erfolgreich sind.",
         "success": "Ausreichend CI-Status Meldungen erfolgreich.",
         "failed": "Nur {{ current }} von {{ expected }} erfolreichen CI-Status Meldungen vorhanden.",
-        "obstacle": "Nicht genug erfolgreiche CI-Status Meldungen vorhanden (current: {{ current }} from expected: {{ expected }}.).",
+        "obstacle": "Nicht genug erfolgreiche CI-Status Meldungen vorhanden.",
         "form": {
           "numberOfSuccessful": {
             "label": "Anzahl",
