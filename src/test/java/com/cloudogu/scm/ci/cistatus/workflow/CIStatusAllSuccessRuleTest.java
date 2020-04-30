@@ -47,20 +47,18 @@ import static org.mockito.Mockito.when;
 class CIStatusAllSuccessRuleTest {
 
   @Mock
-  private SourceRevisionResolver revisionResolver;
-
-  @Mock
-  private CIStatusService ciStatusService;
+  private CIStatusResolver statusResolver;
 
   @InjectMocks
   private CIStatusAllSuccessRule rule;
 
+  @Mock
+  private Context context;
+
   @Test
   void shouldReturnSuccessForEmptyCIStatusCollection() {
-    Context context = createContext();
-
     CIStatusCollection collection = new CIStatusCollection();
-    when(ciStatusService.get(context.getRepository(), "42")).thenReturn(collection);
+    when(statusResolver.resolve(context)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isSuccess()).isTrue();
@@ -68,11 +66,9 @@ class CIStatusAllSuccessRuleTest {
 
   @Test
   void shouldReturnSuccessForOnlySuccessfulCIStatus() {
-    Context context = createContext();
-
     CIStatusCollection collection = new CIStatusCollection();
     collection.put(createStatus(Status.SUCCESS));
-    when(ciStatusService.get(context.getRepository(), "42")).thenReturn(collection);
+    when(statusResolver.resolve(context)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isSuccess()).isTrue();
@@ -80,11 +76,9 @@ class CIStatusAllSuccessRuleTest {
 
   @Test
   void shouldReturnFailureIfOnlyFailedCIStatus() {
-    Context context = createContext();
-
     CIStatusCollection collection = new CIStatusCollection();
     collection.put(createStatus(Status.FAILURE));
-    when(ciStatusService.get(context.getRepository(), "42")).thenReturn(collection);
+    when(statusResolver.resolve(context)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isFailed()).isTrue();
@@ -92,12 +86,10 @@ class CIStatusAllSuccessRuleTest {
 
   @Test
   void shouldReturnFailureAtLeastOneFailedCIStatus() {
-    Context context = createContext();
-
     CIStatusCollection collection = new CIStatusCollection();
     collection.put(createStatus(Status.SUCCESS));
     collection.put(createStatus(Status.FAILURE));
-    when(ciStatusService.get(context.getRepository(), "42")).thenReturn(collection);
+    when(statusResolver.resolve(context)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isFailed()).isTrue();
@@ -105,21 +97,6 @@ class CIStatusAllSuccessRuleTest {
 
   private CIStatus createStatus(Status status) {
     return new CIStatus("jenkins", "spaceship", "Spaceship", status, "http://hitchhiker.com");
-  }
-
-  private Context createContext() {
-    Context context = Mockito.mock(Context.class);
-    Repository heartOfGold = RepositoryTestData.createHeartOfGold();
-
-    PullRequest pullRequest = Mockito.mock(PullRequest.class);
-    when(pullRequest.getSource()).thenReturn("feature/spaceship");
-
-    when(revisionResolver.resolve(heartOfGold, "feature/spaceship")).thenReturn("42");
-
-    when(context.getRepository()).thenReturn(heartOfGold);
-    when(context.getPullRequest()).thenReturn(pullRequest);
-
-    return context;
   }
 
 }
