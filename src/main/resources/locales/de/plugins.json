@@ -64,6 +64,51 @@
             "errorMessage": "Die Anzahl muss größer 0 sein."
           }
         }
+      },
+      "CIStatusNamedSuccessRule": {
+        "name": "Benannte CI-Status Meldung erfolgreich",
+        "description": "Die CI-Status Meldung mit dem Namen '{{ name }}' vom typ '{{ type }}' muss erfolgreich sein.",
+        "success": "Der CI-Status {{ type }}:{{ name }} ist erfolgreich.",
+        "failed": {
+          "CiStatusNotSuccessful": "Der CI-Status {{ type }}:{{ name }} ist nicht erfolgreich.",
+          "CiStatusMissing": "Der CI-Status {{ type }}:{{ name }} wurde nicht gefunden."
+        },
+        "obstacle": {
+          "CiStatusNotSuccessful": "Der benannte CI-Status ist nicht erfolgreich.",
+          "CiStatusMissing": "Der benannte CI-Status wurde nicht vorhanden."
+        },
+        "form": {
+          "type": {
+            "label": "Typ",
+            "helpText": "Der Typ der Statusmeldung (z.B. 'jenkins')",
+            "errorMessage": "Dieses Feld darf nicht leer sein."
+          },
+          "name": {
+            "label": "Name",
+            "helpText": "Der Name der Statusmeldung (z.B. 'test' oder 'build')",
+            "errorMessage": "Dieses Feld darf nicht leer sein."
+          }
+        }
+      },
+      "CIStatusOfTypeSuccessRule": {
+        "name": "Statusmeldungen von Typ erfolgreich",
+        "description": "Alle Statusmeldungen vom Typ '{{ type }}' müssen erfolgreich sein.",
+        "success": "Alle Statusmeldungen vom Typ '{{ type }}' müssen sind erfolgreich.",
+        "failed": {
+          "CiStatusNotSuccessful": "Nicht alle Statusmeldungen vom Typ '{{ type }}' sind erfolgreich. Der Status '{{ name }}' ist fehlgeschlagen.",
+          "CiStatusMissing": "Keine Statusmeldungen vom Typ '{{ type }}' vorhanden."
+        },
+        "obstacle": {
+          "CiStatusNotSuccessful": "Nicht alle Statusmeldungen vom angebenen Typ sind erfolgreich.",
+          "CiStatusMissing": "Keine Statusmeldungen vom angegebenen Typ vorhanden."
+        },
+        "form": {
+          "type": {
+            "label": "Typ",
+            "helpText": "Der Typ der Statusmeldung (z.B. 'jenkins')",
+            "errorMessage": "Dieses Feld darf nicht leer sein."
+          }
+        }
       }
     }
   }

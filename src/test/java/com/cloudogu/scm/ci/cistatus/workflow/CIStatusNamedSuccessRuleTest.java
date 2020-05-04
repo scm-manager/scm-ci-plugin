@@ -58,6 +58,7 @@ class CIStatusNamedSuccessRuleTest {
   void shouldMarshallAndUnmarshallConfiguration() {
     Configuration configuration = new Configuration("jenkins", "build");
     Configuration testedConfiguration = configuration; // TODO: perform test marshalling
+
     assertThat(testedConfiguration).isNotNull();
     assertThat(testedConfiguration.getName()).isEqualTo(configuration.getName());
     assertThat(testedConfiguration.getType()).isEqualTo(configuration.getType());
@@ -67,6 +68,7 @@ class CIStatusNamedSuccessRuleTest {
   void shouldNotNullsInConfiguration() {
     Configuration configuration = new Configuration(null, null);
     // TODO: validate (expect failure)
+
   }
 
   @Test
