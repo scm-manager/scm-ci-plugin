@@ -21,40 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ci.cistatus.workflow;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
-import com.cloudogu.scm.ci.cistatus.service.Status;
+import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
+import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.workflow.Context;
-import com.cloudogu.scm.review.workflow.Result;
-import com.cloudogu.scm.review.workflow.Rule;
-import sonia.scm.plugin.Extension;
-import sonia.scm.plugin.Requires;
+import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
 
+public class CIStatusResolver {
 
-@Extension
-@Requires("scm-review-plugin")
-public class CIStatusAllSuccessRule implements Rule {
-
-  private final CIStatusResolver statusResolver;
+  private final CIStatusService ciStatusService;
+  private final SourceRevisionResolver sourceRevisionResolver;
 
   @Inject
-  public CIStatusAllSuccessRule(CIStatusResolver statusResolver) {
-    this.statusResolver = statusResolver;
+  public CIStatusResolver(CIStatusService ciStatusService, SourceRevisionResolver sourceRevisionResolver) {
+    this.ciStatusService = ciStatusService;
+    this.sourceRevisionResolver = sourceRevisionResolver;
   }
 
-  @Override
-  public Result validate(Context context) {
-    CIStatusCollection ciStatuses = statusResolver.resolve(context);
-    for (CIStatus status : ciStatuses) {
-      if (status.getStatus() != Status.SUCCESS) {
-        return failed();
-      }
-    }
-
-    return success();
+  public CIStatusCollection resolve(Context context) {
+    Repository repository = context.getRepository();
+    PullRequest pullRequest = context.getPullRequest();
+    String sourceRevision = sourceRevisionResolver.resolve(repository, pullRequest.getSource());
+    return ciStatusService.get(repository, sourceRevision);
   }
+
 }

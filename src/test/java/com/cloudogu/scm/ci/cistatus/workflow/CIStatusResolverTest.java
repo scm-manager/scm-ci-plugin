@@ -24,18 +24,14 @@
 
 package com.cloudogu.scm.ci.cistatus.workflow;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
-import com.cloudogu.scm.ci.cistatus.service.Status;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.workflow.Context;
-import com.cloudogu.scm.review.workflow.Result;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
@@ -44,59 +40,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CIStatusAllSuccessRuleTest {
+class CIStatusResolverTest {
 
   @Mock
-  private CIStatusResolver statusResolver;
+  private CIStatusService ciStatusService;
+
+  @Mock
+  private SourceRevisionResolver sourceRevisionResolver;
 
   @InjectMocks
-  private CIStatusAllSuccessRule rule;
+  private CIStatusResolver resolver;
 
   @Mock
   private Context context;
 
   @Test
-  void shouldReturnSuccessForEmptyCIStatusCollection() {
+  void shouldResolveCiStatus() {
+    Repository repository = RepositoryTestData.createHeartOfGold();
+    PullRequest pullRequest = new PullRequest();
+    pullRequest.setSource("feature/spaceship");
+
     CIStatusCollection collection = new CIStatusCollection();
-    when(statusResolver.resolve(context)).thenReturn(collection);
 
-    Result result = rule.validate(context);
-    assertThat(result.isSuccess()).isTrue();
-  }
+    when(sourceRevisionResolver.resolve(repository, "feature/spaceship")).thenReturn("42");
+    when(ciStatusService.get(repository, "42")).thenReturn(collection);
 
-  @Test
-  void shouldReturnSuccessForOnlySuccessfulCIStatus() {
-    CIStatusCollection collection = new CIStatusCollection();
-    collection.put(createStatus(Status.SUCCESS));
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(context.getRepository()).thenReturn(repository);
+    when(context.getPullRequest()).thenReturn(pullRequest);
 
-    Result result = rule.validate(context);
-    assertThat(result.isSuccess()).isTrue();
-  }
-
-  @Test
-  void shouldReturnFailureIfOnlyFailedCIStatus() {
-    CIStatusCollection collection = new CIStatusCollection();
-    collection.put(createStatus(Status.FAILURE));
-    when(statusResolver.resolve(context)).thenReturn(collection);
-
-    Result result = rule.validate(context);
-    assertThat(result.isFailed()).isTrue();
-  }
-
-  @Test
-  void shouldReturnFailureAtLeastOneFailedCIStatus() {
-    CIStatusCollection collection = new CIStatusCollection();
-    collection.put(createStatus(Status.SUCCESS));
-    collection.put(createStatus(Status.FAILURE));
-    when(statusResolver.resolve(context)).thenReturn(collection);
-
-    Result result = rule.validate(context);
-    assertThat(result.isFailed()).isTrue();
-  }
-
-  private CIStatus createStatus(Status status) {
-    return new CIStatus("jenkins", "spaceship", "Spaceship", status, "http://hitchhiker.com");
+    CIStatusCollection resolved = resolver.resolve(context);
+    assertThat(resolved).isSameAs(collection);
   }
 
 }

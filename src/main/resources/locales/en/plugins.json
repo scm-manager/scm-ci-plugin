@@ -48,8 +48,23 @@
       "CIStatusAllSuccessRule": {
         "name": "All CI status successful",
         "description": "Check if all retrieved CI status messages are successful.",
-        "success": "All CI status messages are successful.",
-        "failed": "At least one CI status is not successful."
+        "success": "A sufficient number of CI status messages are successful.",
+        "failed": "At least one CI status is not successful.",
+        "obstacle": "At least one CI status is not successful."
+      },
+      "CIStatusXSuccessRule": {
+        "name": "X CI-Status messages",
+        "description": "Verify that at least {{ numberOfSuccessful }} CI-Status messages are successful.",
+        "success": "A sufficient number of CI-Status messages are successful.",
+        "failed": "Only {{ current }} of {{ expected }} required successful CI-Status messages present.",
+        "obstacle": "Not enough successful CI-Status messages available.",
+        "form": {
+          "numberOfSuccessful": {
+            "label": "Quantity",
+            "helpText": "Minimum number of successful CI-Status messages.",
+            "errorMessage": "The value must be bigger than 0."
+          }
+        }
       }
     }
   }
