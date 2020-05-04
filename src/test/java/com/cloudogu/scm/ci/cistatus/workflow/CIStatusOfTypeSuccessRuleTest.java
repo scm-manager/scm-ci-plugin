@@ -27,8 +27,7 @@ package com.cloudogu.scm.ci.cistatus.workflow;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.Status;
-import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.Configuration;
-import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.ErrorContext;
+import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.ErrorContext;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,13 +39,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CIStatusNamedSuccessRuleTest {
+class CIStatusOfTypeSuccessRuleTest {
 
   @InjectMocks
-  private CIStatusNamedSuccessRule rule;
+  private CIStatusOfTypeSuccessRule rule;
 
   @Mock
   private Context context;
@@ -56,30 +56,30 @@ class CIStatusNamedSuccessRuleTest {
 
   @Test
   void shouldMarshallAndUnmarshallConfiguration() {
-    Configuration configuration = new Configuration("jenkins", "build");
-    Configuration testedConfiguration = configuration; // TODO: perform test marshalling
+    CIStatusOfTypeSuccessRule.Configuration configuration = new CIStatusOfTypeSuccessRule.Configuration("jenkins");
+    CIStatusOfTypeSuccessRule.Configuration testedConfiguration = configuration; // TODO: perform test marshalling
     assertThat(testedConfiguration).isNotNull();
-    assertThat(testedConfiguration.getName()).isEqualTo(configuration.getName());
     assertThat(testedConfiguration.getType()).isEqualTo(configuration.getType());
   }
 
   @Test
   void shouldNotNullsInConfiguration() {
-    Configuration configuration = new Configuration(null, null);
+    CIStatusOfTypeSuccessRule.Configuration configuration = new CIStatusOfTypeSuccessRule.Configuration(null);
     // TODO: validate (expect failure)
   }
 
   @Test
   void shouldNotAllowEmptyStringsInConfiguration() {
-    Configuration configuration = new Configuration("   ", "   ");
+    CIStatusOfTypeSuccessRule.Configuration configuration = new CIStatusOfTypeSuccessRule.Configuration("      ");
     // TODO: validate (expect failure)
   }
 
   @Nested
   class TestValidation {
+
     @BeforeEach
     void configureRule() {
-      when(context.getConfiguration(Configuration.class)).thenReturn(new Configuration("jenkins", "build"));
+      when(context.getConfiguration(CIStatusOfTypeSuccessRule.Configuration.class)).thenReturn(new CIStatusOfTypeSuccessRule.Configuration("jenkins"));
     }
 
     @Test
@@ -92,18 +92,24 @@ class CIStatusNamedSuccessRuleTest {
       assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
       ErrorContext errorContext = (ErrorContext) result.getContext();
       assertThat(errorContext.getType()).isEqualTo("jenkins");
-      assertThat(errorContext.getName()).isEqualTo("build");
+      assertThat(errorContext.getName()).isNull();
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusMissing");
     }
 
     @Test
-    void shouldSucceedWhenCIStatusOfTypeAndNameIsSuccessful() {
+    void shouldSucceedWhenAllCIStatusOfTypeAreSuccessful() {
       CIStatusCollection collection = new CIStatusCollection();
+
       CIStatus status = new CIStatus();
       status.setType("jenkins");
-      status.setName("build");
       status.setStatus(Status.SUCCESS);
       collection.put(status);
+
+      CIStatus status2 = new CIStatus();
+      status2.setType("jenkins");
+      status2.setStatus(Status.SUCCESS);
+      collection.put(status2);
+
       when(statusResolver.resolve(context)).thenReturn(collection);
 
       Result result = rule.validate(context);
@@ -111,14 +117,25 @@ class CIStatusNamedSuccessRuleTest {
     }
 
     @Test
-    void shouldFailWhenCIStatusOfTypeAndNameIsNotSuccess() {
+    void shouldFailWhenAtLeastOneJobIsNotSuccessful() {
       CIStatusCollection collection = new CIStatusCollection();
 
-      CIStatus status = new CIStatus();
-      status.setType("jenkins");
-      status.setName("build");
-      status.setStatus(Status.PENDING);
-      collection.put(status);
+      CIStatus successStatus = new CIStatus();
+      successStatus.setType("jenkins");
+      successStatus.setStatus(Status.SUCCESS);
+      collection.put(successStatus);
+
+      CIStatus failureStatus = new CIStatus();
+      failureStatus.setType("jenkins");
+      failureStatus.setDisplayName("build");
+      failureStatus.setStatus(Status.FAILURE);
+      collection.put(failureStatus);
+
+      CIStatus pendingStatus = new CIStatus();
+      pendingStatus.setDisplayName("test");
+      pendingStatus.setType("jenkins");
+      pendingStatus.setStatus(Status.PENDING);
+      collection.put(pendingStatus);
 
       when(statusResolver.resolve(context)).thenReturn(collection);
 
@@ -126,52 +143,9 @@ class CIStatusNamedSuccessRuleTest {
       assertThat(result.isFailed()).isTrue();
       assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
       ErrorContext errorContext = (ErrorContext) result.getContext();
+      assertThat(errorContext.getType()).isEqualTo("jenkins");
+      assertTrue(errorContext.getName().equals("test") || errorContext.getName().equals("build"));
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusNotSuccessful");
-      assertThat(errorContext.getType()).isEqualTo("jenkins");
-      assertThat(errorContext.getName()).isEqualTo("build");
-
-    }
-
-    @Test
-    void shouldFailWhenNameDoesNotMatch() {
-      CIStatusCollection collection = new CIStatusCollection();
-
-      CIStatus status = new CIStatus();
-      status.setType("jenkins");
-      status.setName("test");
-      status.setStatus(Status.FAILURE);
-      collection.put(status);
-
-      when(statusResolver.resolve(context)).thenReturn(collection);
-
-      Result result = rule.validate(context);
-      assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
-      assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusMissing");
-      assertThat(errorContext.getType()).isEqualTo("jenkins");
-      assertThat(errorContext.getName()).isEqualTo("build");
-    }
-
-    @Test
-    void shouldFailWhenTypeDoesNotMatch() {
-      CIStatusCollection collection = new CIStatusCollection();
-
-      CIStatus status = new CIStatus();
-      status.setType("sonarqube");
-      status.setName("build");
-      status.setStatus(Status.FAILURE);
-      collection.put(status);
-
-      when(statusResolver.resolve(context)).thenReturn(collection);
-
-      Result result = rule.validate(context);
-      assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
-      assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusMissing");
-      assertThat(errorContext.getType()).isEqualTo("jenkins");
-      assertThat(errorContext.getName()).isEqualTo("build");
     }
   }
 }

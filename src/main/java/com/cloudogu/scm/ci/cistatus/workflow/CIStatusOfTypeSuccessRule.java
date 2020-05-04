@@ -47,12 +47,12 @@ import java.util.Optional;
 
 @Extension
 @Requires("scm-review-plugin")
-public class CIStatusNamedSuccessRule implements Rule {
+public class CIStatusOfTypeSuccessRule implements Rule {
 
   private final CIStatusResolver statusResolver;
 
   @Inject
-  public CIStatusNamedSuccessRule(CIStatusResolver statusResolver) {
+  public CIStatusOfTypeSuccessRule(CIStatusResolver statusResolver) {
     this.statusResolver = statusResolver;
   }
 
@@ -70,17 +70,17 @@ public class CIStatusNamedSuccessRule implements Rule {
   public Result validate(Context context) {
     Configuration configuration = context.getConfiguration(Configuration.class);
     CIStatusCollection ciStatuses = statusResolver.resolve(context);
+    boolean ciStatusFound = false;
     for (CIStatus status : ciStatuses) {
-      if (statusMatchesConfiguration(status, configuration)) {
-        return status.getStatus() == Status.SUCCESS ? success() : failed(new ErrorContext(configuration.getType(), configuration.getName(), "CiStatusNotSuccessful"));
+      if (Objects.equals(status.getType(), configuration.getType())) {
+        if (status.getStatus() != Status.SUCCESS) {
+          return failed(new ErrorContext(configuration.getType(), status.getDisplayName(), "CiStatusNotSuccessful"));
+        } else {
+          ciStatusFound = true;
+        }
       }
     }
-    return failed(new ErrorContext(configuration.getType(), configuration.getName(), "CiStatusMissing"));
-  }
-
-  private boolean statusMatchesConfiguration(CIStatus status, Configuration configuration) {
-    return Objects.equals(status.getType(), configuration.getType())
-      && Objects.equals(configuration.getName(), status.getName());
+    return ciStatusFound ? success() : failed(new ErrorContext(configuration.getType(), null, "CiStatusMissing"));
   }
 
   @Getter
@@ -99,7 +99,5 @@ public class CIStatusNamedSuccessRule implements Rule {
   public static class Configuration {
     @NotBlank
     private String type;
-    @NotBlank
-    private String name;
   }
 }
