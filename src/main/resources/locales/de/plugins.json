@@ -99,7 +99,7 @@
           "CiStatusMissing": "Keine Statusmeldungen vom Typ '{{ type }}' vorhanden."
         },
         "obstacle": {
-          "CiStatusNotSuccessful": "Nicht alle Statusmeldungen vom angebenen Typ sind erfolgreich.",
+          "CiStatusNotSuccessful": "Nicht alle Statusmeldungen vom angegebenen Typ sind erfolgreich.",
           "CiStatusMissing": "Keine Statusmeldungen vom angegebenen Typ vorhanden."
         },
         "form": {
