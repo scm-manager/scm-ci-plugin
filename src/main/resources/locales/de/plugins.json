@@ -45,67 +45,67 @@
   "workflow": {
     "rule": {
       "CIStatusAllSuccessRule": {
-        "name": "Alle CI-Status Meldungen erfolgreich.",
-        "description": "Stellt sicher, dass alle CI-Status Meldungen erfolgreich sind.",
-        "success": "Alle CI-Status Meldungen waren erfolgreich.",
-        "failed": "Mindestens eine CI-Status Meldung war nicht erfolgreich.",
-        "obstacle": "Mindestens eine CI-Status Meldung war nicht erfolgreich."
+        "name": "Alle CI-Status erfolgreich.",
+        "description": "Alle CI-Status sind erfolgreich.",
+        "success": "Alle CI-Status sind erfolgreich.",
+        "failed": "Mindestens ein CI-Status ist nicht erfolgreich.",
+        "obstacle": "Mindestens ein CI-Status ist nicht erfolgreich."
       },
       "CIStatusXSuccessRule": {
-        "name": "X CI-Status Meldungen",
-        "description": "Stellt sicher, dass {{ numberOfSuccessful }} CI-Status Meldungen erfolgreich sind.",
-        "success": "Ausreichend CI-Status Meldungen erfolgreich.",
-        "failed": "Nur {{ current }} von {{ expected }} erfolreichen CI-Status Meldungen vorhanden.",
-        "obstacle": "Nicht genug erfolgreiche CI-Status Meldungen vorhanden.",
+        "name": "Anzahl CI-Status",
+        "description": "Mindestens {{ numberOfSuccessful }} CI-Status sind erfolgreich.",
+        "success": "Ausreichend viele CI-Status sind erfolgreich.",
+        "failed": "Es sind nur {{ current }} von {{ expected }} erfolreiche CI-Status vorhanden.",
+        "obstacle": "Es sind nicht genug erfolgreiche CI-Status vorhanden.",
         "form": {
           "numberOfSuccessful": {
             "label": "Anzahl",
-            "helpText": "Anzahl erfolgreicher CI-Status Meldungen.",
+            "helpText": "Anzahl erfolgreicher CI-Status.",
             "errorMessage": "Die Anzahl muss größer 0 sein."
           }
         }
       },
       "CIStatusNamedSuccessRule": {
-        "name": "Benannte CI-Status Meldung erfolgreich",
-        "description": "Die CI-Status Meldung mit dem Namen '{{ name }}' vom typ '{{ type }}' muss erfolgreich sein.",
+        "name": "Benannte CI-Status erfolgreich",
+        "description": "Die CI-Status mit dem Namen '{{ name }}' vom Typ '{{ type }}' ist erfolgreich.",
         "success": "Der CI-Status {{ type }}:{{ name }} ist erfolgreich.",
         "failed": {
           "CiStatusNotSuccessful": "Der CI-Status {{ type }}:{{ name }} ist nicht erfolgreich.",
-          "CiStatusMissing": "Der CI-Status {{ type }}:{{ name }} wurde nicht gefunden."
+          "CiStatusMissing": "Der CI-Status {{ type }}:{{ name }} ist nicht vorhanden."
         },
         "obstacle": {
           "CiStatusNotSuccessful": "Der benannte CI-Status ist nicht erfolgreich.",
-          "CiStatusMissing": "Der benannte CI-Status wurde nicht vorhanden."
+          "CiStatusMissing": "Der benannte CI-Status ist nicht vorhanden."
         },
         "form": {
           "type": {
             "label": "Typ",
-            "helpText": "Der Typ der Statusmeldung (z.B. 'jenkins')",
+            "helpText": "Der Typ des CI-Status (z. B. 'jenkins')",
             "errorMessage": "Dieses Feld darf nicht leer sein."
           },
           "name": {
             "label": "Name",
-            "helpText": "Der Name der Statusmeldung (z.B. 'test' oder 'build')",
+            "helpText": "Der Name des CI-Status (z. B. 'test' oder 'build')",
             "errorMessage": "Dieses Feld darf nicht leer sein."
           }
         }
       },
       "CIStatusOfTypeSuccessRule": {
-        "name": "Statusmeldungen von Typ erfolgreich",
-        "description": "Alle Statusmeldungen vom Typ '{{ type }}' müssen erfolgreich sein.",
-        "success": "Alle Statusmeldungen vom Typ '{{ type }}' müssen sind erfolgreich.",
+        "name": "Alle CI-Status von Typ erfolgreich",
+        "description": "Alle CI-Status vom Typ '{{ type }}' sind erfolgreich.",
+        "success": "Alle CI-Status vom Typ '{{ type }}' sind erfolgreich.",
         "failed": {
-          "CiStatusNotSuccessful": "Nicht alle Statusmeldungen vom Typ '{{ type }}' sind erfolgreich. Der Status '{{ name }}' ist fehlgeschlagen.",
-          "CiStatusMissing": "Keine Statusmeldungen vom Typ '{{ type }}' vorhanden."
+          "CiStatusNotSuccessful": "Nicht alle CI-Status vom Typ '{{ type }}' sind erfolgreich.",
+          "CiStatusMissing": "Kein CI-Status vom Typ '{{ type }}' vorhanden."
         },
         "obstacle": {
-          "CiStatusNotSuccessful": "Nicht alle Statusmeldungen vom angegebenen Typ sind erfolgreich.",
-          "CiStatusMissing": "Keine Statusmeldungen vom angegebenen Typ vorhanden."
+          "CiStatusNotSuccessful": "Nicht alle CI-Status vom angegebenen Typ sind erfolgreich.",
+          "CiStatusMissing": "Kein CI-Status vom angegebenen Typ vorhanden."
         },
         "form": {
           "type": {
             "label": "Typ",
-            "helpText": "Der Typ der Statusmeldung (z.B. 'jenkins')",
+            "helpText": "Der Typ des CI-Status (z. B. 'jenkins')",
             "errorMessage": "Dieses Feld darf nicht leer sein."
           }
         }

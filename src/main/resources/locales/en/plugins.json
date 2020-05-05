@@ -47,66 +47,66 @@
     "rule": {
       "CIStatusAllSuccessRule": {
         "name": "All CI status successful",
-        "description": "Check if all retrieved CI status messages are successful.",
-        "success": "A sufficient number of CI status messages are successful.",
+        "description": "Every CI status is successful.",
+        "success": "Every CI status is successful.",
         "failed": "At least one CI status is not successful.",
         "obstacle": "At least one CI status is not successful."
       },
       "CIStatusXSuccessRule": {
-        "name": "X CI-Status messages",
-        "description": "Verify that at least {{ numberOfSuccessful }} CI-Status messages are successful.",
-        "success": "A sufficient number of CI-Status messages are successful.",
-        "failed": "Only {{ current }} of {{ expected }} required successful CI-Status messages present.",
-        "obstacle": "Not enough successful CI-Status messages available.",
+        "name": "Number of CI status successful",
+        "description": "At least {{ numberOfSuccessful }} CI status are successful.",
+        "success": "A sufficient number of CI status are successful.",
+        "failed": "Only {{ current }} of {{ expected }} required successful CI status present.",
+        "obstacle": "Not enough successful CI status available.",
         "form": {
           "numberOfSuccessful": {
             "label": "Quantity",
-            "helpText": "Minimum number of successful CI-Status messages.",
+            "helpText": "Minimum number of successful CI status.",
             "errorMessage": "The value must be bigger than 0."
           }
         }
       },
       "CIStatusNamedSuccessRule": {
-        "name": "Named CI-Status successful",
-        "description": "The CI-Status with name '{{ name }}' of type '{{ type }}' must be successful.",
-        "success": "The CI-Status {{ type }}:{{ name }} is successful.",
+        "name": "Named CI status successful",
+        "description": "The CI status with name '{{ name }}' of type '{{ type }}' is successful.",
+        "success": "The CI status {{ type }}:{{ name }} is successful.",
         "failed": {
-          "CiStatusNotSuccessful": "The CI-Status {{ type }}:{{ name }} is not successful.",
-          "CiStatusMissing": "The CI-Status {{ type }}:{{ name }} is missing."
+          "CiStatusNotSuccessful": "The CI status {{ type }}:{{ name }} is not successful.",
+          "CiStatusMissing": "The CI status {{ type }}:{{ name }} is missing."
         },
         "obstacle": {
-          "CiStatusNotSuccessful": "The named CI-Status is not successful.",
-          "CiStatusMissing": "The named CI-Status is not available."
+          "CiStatusNotSuccessful": "The named CI status is not successful.",
+          "CiStatusMissing": "The named CI status is not available."
         },
         "form": {
           "type": {
             "label": "Type",
-            "helpText": "The type of the CI-Status (e.g. 'jenkins')",
+            "helpText": "The type of the CI status (e.g. 'jenkins')",
             "errorMessage": "This field must not be blank."
           },
           "name": {
             "label": "Name",
-            "helpText": "The name of the CI-Status (e.g. 'test' or 'build')",
+            "helpText": "The name of the CI status (e.g. 'test' or 'build')",
             "errorMessage": "This field must not be blank."
           }
         }
       },
       "CIStatusOfTypeSuccessRule": {
-        "name": "All CI-Status of type successful",
-        "description": "All CI-Status messages of type '{{ type }}' must be successful.",
-        "success": "All CI-Status messages of type '{{ type }}' are successful.",
+        "name": "All CI status of type successful",
+        "description": "Every CI status of type '{{ type }}' is successful.",
+        "success": "Every CI status of type '{{ type }}' is successful.",
         "failed": {
-          "CiStatusNotSuccessful": "Not all CI-Status messages of type '{{ type }}' are successful. The status '{{ name }}' failed.",
-          "CiStatusMissing": "No CI-Status messages of type '{{ type }}' present."
+          "CiStatusNotSuccessful": "Not all CI status of type '{{ type }}' are successful.",
+          "CiStatusMissing": "No CI status messages of type '{{ type }}' is present."
         },
         "obstacle": {
-          "CiStatusNotSuccessful": "Not all CI-Status messages of the given type are successful.",
-          "CiStatusMissing": "No CI-Status messages of the given type present."
+          "CiStatusNotSuccessful": "Not all CI status of the given type are successful.",
+          "CiStatusMissing": "No CI status messages of the given type is present."
         },
         "form": {
           "type": {
             "label": "Type",
-            "helpText": "The type of the CI-Status (e.g. 'jenkins')",
+            "helpText": "The type of the CI status (e.g. 'jenkins')",
             "errorMessage": "This field must not be blank."
           }
         }
