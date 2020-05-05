@@ -63,29 +63,29 @@ public class CIStatusNamedSuccessRule implements Rule {
 
   @Override
   public Optional<Class<?>> getConfigurationType() {
-    return Optional.of(Configuration.class);
+    return Optional.of(CIStatusNamedSuccessRuleConfiguration.class);
   }
 
   @Override
   public Result validate(Context context) {
-    Configuration configuration = context.getConfiguration(Configuration.class);
+    CIStatusNamedSuccessRuleConfiguration configuration = context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class);
     CIStatusCollection ciStatuses = statusResolver.resolve(context);
     for (CIStatus status : ciStatuses) {
       if (statusMatchesConfiguration(status, configuration)) {
-        return status.getStatus() == Status.SUCCESS ? success() : failed(new ErrorContext(configuration.getType(), configuration.getName(), "CiStatusNotSuccessful"));
+        return status.getStatus() == Status.SUCCESS ? success() : failed(new CIStatusNamedSuccessRuleErrorContext(configuration.getType(), configuration.getName(), "CiStatusNotSuccessful"));
       }
     }
-    return failed(new ErrorContext(configuration.getType(), configuration.getName(), "CiStatusMissing"));
+    return failed(new CIStatusNamedSuccessRuleErrorContext(configuration.getType(), configuration.getName(), "CiStatusMissing"));
   }
 
-  private boolean statusMatchesConfiguration(CIStatus status, Configuration configuration) {
+  private boolean statusMatchesConfiguration(CIStatus status, CIStatusNamedSuccessRuleConfiguration configuration) {
     return Objects.equals(status.getType(), configuration.getType())
       && Objects.equals(configuration.getName(), status.getName());
   }
 
   @Getter
   @AllArgsConstructor
-  public static class ErrorContext implements ResultContextWithTranslationCode {
+  public static class CIStatusNamedSuccessRuleErrorContext implements ResultContextWithTranslationCode {
     private final String type;
     private final String name;
     private final String translationCode;
@@ -96,7 +96,7 @@ public class CIStatusNamedSuccessRule implements Rule {
   @NoArgsConstructor
   @AllArgsConstructor
   @XmlAccessorType(XmlAccessType.FIELD)
-  public static class Configuration {
+  public static class CIStatusNamedSuccessRuleConfiguration {
     @NotBlank
     private String type;
     @NotBlank

@@ -63,29 +63,29 @@ public class CIStatusOfTypeSuccessRule implements Rule {
 
   @Override
   public Optional<Class<?>> getConfigurationType() {
-    return Optional.of(Configuration.class);
+    return Optional.of(CIStatusNamedSuccessRuleConfiguration.class);
   }
 
   @Override
   public Result validate(Context context) {
-    Configuration configuration = context.getConfiguration(Configuration.class);
+    CIStatusNamedSuccessRuleConfiguration configuration = context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class);
     CIStatusCollection ciStatuses = statusResolver.resolve(context);
     boolean ciStatusFound = false;
     for (CIStatus status : ciStatuses) {
       if (Objects.equals(status.getType(), configuration.getType())) {
         if (status.getStatus() != Status.SUCCESS) {
-          return failed(new ErrorContext(configuration.getType(), status.getDisplayName(), "CiStatusNotSuccessful"));
+          return failed(new CIStatusNamedSuccessRuleErrorContext(configuration.getType(), status.getDisplayName(), "CiStatusNotSuccessful"));
         } else {
           ciStatusFound = true;
         }
       }
     }
-    return ciStatusFound ? success() : failed(new ErrorContext(configuration.getType(), null, "CiStatusMissing"));
+    return ciStatusFound ? success() : failed(new CIStatusNamedSuccessRuleErrorContext(configuration.getType(), null, "CiStatusMissing"));
   }
 
   @Getter
   @AllArgsConstructor
-  public static class ErrorContext implements ResultContextWithTranslationCode {
+  public static class CIStatusNamedSuccessRuleErrorContext implements ResultContextWithTranslationCode {
     private final String type;
     private final String name;
     private final String translationCode;
@@ -96,7 +96,7 @@ public class CIStatusOfTypeSuccessRule implements Rule {
   @NoArgsConstructor
   @AllArgsConstructor
   @XmlAccessorType(XmlAccessType.FIELD)
-  public static class Configuration {
+  public static class CIStatusNamedSuccessRuleConfiguration {
     @NotBlank
     private String type;
   }

@@ -27,8 +27,8 @@ package com.cloudogu.scm.ci.cistatus.workflow;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.Status;
-import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.Configuration;
-import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.ErrorContext;
+import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.CIStatusNamedSuccessRuleConfiguration;
+import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.CIStatusNamedSuccessRuleErrorContext;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,22 +63,22 @@ class CIStatusOfTypeSuccessRuleTest {
 
   @Test
   void shouldMarshallAndUnmarshallConfiguration() throws JsonProcessingException {
-    Configuration configuration = new Configuration("jenkins");
-    Configuration testedConfiguration = toAndFromJsonAndXml(Configuration.class, configuration);
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration("jenkins");
+    CIStatusNamedSuccessRuleConfiguration testedConfiguration = toAndFromJsonAndXml(CIStatusNamedSuccessRuleConfiguration.class, configuration);
     assertThat(testedConfiguration).isNotNull();
     assertThat(testedConfiguration.getType()).isEqualTo(configuration.getType());
   }
 
   @Test
   void shouldNotNullsInConfiguration() {
-    Configuration configuration = new Configuration(null);
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration(null);
 
     assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Test
   void shouldNotAllowEmptyStringsInConfiguration() {
-    Configuration configuration = new Configuration("      ");
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration("      ");
 
     assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
@@ -88,7 +88,7 @@ class CIStatusOfTypeSuccessRuleTest {
 
     @BeforeEach
     void configureRule() {
-      when(context.getConfiguration(Configuration.class)).thenReturn(new Configuration("jenkins"));
+      when(context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class)).thenReturn(new CIStatusNamedSuccessRuleConfiguration("jenkins"));
     }
 
     @Test
@@ -98,8 +98,8 @@ class CIStatusOfTypeSuccessRuleTest {
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
+      assertThat(result.getContext()).isInstanceOf(CIStatusNamedSuccessRuleErrorContext.class);
+      CIStatusNamedSuccessRuleErrorContext errorContext = (CIStatusNamedSuccessRuleErrorContext) result.getContext();
       assertThat(errorContext.getType()).isEqualTo("jenkins");
       assertThat(errorContext.getName()).isNull();
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusMissing");
@@ -150,8 +150,8 @@ class CIStatusOfTypeSuccessRuleTest {
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
+      assertThat(result.getContext()).isInstanceOf(CIStatusNamedSuccessRuleErrorContext.class);
+      CIStatusNamedSuccessRuleErrorContext errorContext = (CIStatusNamedSuccessRuleErrorContext) result.getContext();
       assertThat(errorContext.getType()).isEqualTo("jenkins");
       assertTrue(errorContext.getName().equals("test") || errorContext.getName().equals("build"));
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusNotSuccessful");

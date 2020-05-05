@@ -27,8 +27,8 @@ package com.cloudogu.scm.ci.cistatus.workflow;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.Status;
-import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.Configuration;
-import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.ErrorContext;
+import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.CIStatusNamedSuccessRuleConfiguration;
+import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.CIStatusNamedSuccessRuleErrorContext;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,8 +62,8 @@ class CIStatusNamedSuccessRuleTest {
 
   @Test
   void shouldMarshallAndUnmarshallConfiguration() throws JsonProcessingException {
-    Configuration configuration = new Configuration("jenkins", "build");
-    Configuration testedConfiguration = toAndFromJsonAndXml(Configuration.class, configuration);
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration("jenkins", "build");
+    CIStatusNamedSuccessRuleConfiguration testedConfiguration = toAndFromJsonAndXml(CIStatusNamedSuccessRuleConfiguration.class, configuration);
 
     assertThat(testedConfiguration).isNotNull();
     assertThat(testedConfiguration.getName()).isEqualTo(configuration.getName());
@@ -72,28 +72,28 @@ class CIStatusNamedSuccessRuleTest {
 
   @Test
   void shouldNotNullsInTypeConfiguration() {
-    Configuration configuration = new Configuration(null, "build");
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration(null, "build");
 
     assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Test
   void shouldNotNullsInNameConfiguration() {
-    Configuration configuration = new Configuration("Jenkins", null);
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration("Jenkins", null);
 
     assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Test
   void shouldNotAllowEmptyStringsInTypeConfiguration() {
-    Configuration configuration = new Configuration("   ", "build");
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration("   ", "build");
 
     assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Test
   void shouldNotAllowEmptyStringsInNameConfiguration() {
-    Configuration configuration = new Configuration("Jenkins", "   ");
+    CIStatusNamedSuccessRuleConfiguration configuration = new CIStatusNamedSuccessRuleConfiguration("Jenkins", "   ");
 
     assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
@@ -102,7 +102,7 @@ class CIStatusNamedSuccessRuleTest {
   class TestValidation {
     @BeforeEach
     void configureRule() {
-      when(context.getConfiguration(Configuration.class)).thenReturn(new Configuration("jenkins", "build"));
+      when(context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class)).thenReturn(new CIStatusNamedSuccessRuleConfiguration("jenkins", "build"));
     }
 
     @Test
@@ -112,8 +112,8 @@ class CIStatusNamedSuccessRuleTest {
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
+      assertThat(result.getContext()).isInstanceOf(CIStatusNamedSuccessRuleErrorContext.class);
+      CIStatusNamedSuccessRuleErrorContext errorContext = (CIStatusNamedSuccessRuleErrorContext) result.getContext();
       assertThat(errorContext.getType()).isEqualTo("jenkins");
       assertThat(errorContext.getName()).isEqualTo("build");
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusMissing");
@@ -147,8 +147,8 @@ class CIStatusNamedSuccessRuleTest {
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
+      assertThat(result.getContext()).isInstanceOf(CIStatusNamedSuccessRuleErrorContext.class);
+      CIStatusNamedSuccessRuleErrorContext errorContext = (CIStatusNamedSuccessRuleErrorContext) result.getContext();
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusNotSuccessful");
       assertThat(errorContext.getType()).isEqualTo("jenkins");
       assertThat(errorContext.getName()).isEqualTo("build");
@@ -169,8 +169,8 @@ class CIStatusNamedSuccessRuleTest {
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
+      assertThat(result.getContext()).isInstanceOf(CIStatusNamedSuccessRuleErrorContext.class);
+      CIStatusNamedSuccessRuleErrorContext errorContext = (CIStatusNamedSuccessRuleErrorContext) result.getContext();
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusMissing");
       assertThat(errorContext.getType()).isEqualTo("jenkins");
       assertThat(errorContext.getName()).isEqualTo("build");
@@ -190,8 +190,8 @@ class CIStatusNamedSuccessRuleTest {
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
-      assertThat(result.getContext()).isInstanceOf(ErrorContext.class);
-      ErrorContext errorContext = (ErrorContext) result.getContext();
+      assertThat(result.getContext()).isInstanceOf(CIStatusNamedSuccessRuleErrorContext.class);
+      CIStatusNamedSuccessRuleErrorContext errorContext = (CIStatusNamedSuccessRuleErrorContext) result.getContext();
       assertThat(errorContext.getTranslationCode()).isEqualTo("CiStatusMissing");
       assertThat(errorContext.getType()).isEqualTo("jenkins");
       assertThat(errorContext.getName()).isEqualTo("build");
