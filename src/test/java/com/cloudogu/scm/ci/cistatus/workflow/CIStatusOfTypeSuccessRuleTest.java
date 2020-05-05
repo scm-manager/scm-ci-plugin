@@ -27,9 +27,11 @@ package com.cloudogu.scm.ci.cistatus.workflow;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.Status;
+import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.Configuration;
 import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.ErrorContext;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,9 +40,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static sonia.scm.store.SerializationTestUtil.toAndFromJsonAndXml;
+import static sonia.scm.web.api.DtoValidator.validate;
 
 @ExtendWith(MockitoExtension.class)
 class CIStatusOfTypeSuccessRuleTest {
@@ -55,23 +62,25 @@ class CIStatusOfTypeSuccessRuleTest {
   private CIStatusResolver statusResolver;
 
   @Test
-  void shouldMarshallAndUnmarshallConfiguration() {
-    CIStatusOfTypeSuccessRule.Configuration configuration = new CIStatusOfTypeSuccessRule.Configuration("jenkins");
-    CIStatusOfTypeSuccessRule.Configuration testedConfiguration = configuration; // TODO: perform test marshalling
+  void shouldMarshallAndUnmarshallConfiguration() throws JsonProcessingException {
+    Configuration configuration = new Configuration("jenkins");
+    Configuration testedConfiguration = toAndFromJsonAndXml(Configuration.class, configuration);
     assertThat(testedConfiguration).isNotNull();
     assertThat(testedConfiguration.getType()).isEqualTo(configuration.getType());
   }
 
   @Test
   void shouldNotNullsInConfiguration() {
-    CIStatusOfTypeSuccessRule.Configuration configuration = new CIStatusOfTypeSuccessRule.Configuration(null);
-    // TODO: validate (expect failure)
+    Configuration configuration = new Configuration(null);
+
+    assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Test
   void shouldNotAllowEmptyStringsInConfiguration() {
-    CIStatusOfTypeSuccessRule.Configuration configuration = new CIStatusOfTypeSuccessRule.Configuration("      ");
-    // TODO: validate (expect failure)
+    Configuration configuration = new Configuration("      ");
+
+    assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Nested
@@ -79,7 +88,7 @@ class CIStatusOfTypeSuccessRuleTest {
 
     @BeforeEach
     void configureRule() {
-      when(context.getConfiguration(CIStatusOfTypeSuccessRule.Configuration.class)).thenReturn(new CIStatusOfTypeSuccessRule.Configuration("jenkins"));
+      when(context.getConfiguration(Configuration.class)).thenReturn(new Configuration("jenkins"));
     }
 
     @Test

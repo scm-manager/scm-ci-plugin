@@ -31,6 +31,7 @@ import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.Configurat
 import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.ErrorContext;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static sonia.scm.store.SerializationTestUtil.toAndFromJsonAndXml;
+import static sonia.scm.web.api.DtoValidator.validate;
 
 @ExtendWith(MockitoExtension.class)
 class CIStatusNamedSuccessRuleTest {
@@ -55,9 +61,9 @@ class CIStatusNamedSuccessRuleTest {
   private CIStatusResolver statusResolver;
 
   @Test
-  void shouldMarshallAndUnmarshallConfiguration() {
+  void shouldMarshallAndUnmarshallConfiguration() throws JsonProcessingException {
     Configuration configuration = new Configuration("jenkins", "build");
-    Configuration testedConfiguration = configuration; // TODO: perform test marshalling
+    Configuration testedConfiguration = toAndFromJsonAndXml(Configuration.class, configuration);
 
     assertThat(testedConfiguration).isNotNull();
     assertThat(testedConfiguration.getName()).isEqualTo(configuration.getName());
@@ -65,16 +71,31 @@ class CIStatusNamedSuccessRuleTest {
   }
 
   @Test
-  void shouldNotNullsInConfiguration() {
-    Configuration configuration = new Configuration(null, null);
-    // TODO: validate (expect failure)
+  void shouldNotNullsInTypeConfiguration() {
+    Configuration configuration = new Configuration(null, "build");
 
+    assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Test
-  void shouldNotAllowEmptyStringsInConfiguration() {
-    Configuration configuration = new Configuration("   ", "   ");
-    // TODO: validate (expect failure)
+  void shouldNotNullsInNameConfiguration() {
+    Configuration configuration = new Configuration("Jenkins", null);
+
+    assertThrows(ConstraintViolationException.class, () -> validate(configuration));
+  }
+
+  @Test
+  void shouldNotAllowEmptyStringsInTypeConfiguration() {
+    Configuration configuration = new Configuration("   ", "build");
+
+    assertThrows(ConstraintViolationException.class, () -> validate(configuration));
+  }
+
+  @Test
+  void shouldNotAllowEmptyStringsInNameConfiguration() {
+    Configuration configuration = new Configuration("Jenkins", "   ");
+
+    assertThrows(ConstraintViolationException.class, () -> validate(configuration));
   }
 
   @Nested
