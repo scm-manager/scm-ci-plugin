@@ -31,6 +31,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -39,17 +40,14 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @SuppressWarnings("squid:S2637") // constraints are used for input validation, only
 public class CIStatusDto extends HalRepresentation {
-  @NotNull
-  @Size(min = 1)
+  @NotBlank
   private String name;
   private String displayName;
-  @NotNull
-  @Size(min = 1)
+  @NotBlank
   private String type;
   @NotNull
   private Status status;
-  @NotNull
-  @Size(min = 1)
+  @NotBlank
   private String url;
 
   public CIStatusDto(Links links) {
