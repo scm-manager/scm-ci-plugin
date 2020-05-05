@@ -74,10 +74,7 @@
           "CiStatusNotSuccessful": "The CI status {{ type }}:{{ name }} is not successful.",
           "CiStatusMissing": "The CI status {{ type }}:{{ name }} is missing."
         },
-        "obstacle": {
-          "CiStatusNotSuccessful": "The named CI status is not successful.",
-          "CiStatusMissing": "The named CI status is not available."
-        },
+        "obstacle": "The named CI status is not successful or not available.",
         "form": {
           "type": {
             "label": "Type",
@@ -99,10 +96,7 @@
           "CiStatusNotSuccessful": "Not all CI status of type '{{ type }}' are successful.",
           "CiStatusMissing": "No CI status messages of type '{{ type }}' is present."
         },
-        "obstacle": {
-          "CiStatusNotSuccessful": "Not all CI status of the given type are successful.",
-          "CiStatusMissing": "No CI status messages of the given type is present."
-        },
+        "obstacle": "CI status of the given type are missing or not all successful.",
         "form": {
           "type": {
             "label": "Type",

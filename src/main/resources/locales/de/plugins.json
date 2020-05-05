@@ -61,7 +61,7 @@
           "numberOfSuccessful": {
             "label": "Anzahl",
             "helpText": "Anzahl erfolgreicher CI-Status.",
-            "errorMessage": "Die Anzahl muss größer 0 sein."
+            "errorMessage": "Die Anzahl muss größer als 0 sein."
           }
         }
       },
@@ -73,10 +73,7 @@
           "CiStatusNotSuccessful": "Der CI-Status {{ type }}:{{ name }} ist nicht erfolgreich.",
           "CiStatusMissing": "Der CI-Status {{ type }}:{{ name }} ist nicht vorhanden."
         },
-        "obstacle": {
-          "CiStatusNotSuccessful": "Der benannte CI-Status ist nicht erfolgreich.",
-          "CiStatusMissing": "Der benannte CI-Status ist nicht vorhanden."
-        },
+        "obstacle": "Der benannte CI-Status ist nicht erfolgreich oder nicht vorhanden.",
         "form": {
           "type": {
             "label": "Typ",
@@ -98,10 +95,7 @@
           "CiStatusNotSuccessful": "Nicht alle CI-Status vom Typ '{{ type }}' sind erfolgreich.",
           "CiStatusMissing": "Kein CI-Status vom Typ '{{ type }}' vorhanden."
         },
-        "obstacle": {
-          "CiStatusNotSuccessful": "Nicht alle CI-Status vom angegebenen Typ sind erfolgreich.",
-          "CiStatusMissing": "Kein CI-Status vom angegebenen Typ vorhanden."
-        },
+        "obstacle": "Kein CI-Status vom angegebenen Typ vorhanden oder nicht alle erfolgreich.",
         "form": {
           "type": {
             "label": "Typ",
