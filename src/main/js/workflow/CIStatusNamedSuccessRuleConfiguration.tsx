@@ -39,16 +39,19 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
   const [t] = useTranslation("plugins");
   const [typeOfSuccessful, setTypeOfSuccessful] = useState<string>();
   const [nameOfSuccessful, setNameOfSuccessful] = useState<string>();
-  const [validationError, setValidationError] = useState(false);
+  const [validationError, setValidationError] = useState({
+    name: false,
+    type: false
+  });
 
   const onTypeChange = (val: string) => {
     setTypeOfSuccessful(val);
     const trimmedVal = val?.trim();
     if (trimmedVal && trimmedVal.length > 0) {
-      setValidationError(false);
+      setValidationError({type: false, name: validationError.name});
       configurationChanged({type: trimmedVal, name: nameOfSuccessful}, true);
     } else {
-      setValidationError(true);
+      setValidationError({type: true, name: validationError.name});
       configurationChanged({type: undefined, name: undefined}, false);
     }
   };
@@ -57,10 +60,10 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
     setNameOfSuccessful(val);
     const trimmedVal = val?.trim();
     if (trimmedVal && trimmedVal.length > 0) {
-      setValidationError(false);
+      setValidationError({type: validationError.type, name: false});
       configurationChanged({name: trimmedVal, type: typeOfSuccessful}, true);
     } else {
-      setValidationError(true);
+      setValidationError({type: validationError.type, name: true});
       configurationChanged({type: undefined, name: undefined}, false);
     }
   };
@@ -74,7 +77,7 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
         value={typeOfSuccessful}
         label={t("workflow.rule.CIStatusNamedSuccessRule.form.type.label")}
         helpText={t("workflow.rule.CIStatusNamedSuccessRule.form.type.helpText")}
-        validationError={validationError}
+        validationError={validationError.type}
         errorMessage={t("workflow.rule.CIStatusNamedSuccessRule.form.type.errorMessage")}
         autofocus={true}
         onChange={onTypeChange}
@@ -84,7 +87,7 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
         value={nameOfSuccessful}
         label={t("workflow.rule.CIStatusNamedSuccessRule.form.name.label")}
         helpText={t("workflow.rule.CIStatusNamedSuccessRule.form.name.helpText")}
-        validationError={validationError}
+        validationError={validationError.name}
         errorMessage={t("workflow.rule.CIStatusNamedSuccessRule.form.name.errorMessage")}
         onChange={onNameChange}
       />
