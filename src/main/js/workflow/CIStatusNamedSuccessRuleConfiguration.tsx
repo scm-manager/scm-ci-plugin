@@ -86,7 +86,6 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
         helpText={t("workflow.rule.CIStatusNamedSuccessRule.form.name.helpText")}
         validationError={validationError}
         errorMessage={t("workflow.rule.CIStatusNamedSuccessRule.form.name.errorMessage")}
-        autofocus={true}
         onChange={onNameChange}
       />
     </>
