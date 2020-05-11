@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ci.cistatus.service;
 
+import com.cloudogu.scm.ci.cistatus.InvalidStoreException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -143,6 +144,15 @@ class CIStatusServiceTest {
 
       assertThat(resultWithRepo1.get("test", "name")).isSameAs(ciStatus1);
       assertThat(resultWithRepo2.get("test2", "name2")).isSameAs(ciStatus2);
+    }
+
+
+    @Test
+    void shouldThrowValidationExceptionIfStoreNameInvalid() {
+      Repository repository = createHeartOfGold();
+      repository.setId("42");
+
+      assertThrows(InvalidStoreException.class, () -> ciStatusService.get("|x|", repository, "1234"));
     }
 
   }

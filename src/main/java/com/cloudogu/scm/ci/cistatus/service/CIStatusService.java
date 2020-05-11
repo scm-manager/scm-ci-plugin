@@ -24,6 +24,7 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
 import com.cloudogu.scm.ci.PermissionCheck;
+import com.cloudogu.scm.ci.cistatus.InvalidStoreException;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
@@ -55,6 +56,9 @@ public class CIStatusService {
   }
 
   private DataStore<CIStatusCollection> getStore(String storename, Repository repository) {
+    if (!StoreNameValidator.validate(storename)) {
+      throw new InvalidStoreException("store name is not valid");
+    }
     return dataStoreFactory.withType(CIStatusCollection.class).withName(storename).forRepository(repository).build();
   }
 }
