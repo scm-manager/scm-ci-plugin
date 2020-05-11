@@ -36,6 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +64,7 @@ class CIStatusResolverTest {
     CIStatusCollection collection = new CIStatusCollection();
 
     when(sourceRevisionResolver.resolve(repository, "feature/spaceship")).thenReturn("42");
-    when(ciStatusService.get(repository, "42")).thenReturn(collection);
+    when(ciStatusService.get(CHANGESET_STORE_NAME,repository, "42")).thenReturn(collection);
 
     when(context.getRepository()).thenReturn(repository);
     when(context.getPullRequest()).thenReturn(pullRequest);

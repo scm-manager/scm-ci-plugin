@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import java.util.stream.Collectors;
 
 import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
 
 @Extension
 @Enrich(Changeset.class)
@@ -60,7 +61,7 @@ public class ChangesetStatusEnricher implements HalEnricher {
     if (mayRead(repository)) {
       appender.appendLink("ciStatus", pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), changeset.getId()));
       appender.appendEmbedded("ciStatus",
-        ciStatusService.get(repository, changeset.getId())
+        ciStatusService.get(CHANGESET_STORE_NAME,repository, changeset.getId())
           .stream()
           .map(ciStatus -> mapper.map(repository, changeset.getId(), ciStatus))
           .collect(Collectors.toList()));

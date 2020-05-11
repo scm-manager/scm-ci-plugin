@@ -31,6 +31,8 @@ import sonia.scm.protocolcommand.ScmCommandProtocol;
 
 import javax.inject.Inject;
 
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+
 public class CIStatusCommandProtocol implements ScmCommandProtocol {
 
   private final CIStatusService service;
@@ -45,7 +47,7 @@ public class CIStatusCommandProtocol implements ScmCommandProtocol {
   @Override
   public void handle(CommandContext context, RepositoryContext repositoryContext) {
       CIStatus ciStatus = unmarshaller.unmarshal(context.getInputStream());
-      service.put(repositoryContext.getRepository(), extractRevision(context), ciStatus);
+      service.put(CHANGESET_STORE_NAME, repositoryContext.getRepository(), extractRevision(context), ciStatus);
   }
 
   private String extractRevision(CommandContext context) {

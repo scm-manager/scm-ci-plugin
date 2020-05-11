@@ -39,6 +39,7 @@ import sonia.scm.repository.Repository;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
 import static de.otto.edison.hal.Links.emptyLinks;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,7 +81,7 @@ class CIStatusResourceTest {
     CIStatusDto dtoTwo = new CIStatusDto(emptyLinks());
     doReturn(dtoTwo).when(mapper).map(repository, changesetId, ciStatusTwo);
 
-    when(ciStatusService.get(repository, changesetId)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId)).thenReturn(ciStatusCollection);
 
     CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
 
@@ -101,7 +102,7 @@ class CIStatusResourceTest {
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
     doReturn(dtoOne).when(mapper).map(repository, changesetId, ciStatusOne);
 
-    when(ciStatusService.get(repository, changesetId)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId)).thenReturn(ciStatusCollection);
 
     CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
     CIStatusDto ciStatus = ciStatusResource.get(type, ciName);
@@ -127,7 +128,7 @@ class CIStatusResourceTest {
     Response response = ciStatusResource.put(type, ciName, dtoOne);
 
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
-    verify(ciStatusService).put(repository, changesetId, ciStatusOne);
+    verify(ciStatusService).put(CHANGESET_STORE_NAME, repository, changesetId, ciStatusOne);
   }
 
   @Test

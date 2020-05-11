@@ -32,6 +32,8 @@ import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
 
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+
 public class CIStatusResolver {
 
   private final CIStatusService ciStatusService;
@@ -47,7 +49,7 @@ public class CIStatusResolver {
     Repository repository = context.getRepository();
     PullRequest pullRequest = context.getPullRequest();
     String sourceRevision = sourceRevisionResolver.resolve(repository, pullRequest.getSource());
-    return ciStatusService.get(repository, sourceRevision);
+    return ciStatusService.get(CHANGESET_STORE_NAME, repository, sourceRevision);
   }
 
 }

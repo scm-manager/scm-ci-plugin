@@ -50,6 +50,7 @@ import javax.ws.rs.core.Response;
 public class CIStatusResource {
 
   private static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";
+  public static final String CHANGESET_STORE_NAME = "changesetCIStatus";
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
@@ -103,7 +104,7 @@ public class CIStatusResource {
     )
   )
   public HalRepresentation getAll() {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
+    CIStatusCollection ciStatusCollection = ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId);
     return collectionDtoMapper.map(ciStatusCollection.stream(), repository, changesetId);
   }
 
@@ -136,7 +137,7 @@ public class CIStatusResource {
     )
   )
   public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
+    CIStatusCollection ciStatusCollection = ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId);
     return mapper.map(repository, changesetId, ciStatusCollection.get(type, ciName));
   }
 
@@ -166,7 +167,7 @@ public class CIStatusResource {
         ciStatusDto.getName() + ":" + ciStatusDto.getType()), "changing identifier attributes is not allowed");
     }
     CIStatus ciStatus = mapper.map(ciStatusDto);
-    ciStatusService.put(repository, changesetId, ciStatus);
+    ciStatusService.put(CHANGESET_STORE_NAME, repository, changesetId, ciStatus);
 
     return Response.noContent().build();
   }

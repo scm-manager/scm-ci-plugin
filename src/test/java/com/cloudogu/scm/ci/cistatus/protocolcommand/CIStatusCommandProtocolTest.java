@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
@@ -68,7 +69,7 @@ public class CIStatusCommandProtocolTest {
     commandProtocol.handle(commandContext, repositoryContext);
 
     CIStatus ciStatus = new CIStatus("jenkins", "scm-plugin", "scm-plugin", Status.SUCCESS, "http://localhost:8080/jenkins/job/scm-plugin/11/");
-    verify(service).put(repositoryContext.getRepository(), "1a2b3c4d5e6f", ciStatus);
+    verify(service).put(CHANGESET_STORE_NAME, repositoryContext.getRepository(), "1a2b3c4d5e6f", ciStatus);
   }
 
   @Test

@@ -41,20 +41,20 @@ public class CIStatusService {
     this.dataStoreFactory = dataStoreFactory;
   }
 
-  public void put(Repository repository, String changesetId, CIStatus ciStatus) {
+  public void put(String storename, Repository repository, String changesetId, CIStatus ciStatus) {
     PermissionCheck.checkWrite(repository);
-    CIStatusCollection ciStatusCollection = get(repository, changesetId);
+    CIStatusCollection ciStatusCollection = get(storename, repository, changesetId);
     ciStatusCollection.put(ciStatus);
-    getStore(repository).put(changesetId, ciStatusCollection);
+    getStore(storename, repository).put(changesetId, ciStatusCollection);
   }
 
-  public CIStatusCollection get(Repository repository, String changesetId) {
+  public CIStatusCollection get(String storename, Repository repository, String changesetId) {
     PermissionCheck.checkRead(repository);
-    CIStatusCollection collection = getStore(repository).get(changesetId);
+    CIStatusCollection collection = getStore(storename, repository).get(changesetId);
     return  collection != null ? collection : new CIStatusCollection();
   }
 
-  private DataStore<CIStatusCollection> getStore(Repository repository) {
-    return dataStoreFactory.withType(CIStatusCollection.class).withName("ciStatus").forRepository(repository).build();
+  private DataStore<CIStatusCollection> getStore(String storename, Repository repository) {
+    return dataStoreFactory.withType(CIStatusCollection.class).withName(storename).forRepository(repository).build();
   }
 }

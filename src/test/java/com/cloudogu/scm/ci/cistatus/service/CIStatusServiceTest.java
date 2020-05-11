@@ -42,6 +42,7 @@ import sonia.scm.store.TypedStoreParameters;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -78,8 +79,8 @@ class CIStatusServiceTest {
       Repository repository = createHeartOfGold();
       repository.setId("42");
 
-      assertThrows(UnauthorizedException.class, () -> ciStatusService.get(repository, "1234"));
-      assertThrows(UnauthorizedException.class, () -> ciStatusService.put(repository, "1234", new CIStatus()));
+      assertThrows(UnauthorizedException.class, () -> ciStatusService.get(CHANGESET_STORE_NAME, repository, "1234"));
+      assertThrows(UnauthorizedException.class, () -> ciStatusService.put(CHANGESET_STORE_NAME, repository, "1234", new CIStatus()));
     }
   }
 
@@ -106,7 +107,7 @@ class CIStatusServiceTest {
       Repository repository = createHeartOfGold();
       repository.setId("42");
 
-      CIStatusCollection ciStatusCollection = ciStatusService.get(repository, "1234");
+      CIStatusCollection ciStatusCollection = ciStatusService.get(CHANGESET_STORE_NAME, repository, "1234");
       assertThat(ciStatusCollection).isNotNull().isEmpty();
     }
 
@@ -116,10 +117,10 @@ class CIStatusServiceTest {
       repository.setId("42");
 
       CIStatus ciStatus = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
-      ciStatusService.put(repository, "123456", ciStatus);
-      ciStatusService.put(repository, "654321", ciStatus);
+      ciStatusService.put(CHANGESET_STORE_NAME, repository, "123456", ciStatus);
+      ciStatusService.put(CHANGESET_STORE_NAME, repository, "654321", ciStatus);
 
-      CIStatusCollection result = ciStatusService.get(repository, "123456");
+      CIStatusCollection result = ciStatusService.get(CHANGESET_STORE_NAME, repository, "123456");
 
       assertThat(result.get("test", "name")).isSameAs(ciStatus);
     }
@@ -133,12 +134,12 @@ class CIStatusServiceTest {
       repository2.setId("24");
 
       CIStatus ciStatus1 = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
-      ciStatusService.put(repository1, "123456", ciStatus1);
+      ciStatusService.put(CHANGESET_STORE_NAME, repository1, "123456", ciStatus1);
       CIStatus ciStatus2 = new CIStatus("test2", "name2", null, Status.PENDING, "http://abc.de");
-      ciStatusService.put(repository2, "654321", ciStatus2);
+      ciStatusService.put(CHANGESET_STORE_NAME, repository2, "654321", ciStatus2);
 
-      CIStatusCollection resultWithRepo1 = ciStatusService.get(repository1, "123456");
-      CIStatusCollection resultWithRepo2 = ciStatusService.get(repository2, "654321");
+      CIStatusCollection resultWithRepo1 = ciStatusService.get(CHANGESET_STORE_NAME, repository1, "123456");
+      CIStatusCollection resultWithRepo2 = ciStatusService.get(CHANGESET_STORE_NAME, repository2, "654321");
 
       assertThat(resultWithRepo1.get("test", "name")).isSameAs(ciStatus1);
       assertThat(resultWithRepo2.get("test2", "name2")).isSameAs(ciStatus2);
