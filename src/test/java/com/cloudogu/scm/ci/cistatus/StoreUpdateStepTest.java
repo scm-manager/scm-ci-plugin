@@ -22,45 +22,35 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm.ci.cistatus.service;
+package com.cloudogu.scm.ci.cistatus;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryLocationResolver;
+import sonia.scm.repository.RepositoryManager;
+import sonia.scm.repository.RepositoryTestData;
+import sonia.scm.store.InMemoryDataStoreFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
+@ExtendWith(MockitoExtension.class)
+class StoreUpdateStepTest {
 
-class StoreNameValidatorTest {
+  private static final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
-  @Test
-  void validInput() {
-    String input = "SpaceX";
-    boolean result = StoreNameValidator.validate(input);
-
-    assertThat(result).isTrue();
-  }
-
-  @Test
-    void invalidInput() {
-    String input = "x_|42";
-    boolean result = StoreNameValidator.validate(input);
-
-    assertThat(result).isFalse();
-  }
-
-  @Test
-  void validSmalLettersInput() {
-    String input = "abc";
-    boolean result = StoreNameValidator.validate(input);
-
-    assertThat(result).isTrue();
-  }
+  @Mock
+  private RepositoryManager repositoryManager;
+  @Mock
+  private RepositoryLocationResolver repositoryLocationResolver;
 
 
-  @Test
-  void validInputKebabCase() {
-    String input = "a-b-c";
-    boolean result = StoreNameValidator.validate(input);
+  private StoreUpdateStep updateStep;
 
-    assertThat(result).isTrue();
+  @BeforeEach
+  void initUpdateStep() {
+    InMemoryDataStoreFactory dataStoreFactory = new InMemoryDataStoreFactory();
+    updateStep = new StoreUpdateStep(dataStoreFactory, repositoryLocationResolver, repositoryManager);
   }
 
 

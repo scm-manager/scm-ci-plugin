@@ -1,5 +1,4 @@
 /*
- *
  * MIT License
  *
  * Copyright (c) 2020-present Cloudogu GmbH and Contributors
@@ -21,14 +20,17 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
  */
 
 package com.cloudogu.scm.ci.cistatus.service;
 
 import java.util.regex.Pattern;
 
-class StoreNameValidator {
+class
+
+
+
+StoreNameValidator {
 
   static boolean validate(String storename) {
 

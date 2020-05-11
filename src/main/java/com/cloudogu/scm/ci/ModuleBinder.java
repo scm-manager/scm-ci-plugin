@@ -27,12 +27,16 @@ import com.cloudogu.scm.ci.cistatus.api.CIStatusMapper;
 import com.google.inject.AbstractModule;
 import org.mapstruct.factory.Mappers;
 import sonia.scm.plugin.Extension;
+import sonia.scm.repository.AbstractRepositoryManager;
+import sonia.scm.repository.RepositoryManager;
 
 @Extension
 public class ModuleBinder extends AbstractModule {
 
   @Override
   protected void configure() {
+
     bind(CIStatusMapper.class).to(Mappers.getMapper(CIStatusMapper.class).getClass());
+    bind(RepositoryManager.class).to(AbstractRepositoryManager.class).getClass();
   }
 }
