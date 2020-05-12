@@ -58,7 +58,7 @@ public class PullRequestCIStatusRootResource {
   }
 
   @Path("{namespace}/{name}/pullrequest/{id}")
-  public PullRequestCIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("id") String pullRequestId) throws IOException {
+  public PullRequestCIStatusResource getPullRequestCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("id") String pullRequestId) {
     Repository repository = repositoryResolver.resolve(namespace, name);
     return new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestId);
   }

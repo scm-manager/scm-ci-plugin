@@ -39,7 +39,6 @@ import sonia.scm.repository.Repository;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static com.cloudogu.scm.ci.cistatus.Constants.PULL_REQUEST_STORE_NAME;
 import static de.otto.edison.hal.Links.emptyLinks;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +64,7 @@ class PullRequestCIStatusResourceTest {
   
   @Test
   void shouldGetAll() {
-    when(pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(),pullRequestID)).thenReturn("http://scm/status");
+    when(pathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(),pullRequestID)).thenReturn("http://scm/status");
 
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
     CIStatus ciStatusOne = new CIStatus("jenkins", "build1", null, Status.PENDING, "http://test.de");

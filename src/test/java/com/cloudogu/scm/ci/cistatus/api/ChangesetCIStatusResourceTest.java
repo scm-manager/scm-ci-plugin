@@ -68,7 +68,7 @@ class ChangesetCIStatusResourceTest {
 
   @Test
   void shouldGetAll() {
-    when(pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).thenReturn("http://scm/status");
+    when(pathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).thenReturn("http://scm/status");
 
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
     CIStatus ciStatusOne = new CIStatus("jenkins", "build1", null, Status.PENDING, "http://test.de");

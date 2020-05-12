@@ -23,36 +23,39 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryTestData;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RepositoryStatusEnricherTest {
+class PullRequestEnricherTest {
 
-  static final Repository REPOSITORY = new Repository("1", "git", "space", "X");
+  private static final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
-  CIStatusPathBuilder pathBuilder;
+  private CIStatusPathBuilder pathBuilder;
 
   @InjectMocks
-  RepositoryStatusEnricher enricher;
+  private PullRequestEnricher pullRequestEnricher;
 
-  @Mock
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   HalEnricherContext context;
   @Mock
   HalAppender appender;
@@ -61,27 +64,46 @@ class RepositoryStatusEnricherTest {
   Subject subject;
 
   @BeforeEach
-  void setUpDefaults() {
+  void initEnricher() {
+    pullRequestEnricher = new PullRequestEnricher(pathBuilder);
+  }
+
+  @BeforeEach
+  void bindSubject() {
     ThreadContext.bind(subject);
-    lenient().when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
+  }
+
+  @AfterEach
+  void tearDownSubject() {
+    ThreadContext.unbindSubject();
   }
 
   @Test
-  void shouldNotEnrichWithoutPermissions() {
-    when(subject.isPermitted(any(String.class))).thenReturn(false);
+  void shouldEnrichCILinkToPullRequest() {
+    PullRequest pr = new PullRequest();
+    pr.setId("1");
 
-    enricher.enrich(context, appender);
+    when(subject.isPermitted("repository:readCIStatus:id-1")).thenReturn(true);
+    when(pathBuilder.createPullRequestCiStatusCollectionUri(REPOSITORY.getNamespace(), REPOSITORY.getName(), pr.getId())).thenReturn("http://scm.com/pullRequest/" + pr.getId());
+    when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
+    when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);
+
+    pullRequestEnricher.enrich(context, appender);
+
+    String expectedHref = "http://scm.com/pullRequest/1";
+    verify(appender).appendLink("ciStatus", expectedHref);
+  }
+
+  @Test
+  void shouldNotEnrichCiLinkIfNotPermitted() {
+    PullRequest pr = new PullRequest();
+    pr.setId("1");
+
+    when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
+    when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);
+
+    pullRequestEnricher.enrich(context, appender);
 
     verify(appender, never()).appendLink(any(), any());
-  }
-
-  @Test
-  void shouldAppendLink() {
-    when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
-    when(pathBuilder.createChangesetCiStatusCollectionUri("space", "X", "REVISION")).thenReturn("http://scm.com/REVISION");
-
-    enricher.enrich(context, appender);
-
-    verify(appender).appendLink("ciStatus", "http://scm.com/{revision}");
   }
 }

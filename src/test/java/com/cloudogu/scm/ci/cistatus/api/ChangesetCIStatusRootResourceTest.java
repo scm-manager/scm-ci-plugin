@@ -77,7 +77,7 @@ class ChangesetCIStatusRootResourceTest {
     when(repositoryService.getLogCommand()).thenReturn(logCommandBuilder);
     when(logCommandBuilder.getChangeset("42")).thenReturn(changeset);
 
-    ChangesetCIStatusResource resource = rootResource.getCIStatusResource("hitchhiker", "heart-of-gold", "42");
+    ChangesetCIStatusResource resource = rootResource.getChangesetCIStatusResource("hitchhiker", "heart-of-gold", "42");
 
     assertThat(resource.getRepository()).isSameAs(repository);
     assertThat(resource.getChangesetId()).isEqualTo("42");

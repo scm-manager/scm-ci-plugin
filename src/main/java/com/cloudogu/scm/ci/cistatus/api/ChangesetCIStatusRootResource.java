@@ -60,7 +60,7 @@ public class ChangesetCIStatusRootResource {
   }
 
   @Path("{namespace}/{name}/changesets/{changesetId}")
-  public ChangesetCIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changesetId") String changesetId) throws IOException {
+  public ChangesetCIStatusResource getChangesetCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changesetId") String changesetId) throws IOException {
     Repository repository = repositoryResolver.resolve(namespace, name);
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
       String resolvedChangesetId = repositoryService.getLogCommand().getChangeset(changesetId).getId();

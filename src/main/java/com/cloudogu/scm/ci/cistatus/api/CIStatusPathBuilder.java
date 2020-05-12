@@ -38,18 +38,26 @@ class CIStatusPathBuilder {
     this.pathInfoStore = pathInfoStore;
   }
 
-  String createCiStatusSelfUri(String namespace, String name, String changesetId, String type, String ciName) {
+  String createChangesetCiStatusSelfUri(String namespace, String name, String changesetId, String type, String ciName) {
     LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), ChangesetCIStatusRootResource.class, ChangesetCIStatusResource.class);
     return linkBuilder
-      .method("getCIStatusResource").parameters(namespace, name, changesetId)
+      .method("getChangesetCIStatusResource").parameters(namespace, name, changesetId)
       .method("get").parameters(type, ciName)
       .href();
   }
 
-  String createCollectionUri(String namespace, String name, String changesetId) {
+  String createChangesetCiStatusCollectionUri(String namespace, String name, String changesetId) {
     LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), ChangesetCIStatusRootResource.class, ChangesetCIStatusResource.class);
     return linkBuilder
-      .method("getCIStatusResource").parameters(namespace, name, changesetId)
+      .method("getChangesetCIStatusResource").parameters(namespace, name, changesetId)
+      .method("getAll").parameters()
+      .href();
+  }
+
+  String createPullRequestCiStatusCollectionUri(String namespace, String name, String pullRequestId) {
+    LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), PullRequestCIStatusRootResource.class, PullRequestCIStatusResource.class);
+    return linkBuilder
+      .method("getPullRequestCIStatusResource").parameters(namespace, name, pullRequestId)
       .method("getAll").parameters()
       .href();
   }

@@ -21,51 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ci.cistatus.api;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
+import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.plugin.Extension;
-import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
-import java.util.stream.Collectors;
 
 import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 
 @Extension
-@Enrich(Changeset.class)
-public class ChangesetStatusEnricher implements HalEnricher {
+@Enrich(PullRequest.class)
+public class PullRequestEnricher implements HalEnricher {
 
-  private final CIStatusService ciStatusService;
-  private final CIStatusMapper mapper;
   private final CIStatusPathBuilder pathBuilder;
 
   @Inject
-  public ChangesetStatusEnricher(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusPathBuilder pathBuilder) {
-    this.ciStatusService = ciStatusService;
-    this.mapper = mapper;
+  public PullRequestEnricher(CIStatusPathBuilder pathBuilder) {
     this.pathBuilder = pathBuilder;
   }
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
     Repository repository = context.oneRequireByType(Repository.class);
-    Changeset changeset = context.oneRequireByType(Changeset.class);
+    PullRequest pullRequest = context.oneRequireByType(PullRequest.class);
 
     if (mayRead(repository)) {
-      appender.appendLink("ciStatus", pathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changeset.getId()));
-      appender.appendEmbedded("ciStatus",
-        ciStatusService.get(CHANGESET_STORE_NAME,repository, changeset.getId())
-          .stream()
-          .map(ciStatus -> mapper.map(repository, changeset.getId(), ciStatus))
-          .collect(Collectors.toList()));
+      appender.appendLink("ciStatus", pathBuilder.createPullRequestCiStatusCollectionUri(repository.getNamespace(), repository.getName(), pullRequest.getId()));
     }
   }
 }
-

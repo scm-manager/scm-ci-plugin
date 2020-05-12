@@ -97,7 +97,7 @@ class ChangesetStatusEnricherTest {
   void shouldAppendLink() {
     when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
     when(ciStatusService.get(CHANGESET_STORE_NAME, REPOSITORY, CHANGESET.getId())).thenReturn(new CIStatusCollection());
-    when(pathBuilder.createCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
+    when(pathBuilder.createChangesetCiStatusCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
 
     enricher.enrich(context, appender);
 
@@ -111,7 +111,7 @@ class ChangesetStatusEnricherTest {
     CIStatus ciStatus = new CIStatus("ci", "status", null, Status.PENDING, "http://ci.com");
     collection.put(ciStatus);
     when(ciStatusService.get(CHANGESET_STORE_NAME, REPOSITORY, CHANGESET.getId())).thenReturn(collection);
-    when(pathBuilder.createCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
+    when(pathBuilder.createChangesetCiStatusCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
     CIStatusDto dto = new CIStatusDto();
     when(mapper.map(REPOSITORY, "123", ciStatus)).thenReturn(dto);
 
