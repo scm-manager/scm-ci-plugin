@@ -27,6 +27,7 @@ package com.cloudogu.scm.ci.cistatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
+import sonia.scm.repository.AbstractRepositoryManager;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryLocationResolver;
 import sonia.scm.repository.RepositoryManager;

@@ -22,15 +22,13 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm.ci.cistatus.service;
+package com.cloudogu.scm.ci.cistatus;
 
-import java.util.regex.Pattern;
+public class Constants {
 
-class StoreNameValidator {
+  public static final String CI_PATH_V2 = "v2/ci";
+  public static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";
+  public static final String CHANGESET_STORE_NAME = "changesetCIStatus";
+  public static final String PULL_REQUEST_STORE_NAME = "pullRequestCIStatus";
 
-  private StoreNameValidator() {}
-
-  static boolean validate(String storename) {
-    return Pattern.matches("^[a-zA-Z0-9\\-]*$", storename);
-  }
 }

@@ -25,13 +25,11 @@ package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.RepositoryResolver;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
@@ -43,11 +41,10 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CIStatusRootResourceTest {
+class ChangesetCIStatusRootResourceTest {
 
   @Mock
   private CIStatusService service;
@@ -68,7 +65,7 @@ class CIStatusRootResourceTest {
   private RepositoryService repositoryService;
 
   @InjectMocks
-  private CIStatusRootResource rootResource;
+  private ChangesetCIStatusRootResource rootResource;
 
   @Test
   void shouldReturnCiStatusResource() throws IOException {
@@ -80,7 +77,7 @@ class CIStatusRootResourceTest {
     when(repositoryService.getLogCommand()).thenReturn(logCommandBuilder);
     when(logCommandBuilder.getChangeset("42")).thenReturn(changeset);
 
-    CIStatusResource resource = rootResource.getCIStatusResource("hitchhiker", "heart-of-gold", "42");
+    ChangesetCIStatusResource resource = rootResource.getCIStatusResource("hitchhiker", "heart-of-gold", "42");
 
     assertThat(resource.getRepository()).isSameAs(repository);
     assertThat(resource.getChangesetId()).isEqualTo("42");

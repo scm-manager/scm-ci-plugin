@@ -39,7 +39,7 @@ class CIStatusPathBuilder {
   }
 
   String createCiStatusSelfUri(String namespace, String name, String changesetId, String type, String ciName) {
-    LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), CIStatusRootResource.class, CIStatusResource.class);
+    LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), ChangesetCIStatusRootResource.class, ChangesetCIStatusResource.class);
     return linkBuilder
       .method("getCIStatusResource").parameters(namespace, name, changesetId)
       .method("get").parameters(type, ciName)
@@ -47,7 +47,7 @@ class CIStatusPathBuilder {
   }
 
   String createCollectionUri(String namespace, String name, String changesetId) {
-    LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), CIStatusRootResource.class, CIStatusResource.class);
+    LinkBuilder linkBuilder = new LinkBuilder(pathInfoStore.get().get(), ChangesetCIStatusRootResource.class, ChangesetCIStatusResource.class);
     return linkBuilder
       .method("getCIStatusResource").parameters(namespace, name, changesetId)
       .method("getAll").parameters()

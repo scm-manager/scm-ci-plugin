@@ -32,7 +32,7 @@ import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
 
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 
 public class CIStatusResolver {
 

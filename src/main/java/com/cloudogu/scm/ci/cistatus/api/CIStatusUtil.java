@@ -22,15 +22,20 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm.ci.cistatus.service;
+package com.cloudogu.scm.ci.cistatus.api;
 
-import java.util.regex.Pattern;
+import sonia.scm.ContextEntry;
+import sonia.scm.IllegalIdentifierChangeException;
 
-class StoreNameValidator {
+public class CIStatusUtil {
 
-  private StoreNameValidator() {}
+  private CIStatusUtil() {}
 
-  static boolean validate(String storename) {
-    return Pattern.matches("^[a-zA-Z0-9\\-]*$", storename);
+  static boolean validateCIStatus(String type, String ciName, CIStatusDto statusDto) {
+    if (!type.equals(statusDto.getType()) || !ciName.equals(statusDto.getName())) {
+      throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
+        statusDto.getName() + ":" + statusDto.getType()), "changing identifier attributes is not allowed");
+    }
+    return true;
   }
 }

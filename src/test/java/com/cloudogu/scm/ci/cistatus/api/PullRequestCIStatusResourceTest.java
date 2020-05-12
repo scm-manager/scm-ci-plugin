@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
@@ -33,42 +34,38 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.repository.Repository;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.PULL_REQUEST_STORE_NAME;
 import static de.otto.edison.hal.Links.emptyLinks;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static sonia.scm.repository.RepositoryTestData.createHeartOfGold;
 
 @ExtendWith(MockitoExtension.class)
-class CIStatusResourceTest {
-
-  @Mock
-  private CIStatusService ciStatusService;
-
-  @Mock
-  private CIStatusMapper mapper;
+class PullRequestCIStatusResourceTest {
 
   @Mock
   private CIStatusPathBuilder pathBuilder;
-
+  @Mock
+  private CIStatusMapper mapper;
+  @Mock
+  private CIStatusService ciStatusService;
   @InjectMocks
   private CIStatusCollectionDtoMapper collectionDtoMapper;
 
-  private Repository repository = createHeartOfGold();
-  private String changesetId = "42";
-
+  private final Repository repository = createHeartOfGold();
+  private final String pullRequestID = "42";
+  
   @Test
   void shouldGetAll() {
-    when(pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).thenReturn("http://scm/status");
+    when(pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(),pullRequestID)).thenReturn("http://scm/status");
 
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
     CIStatus ciStatusOne = new CIStatus("jenkins", "build1", null, Status.PENDING, "http://test.de");
@@ -77,15 +74,15 @@ class CIStatusResourceTest {
     ciStatusCollection.put(ciStatusTwo);
 
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
-    doReturn(dtoOne).when(mapper).map(repository, changesetId, ciStatusOne);
+    doReturn(dtoOne).when(mapper).map(repository, pullRequestID, ciStatusOne);
     CIStatusDto dtoTwo = new CIStatusDto(emptyLinks());
-    doReturn(dtoTwo).when(mapper).map(repository, changesetId, ciStatusTwo);
+    doReturn(dtoTwo).when(mapper).map(repository, pullRequestID, ciStatusTwo);
 
-    when(ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestID)).thenReturn(ciStatusCollection);
 
-    CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
+    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestID);
 
-    HalRepresentation ciStatusCollectionEmbeddedWrapper = ciStatusResource.getAll();
+    HalRepresentation ciStatusCollectionEmbeddedWrapper = pullRequestCIStatusResource.getAll();
     assertThat(ciStatusCollectionEmbeddedWrapper.getEmbedded().getItemsBy("ciStatus")).contains(dtoOne, dtoTwo);
     assertThat(ciStatusCollectionEmbeddedWrapper.getLinks().getLinkBy("self").get().getHref()).isEqualTo("http://scm/status");
   }
@@ -100,12 +97,12 @@ class CIStatusResourceTest {
     ciStatusCollection.put(ciStatusOne);
 
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
-    doReturn(dtoOne).when(mapper).map(repository, changesetId, ciStatusOne);
+    doReturn(dtoOne).when(mapper).map(repository, pullRequestID, ciStatusOne);
 
-    when(ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestID)).thenReturn(ciStatusCollection);
 
-    CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
-    CIStatusDto ciStatus = ciStatusResource.get(type, ciName);
+    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestID);
+    CIStatusDto ciStatus = pullRequestCIStatusResource.get(type, ciName);
 
     assertThat(ciStatus).isSameAs(dtoOne);
   }
@@ -123,25 +120,12 @@ class CIStatusResourceTest {
 
     when(mapper.map(dtoOne)).thenReturn(ciStatusOne);
 
-    CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
+    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestID);
 
-    Response response = ciStatusResource.put(type, ciName, dtoOne);
+    Response response = pullRequestCIStatusResource.put(type, ciName, dtoOne);
 
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
-    verify(ciStatusService).put(CHANGESET_STORE_NAME, repository, changesetId, ciStatusOne);
+    verify(ciStatusService).put(PULL_REQUEST_STORE_NAME, repository, pullRequestID, ciStatusOne);
   }
 
-  @Test
-  void shouldThrowIllegalIdentifierChangeException() {
-    String type = "sonartype";
-    String ciName = "analyze1";
-
-    CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
-    dtoOne.setName(ciName);
-    dtoOne.setType(type);
-
-    CIStatusResource ciStatusResource = new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
-
-    assertThrows(IllegalIdentifierChangeException.class, () -> ciStatusResource.put("jenkins", ciName, dtoOne));
-  }
 }

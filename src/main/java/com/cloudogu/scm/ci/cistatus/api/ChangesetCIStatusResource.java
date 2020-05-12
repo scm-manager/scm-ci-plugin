@@ -32,8 +32,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import sonia.scm.ContextEntry;
-import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.api.v2.resources.ErrorDto;
 import sonia.scm.repository.Repository;
 import sonia.scm.web.VndMediaType;
@@ -47,10 +45,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-public class CIStatusResource {
+import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.MEDIA_TYPE;
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusUtil.validateCIStatus;
 
-  private static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";
-  public static final String CHANGESET_STORE_NAME = "changesetCIStatus";
+public class ChangesetCIStatusResource {
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
@@ -58,7 +57,7 @@ public class CIStatusResource {
   private final Repository repository;
   private final String changesetId;
 
-  CIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, Repository repository, String changesetId) {
+  ChangesetCIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, Repository repository, String changesetId) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
     this.collectionDtoMapper = collectionDtoMapper;
@@ -162,10 +161,7 @@ public class CIStatusResource {
     )
   )
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
-    if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
-      throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
-        ciStatusDto.getName() + ":" + ciStatusDto.getType()), "changing identifier attributes is not allowed");
-    }
+    validateCIStatus(type, ciName, ciStatusDto);
     CIStatus ciStatus = mapper.map(ciStatusDto);
     ciStatusService.put(CHANGESET_STORE_NAME, repository, changesetId, ciStatus);
 

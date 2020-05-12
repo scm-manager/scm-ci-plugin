@@ -43,7 +43,7 @@ import sonia.scm.repository.Repository;
 
 import java.util.List;
 
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;

@@ -36,7 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 

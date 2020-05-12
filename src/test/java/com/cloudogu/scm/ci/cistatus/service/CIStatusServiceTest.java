@@ -43,7 +43,7 @@ import sonia.scm.store.TypedStoreParameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

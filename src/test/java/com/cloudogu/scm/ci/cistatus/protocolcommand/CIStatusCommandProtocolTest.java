@@ -41,7 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusResource.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
@@ -74,13 +74,13 @@ public class CIStatusCommandProtocolTest {
 
   @Test
   void shouldThrowIllegalArgumentExceptionIfCouldNotUnmarshal() throws FileNotFoundException {
-    CommandContext commandContext = createCommandContext(SSH_COMMAND,"protocolcommand/cistatus/1a2b3c4d5e6f_invalid.xml");
+    CommandContext commandContext = createCommandContext(SSH_COMMAND, "protocolcommand/cistatus/1a2b3c4d5e6f_invalid.xml");
     assertThrows(IllegalArgumentException.class, () -> commandProtocol.handle(commandContext, repositoryContext));
   }
 
   @Test
   void shouldThrowIllegalArgumentExceptionIfRevisionIsMissing() throws FileNotFoundException {
-    CommandContext commandContext = createCommandContext(SSH_COMMAND_WITHOUT_REVISION,"protocolcommand/cistatus/1a2b3c4d5e6f.xml");
+    CommandContext commandContext = createCommandContext(SSH_COMMAND_WITHOUT_REVISION, "protocolcommand/cistatus/1a2b3c4d5e6f.xml");
     assertThrows(IllegalArgumentException.class, () -> commandProtocol.handle(commandContext, repositoryContext));
   }
 

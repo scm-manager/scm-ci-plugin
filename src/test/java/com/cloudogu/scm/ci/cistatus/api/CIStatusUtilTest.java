@@ -22,15 +22,38 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm.ci.cistatus.service;
 
-import java.util.regex.Pattern;
+package com.cloudogu.scm.ci.cistatus.api;
 
-class StoreNameValidator {
+import org.junit.jupiter.api.Test;
+import sonia.scm.IllegalIdentifierChangeException;
 
-  private StoreNameValidator() {}
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-  static boolean validate(String storename) {
-    return Pattern.matches("^[a-zA-Z0-9\\-]*$", storename);
+class CIStatusUtilTest {
+
+  @Test
+  void shouldBeValid() {
+    String type = "Jenkins";
+    String ciName = "SomeName";
+    CIStatusDto ciStatusDto = new CIStatusDto();
+    ciStatusDto.setType(type);
+    ciStatusDto.setName(ciName);
+
+    boolean isValid = CIStatusUtil.validateCIStatus(type, ciName, ciStatusDto);
+
+    assertThat(isValid).isTrue();
+  }
+
+  @Test
+  void shouldThrowIllegalIdentifierChangeException() {
+    String type = "Jenkins";
+    String ciName = "SomeName";
+    CIStatusDto ciStatusDto = new CIStatusDto();
+    ciStatusDto.setType("type");
+    ciStatusDto.setName("ciName");
+
+    assertThrows(IllegalIdentifierChangeException.class, () -> CIStatusUtil.validateCIStatus(type, ciName, ciStatusDto));
   }
 }

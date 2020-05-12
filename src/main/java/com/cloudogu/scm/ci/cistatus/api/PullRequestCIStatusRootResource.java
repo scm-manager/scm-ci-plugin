@@ -23,49 +23,43 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.RepositoryResolver;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
-import sonia.scm.api.v2.resources.Enrich;
-import sonia.scm.api.v2.resources.HalAppender;
-import sonia.scm.api.v2.resources.HalEnricher;
-import sonia.scm.api.v2.resources.HalEnricherContext;
-import sonia.scm.plugin.Extension;
-import sonia.scm.repository.Changeset;
+import com.google.inject.Inject;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import sonia.scm.plugin.Requires;
 import sonia.scm.repository.Repository;
 
-import javax.inject.Inject;
-import java.util.stream.Collectors;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.io.IOException;
 
-import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
+import static com.cloudogu.scm.ci.cistatus.Constants.CI_PATH_V2;
 
-@Extension
-@Enrich(Changeset.class)
-public class ChangesetStatusEnricher implements HalEnricher {
+@OpenAPIDefinition(tags = {
+  @Tag(name = "CI Plugin", description = "CI plugin provided endpoints")
+})
+@Requires("scm-review-plugin")
+@Path(CI_PATH_V2)
+public class PullRequestCIStatusRootResource {
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
-  private final CIStatusPathBuilder pathBuilder;
+  private final CIStatusCollectionDtoMapper collectionDtoMapper;
+  private final RepositoryResolver repositoryResolver;
 
   @Inject
-  public ChangesetStatusEnricher(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusPathBuilder pathBuilder) {
+  public PullRequestCIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, RepositoryResolver repositoryResolver) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
-    this.pathBuilder = pathBuilder;
+    this.collectionDtoMapper = collectionDtoMapper;
+    this.repositoryResolver = repositoryResolver;
   }
 
-  @Override
-  public void enrich(HalEnricherContext context, HalAppender appender) {
-    Repository repository = context.oneRequireByType(Repository.class);
-    Changeset changeset = context.oneRequireByType(Changeset.class);
-
-    if (mayRead(repository)) {
-      appender.appendLink("ciStatus", pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), changeset.getId()));
-      appender.appendEmbedded("ciStatus",
-        ciStatusService.get(CHANGESET_STORE_NAME,repository, changeset.getId())
-          .stream()
-          .map(ciStatus -> mapper.map(repository, changeset.getId(), ciStatus))
-          .collect(Collectors.toList()));
-    }
+  @Path("{namespace}/{name}/pullrequest/{id}")
+  public PullRequestCIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("id") String pullRequestId) throws IOException {
+    Repository repository = repositoryResolver.resolve(namespace, name);
+    return new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestId);
   }
 }
-
