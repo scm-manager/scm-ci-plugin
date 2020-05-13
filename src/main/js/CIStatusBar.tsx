@@ -26,7 +26,8 @@ import { apiClient, ErrorNotification, Loading, NotFoundError } from "@scm-manag
 import CIStatusModalView from "./CIStatusModalView";
 import StatusBar from "./StatusBar";
 import { getColor, getIcon } from "./StatusIcon";
-import { Repository } from "@scm-manager/ui-types";
+import { Repository, Link } from "@scm-manager/ui-types";
+import { CIStatus } from "./CIStatus";
 
 type Props = {
   repository: Repository;
@@ -56,32 +57,37 @@ export default class CIStatusBar extends React.Component<Props, State> {
   }
 
   fetchCIStatus = () => {
-    const { repository, pullRequest } = this.props;
-    const url = repository._links.ciStatus.href.replace("{revision}", encodeURIComponent(pullRequest.source));
-    this.setState({
-      loading: true
-    });
-    apiClient.get(url)
-      .then(response => response.json())
-      .then(json => {
-        this.setState({
-          ciStatus: json._embedded.ciStatus,
-          loading: false
-        }, this.setStatus);
-      })
-      .catch(error => {
-        if (error instanceof NotFoundError) {
-          this.setState({
-            loading: false
-          });
-        } else {
-          this.setState({
-            error,
-            loading: false
-          });
-        }
-
+    const { pullRequest } = this.props;
+    const url = (pullRequest._links.ciStatus as Link)?.href;
+    if (url) {
+      this.setState({
+        loading: true
       });
+      apiClient
+        .get(url)
+        .then(response => response.json())
+        .then(json => {
+          this.setState(
+            {
+              ciStatus: json._embedded.ciStatus,
+              loading: false
+            },
+            this.setStatus
+          );
+        })
+        .catch(error => {
+          if (error instanceof NotFoundError) {
+            this.setState({
+              loading: false
+            });
+          } else {
+            this.setState({
+              error,
+              loading: false
+            });
+          }
+        });
+    }
   };
 
   setStatus = () => {
@@ -108,7 +114,7 @@ export default class CIStatusBar extends React.Component<Props, State> {
       return <Loading />;
     }
 
-    const success = ciStatus && ciStatus.every(ci => ci.status === "SUCCESS");
+    const success = ciStatus && ciStatus.every((ci: CIStatus) => ci.status === "SUCCESS");
 
     return (
       <>

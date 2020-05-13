@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PullRequestEnricherTest {
+class PullRequestLinkEnricherTest {
 
   private static final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
@@ -53,7 +53,7 @@ class PullRequestEnricherTest {
   private CIStatusPathBuilder pathBuilder;
 
   @InjectMocks
-  private PullRequestEnricher pullRequestEnricher;
+  private PullRequestLinkEnricher pullRequestLinkEnricher;
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   HalEnricherContext context;
@@ -65,7 +65,7 @@ class PullRequestEnricherTest {
 
   @BeforeEach
   void initEnricher() {
-    pullRequestEnricher = new PullRequestEnricher(pathBuilder);
+    pullRequestLinkEnricher = new PullRequestLinkEnricher(pathBuilder);
   }
 
   @BeforeEach
@@ -88,7 +88,7 @@ class PullRequestEnricherTest {
     when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
     when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);
 
-    pullRequestEnricher.enrich(context, appender);
+    pullRequestLinkEnricher.enrich(context, appender);
 
     String expectedHref = "http://scm.com/pullRequest/1";
     verify(appender).appendLink("ciStatus", expectedHref);
@@ -102,7 +102,7 @@ class PullRequestEnricherTest {
     when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
     when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);
 
-    pullRequestEnricher.enrich(context, appender);
+    pullRequestLinkEnricher.enrich(context, appender);
 
     verify(appender, never()).appendLink(any(), any());
   }

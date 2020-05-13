@@ -33,7 +33,6 @@ import sonia.scm.repository.Repository;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import java.io.IOException;
 
 import static com.cloudogu.scm.ci.cistatus.Constants.CI_PATH_V2;
 

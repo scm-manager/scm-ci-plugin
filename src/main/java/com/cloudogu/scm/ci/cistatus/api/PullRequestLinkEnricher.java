@@ -30,20 +30,22 @@ import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.plugin.Extension;
+import sonia.scm.plugin.Requires;
 import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
 
 import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
 
-@Extension
+@Requires("scm-review-plugin")
 @Enrich(PullRequest.class)
-public class PullRequestEnricher implements HalEnricher {
+@Extension
+public class PullRequestLinkEnricher implements HalEnricher {
 
   private final CIStatusPathBuilder pathBuilder;
 
   @Inject
-  public PullRequestEnricher(CIStatusPathBuilder pathBuilder) {
+  public PullRequestLinkEnricher(CIStatusPathBuilder pathBuilder) {
     this.pathBuilder = pathBuilder;
   }
 
