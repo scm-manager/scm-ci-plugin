@@ -41,23 +41,23 @@ public class CIStatusService {
     this.dataStoreFactory = dataStoreFactory;
   }
 
-  public void put(String storename, Repository repository, String changesetId, CIStatus ciStatus) {
+  public void put(String storeName, Repository repository, String changesetId, CIStatus ciStatus) {
     PermissionCheck.checkWrite(repository);
-    CIStatusCollection ciStatusCollection = get(storename, repository, changesetId);
+    CIStatusCollection ciStatusCollection = get(storeName, repository, changesetId);
     ciStatusCollection.put(ciStatus);
-    getStore(storename, repository).put(changesetId, ciStatusCollection);
+    getStore(storeName, repository).put(changesetId, ciStatusCollection);
   }
 
-  public CIStatusCollection get(String storename, Repository repository, String changesetId) {
+  public CIStatusCollection get(String storeName, Repository repository, String changesetId) {
     PermissionCheck.checkRead(repository);
-    CIStatusCollection collection = getStore(storename, repository).get(changesetId);
+    CIStatusCollection collection = getStore(storeName, repository).get(changesetId);
     return  collection != null ? collection : new CIStatusCollection();
   }
 
-  private DataStore<CIStatusCollection> getStore(String storename, Repository repository) {
-    if (!StoreNameValidator.validate(storename)) {
+  private DataStore<CIStatusCollection> getStore(String storeName, Repository repository) {
+    if (!StoreNameValidator.validate(storeName)) {
       throw new InvalidStoreException("store name is not valid");
     }
-    return dataStoreFactory.withType(CIStatusCollection.class).withName(storename).forRepository(repository).build();
+    return dataStoreFactory.withType(CIStatusCollection.class).withName(storeName).forRepository(repository).build();
   }
 }

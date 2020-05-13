@@ -37,7 +37,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryTestData;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -47,7 +46,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PullRequestLinkEnricherTest {
 
-  private static final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
+  private static final Repository REPOSITORY = new Repository("1", "git", "space", "x");
 
   @Mock
   private CIStatusPathBuilder pathBuilder;
@@ -83,7 +82,7 @@ class PullRequestLinkEnricherTest {
     PullRequest pr = new PullRequest();
     pr.setId("1");
 
-    when(subject.isPermitted("repository:readCIStatus:id-1")).thenReturn(true);
+    when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
     when(pathBuilder.createPullRequestCiStatusCollectionUri(REPOSITORY.getNamespace(), REPOSITORY.getName(), pr.getId())).thenReturn("http://scm.com/pullRequest/" + pr.getId());
     when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
     when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);

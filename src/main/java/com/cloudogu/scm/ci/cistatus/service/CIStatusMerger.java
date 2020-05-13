@@ -57,12 +57,15 @@ public class CIStatusMerger {
     CIStatusCollection pullRequestCIStatusCollection = statusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestId);
 
     for (CIStatus status : changesetCIStatusCollection) {
-      CIStatus prCIStatus = pullRequestCIStatusCollection.get(status.getType(), status.getName());
-      if (prCIStatus == null) {
+      if (isStatusNotContainedInPullRequestStatus(pullRequestCIStatusCollection, status)) {
         pullRequestCIStatusCollection.put(status);
       }
     }
 
     return pullRequestCIStatusCollection;
+  }
+
+  private boolean isStatusNotContainedInPullRequestStatus(CIStatusCollection pullRequestCIStatusCollection, CIStatus status) {
+    return pullRequestCIStatusCollection.get(status.getType(), status.getName()) == null;
   }
 }
