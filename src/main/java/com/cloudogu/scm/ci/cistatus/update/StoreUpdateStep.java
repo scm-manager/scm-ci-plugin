@@ -24,9 +24,12 @@
 
 package com.cloudogu.scm.ci.cistatus.update;
 
+import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.RepositoryLocationResolver;
+import sonia.scm.store.DataStore;
+import sonia.scm.store.DataStoreFactory;
 import sonia.scm.version.Version;
 
 import javax.inject.Inject;
@@ -38,16 +41,29 @@ import static sonia.scm.version.Version.parse;
 public class StoreUpdateStep implements UpdateStep {
 
   private final RepositoryLocationResolver repositoryLocationResolver;
+  private final DataStoreFactory dataStoreFactory;
 
   @Inject
-  public StoreUpdateStep(RepositoryLocationResolver repositoryLocationResolver) {
+  public StoreUpdateStep(RepositoryLocationResolver repositoryLocationResolver, DataStoreFactory dataStoreFactory) {
     this.repositoryLocationResolver = repositoryLocationResolver;
+    this.dataStoreFactory = dataStoreFactory;
   }
 
   @Override
   public void doUpdate() {
     repositoryLocationResolver.forClass(Path.class).forAllLocations((repositoryId, path) -> {
-
+      DataStore<CIStatusCollection> newStore = dataStoreFactory
+        .withType(CIStatusCollection.class)
+        .withName("changesetCiStatus")
+        .forRepository(repositoryId)
+        .build();
+      dataStoreFactory
+        .withType(CIStatusCollection.class)
+        .withName("ciStatus")
+        .forRepository(repositoryId)
+        .build()
+        .getAll()
+        .forEach(newStore::put);
     });
   }
 

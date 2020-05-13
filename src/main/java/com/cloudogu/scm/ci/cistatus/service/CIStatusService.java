@@ -24,7 +24,6 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
 import com.cloudogu.scm.ci.PermissionCheck;
-import com.cloudogu.scm.ci.cistatus.InvalidStoreException;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;

@@ -22,13 +22,10 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm.ci.cistatus;
+package com.cloudogu.scm.ci.cistatus.service;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-@ExtendWith(MockitoExtension.class)
-class StoreUpdateStepTest {
-
-
+public class InvalidStoreException extends RuntimeException {
+  public InvalidStoreException(String message) {
+    super(message);
+  }
 }

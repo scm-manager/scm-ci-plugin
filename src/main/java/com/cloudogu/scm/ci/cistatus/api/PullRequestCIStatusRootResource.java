@@ -24,6 +24,7 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.RepositoryResolver;
+import com.cloudogu.scm.ci.cistatus.service.CIStatusMerger;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.inject.Inject;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -47,18 +48,20 @@ public class PullRequestCIStatusRootResource {
   private final CIStatusMapper mapper;
   private final CIStatusCollectionDtoMapper collectionDtoMapper;
   private final RepositoryResolver repositoryResolver;
+  private final CIStatusMerger ciStatusMerger;
 
   @Inject
-  public PullRequestCIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, RepositoryResolver repositoryResolver) {
+  public PullRequestCIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, RepositoryResolver repositoryResolver, CIStatusMerger ciStatusMerger) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
     this.collectionDtoMapper = collectionDtoMapper;
     this.repositoryResolver = repositoryResolver;
+    this.ciStatusMerger = ciStatusMerger;
   }
 
   @Path("{namespace}/{name}/pullrequest/{id}")
   public PullRequestCIStatusResource getPullRequestCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("id") String pullRequestId) {
     Repository repository = repositoryResolver.resolve(namespace, name);
-    return new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestId);
+    return new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, ciStatusMerger, repository, pullRequestId);
   }
 }

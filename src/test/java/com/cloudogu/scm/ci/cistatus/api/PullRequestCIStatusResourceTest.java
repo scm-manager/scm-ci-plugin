@@ -26,6 +26,7 @@ package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
+import com.cloudogu.scm.ci.cistatus.service.CIStatusMerger;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.ci.cistatus.service.Status;
 import de.otto.edison.hal.HalRepresentation;
@@ -56,15 +57,18 @@ class PullRequestCIStatusResourceTest {
   private CIStatusMapper mapper;
   @Mock
   private CIStatusService ciStatusService;
+  @Mock
+  private CIStatusMerger ciStatusMerger;
+
   @InjectMocks
   private CIStatusCollectionDtoMapper collectionDtoMapper;
 
   private final Repository repository = createHeartOfGold();
-  private final String pullRequestID = "42";
-  
+  private final String pullRequestId = "42";
+
   @Test
   void shouldGetAll() {
-    when(pathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(),pullRequestID)).thenReturn("http://scm/status");
+    when(pathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), pullRequestId)).thenReturn("http://scm/status");
 
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
     CIStatus ciStatusOne = new CIStatus("jenkins", "build1", null, Status.PENDING, "http://test.de");
@@ -73,13 +77,13 @@ class PullRequestCIStatusResourceTest {
     ciStatusCollection.put(ciStatusTwo);
 
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
-    doReturn(dtoOne).when(mapper).map(repository, pullRequestID, ciStatusOne);
+    doReturn(dtoOne).when(mapper).map(repository, pullRequestId, ciStatusOne);
     CIStatusDto dtoTwo = new CIStatusDto(emptyLinks());
-    doReturn(dtoTwo).when(mapper).map(repository, pullRequestID, ciStatusTwo);
+    doReturn(dtoTwo).when(mapper).map(repository, pullRequestId, ciStatusTwo);
 
-    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestID)).thenReturn(ciStatusCollection);
+    when(ciStatusMerger.mergePullRequestCIStatuses(repository, pullRequestId)).thenReturn(ciStatusCollection);
 
-    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestID);
+    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, ciStatusMerger, repository, pullRequestId);
 
     HalRepresentation ciStatusCollectionEmbeddedWrapper = pullRequestCIStatusResource.getAll();
     assertThat(ciStatusCollectionEmbeddedWrapper.getEmbedded().getItemsBy("ciStatus")).contains(dtoOne, dtoTwo);
@@ -96,11 +100,11 @@ class PullRequestCIStatusResourceTest {
     ciStatusCollection.put(ciStatusOne);
 
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
-    doReturn(dtoOne).when(mapper).map(repository, pullRequestID, ciStatusOne);
+    doReturn(dtoOne).when(mapper).map(repository, pullRequestId, ciStatusOne);
 
-    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestID)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestId)).thenReturn(ciStatusCollection);
 
-    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestID);
+    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, ciStatusMerger, repository, pullRequestId);
     CIStatusDto ciStatus = pullRequestCIStatusResource.get(type, ciName);
 
     assertThat(ciStatus).isSameAs(dtoOne);
@@ -119,12 +123,12 @@ class PullRequestCIStatusResourceTest {
 
     when(mapper.map(dtoOne)).thenReturn(ciStatusOne);
 
-    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, pullRequestID);
+    PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, ciStatusMerger, repository, pullRequestId);
 
     Response response = pullRequestCIStatusResource.put(type, ciName, dtoOne);
 
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
-    verify(ciStatusService).put(PULL_REQUEST_STORE_NAME, repository, pullRequestID, ciStatusOne);
+    verify(ciStatusService).put(PULL_REQUEST_STORE_NAME, repository, pullRequestId, ciStatusOne);
   }
 
 }

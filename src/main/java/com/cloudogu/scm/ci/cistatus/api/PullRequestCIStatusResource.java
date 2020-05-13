@@ -26,6 +26,7 @@ package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
+import com.cloudogu.scm.ci.cistatus.service.CIStatusMerger;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import de.otto.edison.hal.HalRepresentation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,13 +55,15 @@ public class PullRequestCIStatusResource {
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
   private final CIStatusCollectionDtoMapper collectionDtoMapper;
+  private final CIStatusMerger ciStatusMerger;
   private final Repository repository;
   private final String pullRequestId;
 
-  PullRequestCIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, Repository repository, String pullRequestId) {
+  PullRequestCIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, CIStatusMerger ciStatusMerger, Repository repository, String pullRequestId) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
     this.collectionDtoMapper = collectionDtoMapper;
+    this.ciStatusMerger = ciStatusMerger;
     this.repository = repository;
     this.pullRequestId = pullRequestId;
   }
@@ -93,7 +96,7 @@ public class PullRequestCIStatusResource {
     )
   )
   public HalRepresentation getAll() {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestId);
+    CIStatusCollection ciStatusCollection = ciStatusMerger.mergePullRequestCIStatuses(repository, pullRequestId);
     return collectionDtoMapper.map(ciStatusCollection.stream(), repository, pullRequestId);
   }
 

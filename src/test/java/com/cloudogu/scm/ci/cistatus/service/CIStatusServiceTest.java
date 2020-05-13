@@ -23,7 +23,6 @@
  */
 package com.cloudogu.scm.ci.cistatus.service;
 
-import com.cloudogu.scm.ci.cistatus.InvalidStoreException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
