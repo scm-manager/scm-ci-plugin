@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.ci.cistatus.service;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.workflow.SourceRevisionResolver;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.pullrequest.service.PullRequestService;
@@ -35,8 +36,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
-import static com.cloudogu.scm.ci.cistatus.Constants.PULL_REQUEST_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -60,23 +59,13 @@ class CIStatusMergerTest {
   @Test
   void shouldReturnOnlyPullRequestCIStatusesIfBothCIStatusAvailable() {
     String changesetId = "1a2b3c4d";
-    PullRequest pullRequest = new PullRequest();
-    pullRequest.setId("1");
-    pullRequest.setSource("develop");
+    PullRequest pullRequest = createPullRequest();
 
     String statusName = "JENKINS";
-    CIStatus prCIStatus = new CIStatus(statusName, statusName, statusName, Status.SUCCESS, "");
-    CIStatusCollection prCIStatusCollection = new CIStatusCollection();
-    prCIStatusCollection.put(prCIStatus);
+    CIStatusCollection prCIStatusCollection = createCIStatusCollection(statusName, statusName, Status.SUCCESS);
+    CIStatusCollection changesetCIStatusCollection = createCIStatusCollection(statusName, statusName, Status.FAILURE);
 
-    CIStatus changesetCIStatus = new CIStatus(statusName, statusName, statusName, Status.FAILURE, "");
-    CIStatusCollection changesetCIStatusCollection = new CIStatusCollection();
-    changesetCIStatusCollection.put(changesetCIStatus);
-
-    when(pullRequestService.get(REPOSITORY, pullRequest.getId())).thenReturn(pullRequest);
-    when(sourceRevisionResolver.resolve(REPOSITORY, pullRequest.getSource())).thenReturn(changesetId);
-    when(ciStatusService.get(CHANGESET_STORE_NAME, REPOSITORY, changesetId)).thenReturn(changesetCIStatusCollection);
-    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, REPOSITORY, pullRequest.getId())).thenReturn(prCIStatusCollection);
+    mockServices(changesetId, pullRequest, changesetCIStatusCollection, prCIStatusCollection);
 
     CIStatusCollection result = merger.mergePullRequestCIStatuses(REPOSITORY, pullRequest.getId());
 
@@ -87,25 +76,15 @@ class CIStatusMergerTest {
   @Test
   void shouldMergeChangesetStatusesToPullRequestStatuses() {
     String changesetId = "1a2b3c4d";
-    PullRequest pullRequest = new PullRequest();
-    pullRequest.setId("1");
-    pullRequest.setSource("develop");
+    PullRequest pullRequest = createPullRequest();
 
     String status1 = "JENKINS";
-    CIStatus prCIStatus = new CIStatus(status1, status1, status1, Status.SUCCESS, "");
-    CIStatusCollection prCIStatusCollection = new CIStatusCollection();
-    prCIStatusCollection.put(prCIStatus);
-
+    CIStatusCollection prCIStatusCollection = createCIStatusCollection(status1, status1, Status.SUCCESS);
 
     String status2 = "TEAMSCALE";
-    CIStatus changesetCIStatus = new CIStatus(status2, status2, status2, Status.FAILURE, "");
-    CIStatusCollection changesetCIStatusCollection = new CIStatusCollection();
-    changesetCIStatusCollection.put(changesetCIStatus);
+    CIStatusCollection changesetCIStatusCollection = createCIStatusCollection(status2, status2, Status.FAILURE);
 
-    when(pullRequestService.get(REPOSITORY, pullRequest.getId())).thenReturn(pullRequest);
-    when(sourceRevisionResolver.resolve(REPOSITORY, pullRequest.getSource())).thenReturn(changesetId);
-    when(ciStatusService.get(CHANGESET_STORE_NAME, REPOSITORY, changesetId)).thenReturn(changesetCIStatusCollection);
-    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, REPOSITORY, pullRequest.getId())).thenReturn(prCIStatusCollection);
+    mockServices(changesetId, pullRequest, changesetCIStatusCollection, prCIStatusCollection);
 
     CIStatusCollection result = merger.mergePullRequestCIStatuses(REPOSITORY, pullRequest.getId());
 
@@ -114,34 +93,46 @@ class CIStatusMergerTest {
     assertThat(result.get(status2, status2).getStatus()).isEqualTo(Status.FAILURE);
   }
 
+  private CIStatusCollection createCIStatusCollection(String type, String name, Status status) {
+    CIStatus prCIStatus = new CIStatus(type, name, name, status, "");
+    CIStatusCollection prCIStatusCollection = new CIStatusCollection();
+    prCIStatusCollection.put(prCIStatus);
+    return prCIStatusCollection;
+  }
+
   @Test
   void shouldMergeChangesetStatusesToPullRequestStatusesIfSameTypeButDifferentName() {
     String changesetId = "1a2b3c4d";
-    PullRequest pullRequest = new PullRequest();
-    pullRequest.setId("1");
-    pullRequest.setSource("develop");
+    PullRequest pullRequest = createPullRequest();
 
     String statusType = "JENKINS";
     String statusName1 = "JENKINS";
-    CIStatus prCIStatus = new CIStatus(statusType, statusName1, statusName1, Status.SUCCESS, "");
-    CIStatusCollection prCIStatusCollection = new CIStatusCollection();
-    prCIStatusCollection.put(prCIStatus);
+    CIStatusCollection prCIStatusCollection = createCIStatusCollection(statusType, statusName1, Status.SUCCESS);
 
     String statusName2 = "TEAMSCALE";
-    CIStatus changesetCIStatus = new CIStatus(statusType, statusName2, statusName2, Status.FAILURE, "");
-    CIStatusCollection changesetCIStatusCollection = new CIStatusCollection();
-    changesetCIStatusCollection.put(changesetCIStatus);
+    CIStatusCollection changesetCIStatusCollection = createCIStatusCollection(statusType, statusName2, Status.FAILURE);
 
-    when(pullRequestService.get(REPOSITORY, pullRequest.getId())).thenReturn(pullRequest);
-    when(sourceRevisionResolver.resolve(REPOSITORY, pullRequest.getSource())).thenReturn(changesetId);
-    when(ciStatusService.get(CHANGESET_STORE_NAME, REPOSITORY, changesetId)).thenReturn(changesetCIStatusCollection);
-    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, REPOSITORY, pullRequest.getId())).thenReturn(prCIStatusCollection);
+    mockServices(changesetId, pullRequest, changesetCIStatusCollection, prCIStatusCollection);
 
     CIStatusCollection result = merger.mergePullRequestCIStatuses(REPOSITORY, pullRequest.getId());
 
     assertThat((int) result.stream().count()).isEqualTo(2);
     assertThat(result.get(statusType, statusName1).getStatus()).isEqualTo(Status.SUCCESS);
     assertThat(result.get(statusType, statusName2).getStatus()).isEqualTo(Status.FAILURE);
+  }
+
+  private PullRequest createPullRequest() {
+    PullRequest pullRequest = new PullRequest();
+    pullRequest.setId("1");
+    pullRequest.setSource("develop");
+    return pullRequest;
+  }
+
+  private void mockServices(String changesetId, PullRequest pullRequest, CIStatusCollection changesetCIStatusCollection, CIStatusCollection prCIStatusCollection) {
+    when(pullRequestService.get(REPOSITORY, pullRequest.getId())).thenReturn(pullRequest);
+    when(sourceRevisionResolver.resolve(REPOSITORY, pullRequest.getSource())).thenReturn(changesetId);
+    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, REPOSITORY, changesetId)).thenReturn(changesetCIStatusCollection);
+    when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, REPOSITORY, pullRequest.getId())).thenReturn(prCIStatusCollection);
   }
 
 }

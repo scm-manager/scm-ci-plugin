@@ -26,9 +26,9 @@ package com.cloudogu.scm.ci.cistatus;
 
 public class Constants {
 
+  private Constants() {}
+
   public static final String CI_PATH_V2 = "v2/ci";
   public static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";
-  public static final String CHANGESET_STORE_NAME = "changesetCIStatus";
-  public static final String PULL_REQUEST_STORE_NAME = "pullRequestCIStatus";
 
 }

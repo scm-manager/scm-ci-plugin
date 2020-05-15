@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusMerger;
@@ -47,7 +48,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import static com.cloudogu.scm.ci.cistatus.Constants.MEDIA_TYPE;
-import static com.cloudogu.scm.ci.cistatus.Constants.PULL_REQUEST_STORE_NAME;
 import static com.cloudogu.scm.ci.cistatus.api.CIStatusUtil.validateCIStatus;
 
 public class PullRequestCIStatusResource {
@@ -130,7 +130,7 @@ public class PullRequestCIStatusResource {
   )
 
   public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestId);
+    CIStatusCollection ciStatusCollection = ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId);
     return mapper.map(repository, pullRequestId, ciStatusCollection.get(type, ciName));
   }
 
@@ -157,7 +157,7 @@ public class PullRequestCIStatusResource {
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
     validateCIStatus(type, ciName, ciStatusDto);
     CIStatus ciStatus = mapper.map(ciStatusDto);
-    ciStatusService.put(PULL_REQUEST_STORE_NAME, repository, pullRequestId, ciStatus);
+    ciStatusService.put(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId, ciStatus);
 
     return Response.noContent().build();
   }

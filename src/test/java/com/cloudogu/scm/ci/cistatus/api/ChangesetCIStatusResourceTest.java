@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
@@ -39,7 +40,6 @@ import sonia.scm.repository.Repository;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static de.otto.edison.hal.Links.emptyLinks;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -81,7 +81,7 @@ class ChangesetCIStatusResourceTest {
     CIStatusDto dtoTwo = new CIStatusDto(emptyLinks());
     doReturn(dtoTwo).when(mapper).map(repository, changesetId, ciStatusTwo);
 
-    when(ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId)).thenReturn(ciStatusCollection);
 
     ChangesetCIStatusResource changesetCiStatusResource = new ChangesetCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
 
@@ -102,7 +102,7 @@ class ChangesetCIStatusResourceTest {
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
     doReturn(dtoOne).when(mapper).map(repository, changesetId, ciStatusOne);
 
-    when(ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId)).thenReturn(ciStatusCollection);
 
     ChangesetCIStatusResource changesetCiStatusResource = new ChangesetCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
     CIStatusDto ciStatus = changesetCiStatusResource.get(type, ciName);
@@ -128,7 +128,7 @@ class ChangesetCIStatusResourceTest {
     Response response = changesetCiStatusResource.put(type, ciName, dtoOne);
 
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
-    verify(ciStatusService).put(CHANGESET_STORE_NAME, repository, changesetId, ciStatusOne);
+    verify(ciStatusService).put(CIStatusStore.CHANGESET_STORE, repository, changesetId, ciStatusOne);
   }
 
   @Test

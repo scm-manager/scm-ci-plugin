@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.ci.cistatus.service;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.workflow.SourceRevisionResolver;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.pullrequest.service.PullRequestService;
@@ -31,9 +32,6 @@ import sonia.scm.plugin.Requires;
 import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
-
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
-import static com.cloudogu.scm.ci.cistatus.Constants.PULL_REQUEST_STORE_NAME;
 
 @Requires("scm-review-plugin")
 public class CIStatusMerger {
@@ -53,16 +51,19 @@ public class CIStatusMerger {
     PullRequest pullRequest = pullRequestService.get(repository, pullRequestId);
     String changesetId = sourceRevisionResolver.resolve(repository, pullRequest.getSource());
 
-    CIStatusCollection changesetCIStatusCollection = statusService.get(CHANGESET_STORE_NAME, repository, changesetId);
-    CIStatusCollection pullRequestCIStatusCollection = statusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestId);
+    CIStatusCollection mergedCIStatusCollection = new CIStatusCollection();
 
+    CIStatusCollection pullRequestCIStatusCollection = statusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId);
+    pullRequestCIStatusCollection.stream().forEach(mergedCIStatusCollection::put);
+
+    CIStatusCollection changesetCIStatusCollection = statusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId);
     for (CIStatus status : changesetCIStatusCollection) {
-      if (isStatusNotContainedInPullRequestStatus(pullRequestCIStatusCollection, status)) {
-        pullRequestCIStatusCollection.put(status);
+      if (isStatusNotContainedInPullRequestStatus(mergedCIStatusCollection, status)) {
+        mergedCIStatusCollection.put(status);
       }
     }
 
-    return pullRequestCIStatusCollection;
+    return mergedCIStatusCollection;
   }
 
   private boolean isStatusNotContainedInPullRequestStatus(CIStatusCollection pullRequestCIStatusCollection, CIStatus status) {

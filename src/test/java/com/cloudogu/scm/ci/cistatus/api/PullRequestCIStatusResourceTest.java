@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusMerger;
@@ -40,7 +41,6 @@ import sonia.scm.repository.Repository;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import static com.cloudogu.scm.ci.cistatus.Constants.PULL_REQUEST_STORE_NAME;
 import static de.otto.edison.hal.Links.emptyLinks;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -102,7 +102,7 @@ class PullRequestCIStatusResourceTest {
     CIStatusDto dtoOne = new CIStatusDto(emptyLinks());
     doReturn(dtoOne).when(mapper).map(repository, pullRequestId, ciStatusOne);
 
-    when(ciStatusService.get(PULL_REQUEST_STORE_NAME, repository, pullRequestId)).thenReturn(ciStatusCollection);
+    when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId)).thenReturn(ciStatusCollection);
 
     PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, ciStatusMerger, repository, pullRequestId);
     CIStatusDto ciStatus = pullRequestCIStatusResource.get(type, ciName);
@@ -128,7 +128,7 @@ class PullRequestCIStatusResourceTest {
     Response response = pullRequestCIStatusResource.put(type, ciName, dtoOne);
 
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
-    verify(ciStatusService).put(PULL_REQUEST_STORE_NAME, repository, pullRequestId, ciStatusOne);
+    verify(ciStatusService).put(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId, ciStatusOne);
   }
 
 }

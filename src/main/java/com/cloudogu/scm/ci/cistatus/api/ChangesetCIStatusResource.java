@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
@@ -45,7 +46,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static com.cloudogu.scm.ci.cistatus.Constants.MEDIA_TYPE;
 import static com.cloudogu.scm.ci.cistatus.api.CIStatusUtil.validateCIStatus;
 
@@ -103,7 +103,7 @@ public class ChangesetCIStatusResource {
     )
   )
   public HalRepresentation getAll() {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId);
+    CIStatusCollection ciStatusCollection = ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId);
     return collectionDtoMapper.map(ciStatusCollection.stream(), repository, changesetId);
   }
 
@@ -136,7 +136,7 @@ public class ChangesetCIStatusResource {
     )
   )
   public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(CHANGESET_STORE_NAME, repository, changesetId);
+    CIStatusCollection ciStatusCollection = ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId);
     return mapper.map(repository, changesetId, ciStatusCollection.get(type, ciName));
   }
 
@@ -163,7 +163,7 @@ public class ChangesetCIStatusResource {
   public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
     validateCIStatus(type, ciName, ciStatusDto);
     CIStatus ciStatus = mapper.map(ciStatusDto);
-    ciStatusService.put(CHANGESET_STORE_NAME, repository, changesetId, ciStatus);
+    ciStatusService.put(CIStatusStore.CHANGESET_STORE, repository, changesetId, ciStatus);
 
     return Response.noContent().build();
   }

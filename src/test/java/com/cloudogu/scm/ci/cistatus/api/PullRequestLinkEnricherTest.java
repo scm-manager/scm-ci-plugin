@@ -63,11 +63,6 @@ class PullRequestLinkEnricherTest {
   Subject subject;
 
   @BeforeEach
-  void initEnricher() {
-    pullRequestLinkEnricher = new PullRequestLinkEnricher(pathBuilder);
-  }
-
-  @BeforeEach
   void bindSubject() {
     ThreadContext.bind(subject);
   }

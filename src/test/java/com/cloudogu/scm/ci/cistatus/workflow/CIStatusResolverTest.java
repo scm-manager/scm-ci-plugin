@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
@@ -36,7 +37,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +64,7 @@ class CIStatusResolverTest {
     CIStatusCollection collection = new CIStatusCollection();
 
     when(sourceRevisionResolver.resolve(repository, "feature/spaceship")).thenReturn("42");
-    when(ciStatusService.get(CHANGESET_STORE_NAME,repository, "42")).thenReturn(collection);
+    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE,repository, "42")).thenReturn(collection);
 
     when(context.getRepository()).thenReturn(repository);
     when(context.getPullRequest()).thenReturn(pullRequest);

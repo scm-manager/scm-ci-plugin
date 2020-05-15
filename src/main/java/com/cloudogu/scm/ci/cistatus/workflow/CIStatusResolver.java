@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
@@ -31,8 +32,6 @@ import com.cloudogu.scm.review.workflow.Context;
 import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
-
-import static com.cloudogu.scm.ci.cistatus.Constants.CHANGESET_STORE_NAME;
 
 public class CIStatusResolver {
 
@@ -49,7 +48,7 @@ public class CIStatusResolver {
     Repository repository = context.getRepository();
     PullRequest pullRequest = context.getPullRequest();
     String sourceRevision = sourceRevisionResolver.resolve(repository, pullRequest.getSource());
-    return ciStatusService.get(CHANGESET_STORE_NAME, repository, sourceRevision);
+    return ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, sourceRevision);
   }
 
 }
