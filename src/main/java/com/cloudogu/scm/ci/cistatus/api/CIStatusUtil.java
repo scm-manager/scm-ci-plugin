@@ -27,7 +27,7 @@ package com.cloudogu.scm.ci.cistatus.api;
 import sonia.scm.ContextEntry;
 import sonia.scm.IllegalIdentifierChangeException;
 
-public class CIStatusUtil {
+final class CIStatusUtil {
 
   private CIStatusUtil() {}
 
