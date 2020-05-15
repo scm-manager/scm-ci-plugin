@@ -125,8 +125,9 @@ class ChangesetCIStatusResourceTest {
 
     ChangesetCIStatusResource changesetCiStatusResource = new ChangesetCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, changesetId);
 
-    changesetCiStatusResource.put(type, ciName, dtoOne);
+    Response response = changesetCiStatusResource.put(type, ciName, dtoOne);
 
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
     verify(ciStatusService).put(CIStatusStore.CHANGESET_STORE, repository, changesetId, ciStatusOne);
   }
 
