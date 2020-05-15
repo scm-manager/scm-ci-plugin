@@ -36,13 +36,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.io.IOException;
 
+import static com.cloudogu.scm.ci.cistatus.Constants.CI_PATH_V2;
+
 @OpenAPIDefinition(tags = {
   @Tag(name = "CI Plugin", description = "CI plugin provided endpoints")
 })
-@Path(CIStatusRootResource.CI_PATH_V2)
-public class CIStatusRootResource {
-
-  static final String CI_PATH_V2 = "v2/ci";
+@Path(CI_PATH_V2)
+public class ChangesetCIStatusRootResource {
 
   private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
@@ -51,7 +51,7 @@ public class CIStatusRootResource {
   private final RepositoryServiceFactory repositoryServiceFactory;
 
   @Inject
-  public CIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, RepositoryResolver repositoryResolver, RepositoryServiceFactory repositoryServiceFactory) {
+  public ChangesetCIStatusRootResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, RepositoryResolver repositoryResolver, RepositoryServiceFactory repositoryServiceFactory) {
     this.ciStatusService = ciStatusService;
     this.mapper = mapper;
     this.collectionDtoMapper = collectionDtoMapper;
@@ -60,11 +60,11 @@ public class CIStatusRootResource {
   }
 
   @Path("{namespace}/{name}/changesets/{changesetId}")
-  public CIStatusResource getCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changesetId") String changesetId) throws IOException {
+  public ChangesetCIStatusResource getChangesetCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changesetId") String changesetId) throws IOException {
     Repository repository = repositoryResolver.resolve(namespace, name);
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
       String resolvedChangesetId = repositoryService.getLogCommand().getChangeset(changesetId).getId();
-      return new CIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, resolvedChangesetId);
+      return new ChangesetCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, resolvedChangesetId);
     }
   }
 }

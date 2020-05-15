@@ -50,7 +50,7 @@ public class RepositoryStatusEnricher implements HalEnricher {
     Repository repository = context.oneRequireByType(Repository.class);
 
     if (mayRead(repository)) {
-      appender.appendLink("ciStatus", pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), "REVISION").replace("REVISION", "{revision}"));
+      appender.appendLink("ciStatus", pathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), "REVISION").replace("REVISION", "{revision}"));
     }
   }
 }

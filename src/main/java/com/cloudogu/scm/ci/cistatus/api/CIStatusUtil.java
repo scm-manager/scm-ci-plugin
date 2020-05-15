@@ -21,34 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ci.cistatus.api;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
-import de.otto.edison.hal.Embedded;
-import de.otto.edison.hal.HalRepresentation;
-import de.otto.edison.hal.Links;
-import sonia.scm.repository.Repository;
+import sonia.scm.ContextEntry;
+import sonia.scm.IllegalIdentifierChangeException;
 
-import javax.inject.Inject;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+final class CIStatusUtil {
 
-public class CIStatusCollectionDtoMapper {
+  private CIStatusUtil() {}
 
-  private final CIStatusMapper mapper;
-  private final CIStatusPathBuilder ciStatusPathBuilder;
-
-  @Inject
-  public CIStatusCollectionDtoMapper(CIStatusMapper mapper, CIStatusPathBuilder ciStatusPathBuilder) {
-    this.mapper = mapper;
-    this.ciStatusPathBuilder = ciStatusPathBuilder;
-  }
-
-  HalRepresentation map(Stream<CIStatus> ciStatus, Repository repository, String changesetId) {
-    return new HalRepresentation(
-      new Links.Builder().self(ciStatusPathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).build(),
-      Embedded.embedded("ciStatus", ciStatus
-        .map(s -> mapper.map(repository, changesetId, s))
-        .collect(Collectors.toList())));
+  static boolean validateCIStatus(String type, String ciName, CIStatusDto statusDto) {
+    if (!type.equals(statusDto.getType()) || !ciName.equals(statusDto.getName())) {
+      throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
+        statusDto.getName() + ":" + statusDto.getType()), "changing identifier attributes is not allowed");
+    }
+    return true;
   }
 }

@@ -21,34 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ci.cistatus.api;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
-import de.otto.edison.hal.Embedded;
-import de.otto.edison.hal.HalRepresentation;
-import de.otto.edison.hal.Links;
+import com.cloudogu.scm.review.pullrequest.service.PullRequest;
+import sonia.scm.api.v2.resources.Enrich;
+import sonia.scm.api.v2.resources.HalAppender;
+import sonia.scm.api.v2.resources.HalEnricher;
+import sonia.scm.api.v2.resources.HalEnricherContext;
+import sonia.scm.plugin.Extension;
+import sonia.scm.plugin.Requires;
 import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class CIStatusCollectionDtoMapper {
+import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
 
-  private final CIStatusMapper mapper;
-  private final CIStatusPathBuilder ciStatusPathBuilder;
+@Requires("scm-review-plugin")
+@Enrich(PullRequest.class)
+@Extension
+public class PullRequestLinkEnricher implements HalEnricher {
+
+  private final CIStatusPathBuilder pathBuilder;
 
   @Inject
-  public CIStatusCollectionDtoMapper(CIStatusMapper mapper, CIStatusPathBuilder ciStatusPathBuilder) {
-    this.mapper = mapper;
-    this.ciStatusPathBuilder = ciStatusPathBuilder;
+  public PullRequestLinkEnricher(CIStatusPathBuilder pathBuilder) {
+    this.pathBuilder = pathBuilder;
   }
 
-  HalRepresentation map(Stream<CIStatus> ciStatus, Repository repository, String changesetId) {
-    return new HalRepresentation(
-      new Links.Builder().self(ciStatusPathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).build(),
-      Embedded.embedded("ciStatus", ciStatus
-        .map(s -> mapper.map(repository, changesetId, s))
-        .collect(Collectors.toList())));
+  @Override
+  public void enrich(HalEnricherContext context, HalAppender appender) {
+    Repository repository = context.oneRequireByType(Repository.class);
+    PullRequest pullRequest = context.oneRequireByType(PullRequest.class);
+
+    if (mayRead(repository)) {
+      appender.appendLink("ciStatus", pathBuilder.createPullRequestCiStatusCollectionUri(repository.getNamespace(), repository.getName(), pullRequest.getId()));
+    }
   }
 }

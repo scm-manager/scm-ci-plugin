@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
@@ -95,8 +96,8 @@ class ChangesetStatusEnricherTest {
   @Test
   void shouldAppendLink() {
     when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
-    when(ciStatusService.get(REPOSITORY, CHANGESET.getId())).thenReturn(new CIStatusCollection());
-    when(pathBuilder.createCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
+    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, REPOSITORY, CHANGESET.getId())).thenReturn(new CIStatusCollection());
+    when(pathBuilder.createChangesetCiStatusCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
 
     enricher.enrich(context, appender);
 
@@ -109,8 +110,8 @@ class ChangesetStatusEnricherTest {
     CIStatusCollection collection = new CIStatusCollection();
     CIStatus ciStatus = new CIStatus("ci", "status", null, Status.PENDING, "http://ci.com");
     collection.put(ciStatus);
-    when(ciStatusService.get(REPOSITORY, CHANGESET.getId())).thenReturn(collection);
-    when(pathBuilder.createCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
+    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, REPOSITORY, CHANGESET.getId())).thenReturn(collection);
+    when(pathBuilder.createChangesetCiStatusCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
     CIStatusDto dto = new CIStatusDto();
     when(mapper.map(REPOSITORY, "123", ciStatus)).thenReturn(dto);
 

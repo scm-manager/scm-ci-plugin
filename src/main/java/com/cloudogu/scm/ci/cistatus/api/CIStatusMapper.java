@@ -49,7 +49,7 @@ public abstract class CIStatusMapper {
     String namespace = repository.getNamespace();
     String name = repository.getName();
     final Links.Builder linksBuilder = new Links.Builder();
-    linksBuilder.self(ciStatusPathBuilder.createCiStatusSelfUri(namespace, name, changesetId, ciStatus.getType(), ciStatus.getName()));
+    linksBuilder.self(ciStatusPathBuilder.createChangesetCiStatusSelfUri(namespace, name, changesetId, ciStatus.getType(), ciStatus.getName()));
     return new CIStatusDto(linksBuilder.build());
   }
 }

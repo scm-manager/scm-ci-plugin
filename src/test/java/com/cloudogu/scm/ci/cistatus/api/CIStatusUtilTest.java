@@ -21,34 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+
 package com.cloudogu.scm.ci.cistatus.api;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
-import de.otto.edison.hal.Embedded;
-import de.otto.edison.hal.HalRepresentation;
-import de.otto.edison.hal.Links;
-import sonia.scm.repository.Repository;
+import org.junit.jupiter.api.Test;
+import sonia.scm.IllegalIdentifierChangeException;
 
-import javax.inject.Inject;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CIStatusCollectionDtoMapper {
+class CIStatusUtilTest {
 
-  private final CIStatusMapper mapper;
-  private final CIStatusPathBuilder ciStatusPathBuilder;
+  @Test
+  void shouldBeValid() {
+    String type = "Jenkins";
+    String ciName = "SomeName";
+    CIStatusDto ciStatusDto = new CIStatusDto();
+    ciStatusDto.setType(type);
+    ciStatusDto.setName(ciName);
 
-  @Inject
-  public CIStatusCollectionDtoMapper(CIStatusMapper mapper, CIStatusPathBuilder ciStatusPathBuilder) {
-    this.mapper = mapper;
-    this.ciStatusPathBuilder = ciStatusPathBuilder;
+    boolean isValid = CIStatusUtil.validateCIStatus(type, ciName, ciStatusDto);
+
+    assertThat(isValid).isTrue();
   }
 
-  HalRepresentation map(Stream<CIStatus> ciStatus, Repository repository, String changesetId) {
-    return new HalRepresentation(
-      new Links.Builder().self(ciStatusPathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).build(),
-      Embedded.embedded("ciStatus", ciStatus
-        .map(s -> mapper.map(repository, changesetId, s))
-        .collect(Collectors.toList())));
+  @Test
+  void shouldThrowIllegalIdentifierChangeException() {
+    String type = "Jenkins";
+    String ciName = "SomeName";
+    CIStatusDto ciStatusDto = new CIStatusDto();
+    ciStatusDto.setType("type");
+    ciStatusDto.setName("ciName");
+
+    assertThrows(IllegalIdentifierChangeException.class, () -> CIStatusUtil.validateCIStatus(type, ciName, ciStatusDto));
   }
 }

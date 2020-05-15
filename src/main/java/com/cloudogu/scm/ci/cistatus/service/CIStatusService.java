@@ -24,6 +24,7 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
 import com.cloudogu.scm.ci.PermissionCheck;
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
@@ -41,20 +42,20 @@ public class CIStatusService {
     this.dataStoreFactory = dataStoreFactory;
   }
 
-  public void put(Repository repository, String changesetId, CIStatus ciStatus) {
+  public void put(CIStatusStore store, Repository repository, String changesetId, CIStatus ciStatus) {
     PermissionCheck.checkWrite(repository);
-    CIStatusCollection ciStatusCollection = get(repository, changesetId);
+    CIStatusCollection ciStatusCollection = get(store, repository, changesetId);
     ciStatusCollection.put(ciStatus);
-    getStore(repository).put(changesetId, ciStatusCollection);
+    getStore(store, repository).put(changesetId, ciStatusCollection);
   }
 
-  public CIStatusCollection get(Repository repository, String changesetId) {
+  public CIStatusCollection get(CIStatusStore storeName, Repository repository, String changesetId) {
     PermissionCheck.checkRead(repository);
-    CIStatusCollection collection = getStore(repository).get(changesetId);
+    CIStatusCollection collection = getStore(storeName, repository).get(changesetId);
     return  collection != null ? collection : new CIStatusCollection();
   }
 
-  private DataStore<CIStatusCollection> getStore(Repository repository) {
-    return dataStoreFactory.withType(CIStatusCollection.class).withName("ciStatus").forRepository(repository).build();
+  private DataStore<CIStatusCollection> getStore(CIStatusStore store, Repository repository) {
+    return dataStoreFactory.withType(CIStatusCollection.class).withName(store.name).forRepository(repository).build();
   }
 }

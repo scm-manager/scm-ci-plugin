@@ -23,32 +23,38 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
-import de.otto.edison.hal.Embedded;
-import de.otto.edison.hal.HalRepresentation;
-import de.otto.edison.hal.Links;
+import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
+import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import sonia.scm.repository.Repository;
 
-import javax.inject.Inject;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import static com.cloudogu.scm.ci.cistatus.api.CIStatusUtil.validateCIStatus;
 
-public class CIStatusCollectionDtoMapper {
+class BaseCIStatusResource {
 
+  private final CIStatusService ciStatusService;
   private final CIStatusMapper mapper;
-  private final CIStatusPathBuilder ciStatusPathBuilder;
+  private final Repository repository;
+  private final String id;
+  private final CIStatusStore store;
 
-  @Inject
-  public CIStatusCollectionDtoMapper(CIStatusMapper mapper, CIStatusPathBuilder ciStatusPathBuilder) {
+  public BaseCIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, Repository repository, String id, CIStatusStore store) {
+    this.ciStatusService = ciStatusService;
     this.mapper = mapper;
-    this.ciStatusPathBuilder = ciStatusPathBuilder;
+    this.repository = repository;
+    this.id = id;
+    this.store = store;
   }
 
-  HalRepresentation map(Stream<CIStatus> ciStatus, Repository repository, String changesetId) {
-    return new HalRepresentation(
-      new Links.Builder().self(ciStatusPathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).build(),
-      Embedded.embedded("ciStatus", ciStatus
-        .map(s -> mapper.map(repository, changesetId, s))
-        .collect(Collectors.toList())));
+  CIStatusDto get(String type, String ciName) {
+    CIStatusCollection ciStatusCollection = ciStatusService.get(store, repository, id);
+    return mapper.map(repository, id, ciStatusCollection.get(type, ciName));
+  }
+
+  void put(String type, String ciName, CIStatusDto ciStatusDto) {
+    validateCIStatus(type, ciName, ciStatusDto);
+    CIStatus ciStatus = mapper.map(ciStatusDto);
+    ciStatusService.put(store, repository, id, ciStatus);
   }
 }

@@ -21,19 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ci.cistatus.api;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
+import com.cloudogu.scm.ci.cistatus.service.CIStatusMerger;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
-import com.google.common.annotations.VisibleForTesting;
 import de.otto.edison.hal.HalRepresentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import sonia.scm.ContextEntry;
-import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.api.v2.resources.ErrorDto;
 import sonia.scm.repository.Repository;
 import sonia.scm.web.VndMediaType;
@@ -45,34 +44,22 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
-public class CIStatusResource {
+import static com.cloudogu.scm.ci.cistatus.Constants.MEDIA_TYPE;
 
-  private static final String MEDIA_TYPE = "application/vnd.scmm-cistatus+json;v=2";
+public class PullRequestCIStatusResource extends BaseCIStatusResource {
 
-  private final CIStatusService ciStatusService;
-  private final CIStatusMapper mapper;
   private final CIStatusCollectionDtoMapper collectionDtoMapper;
+  private final CIStatusMerger ciStatusMerger;
   private final Repository repository;
-  private final String changesetId;
+  private final String pullRequestId;
 
-  CIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, Repository repository, String changesetId) {
-    this.ciStatusService = ciStatusService;
-    this.mapper = mapper;
+  PullRequestCIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, CIStatusMerger ciStatusMerger, Repository repository, String pullRequestId) {
+    super(ciStatusService, mapper, repository, pullRequestId, CIStatusStore.PULL_REQUEST_STORE);
     this.collectionDtoMapper = collectionDtoMapper;
+    this.ciStatusMerger = ciStatusMerger;
     this.repository = repository;
-    this.changesetId = changesetId;
-  }
-
-  @VisibleForTesting
-  Repository getRepository() {
-    return repository;
-  }
-
-  @VisibleForTesting
-  String getChangesetId() {
-    return changesetId;
+    this.pullRequestId = pullRequestId;
   }
 
   @GET
@@ -80,9 +67,9 @@ public class CIStatusResource {
   @Path("")
   @Operation(
     summary = "Get all ci status",
-    description = "Returns all ci status for a changeset.",
+    description = "Returns all ci status for a pull request.",
     tags = "CI Plugin",
-    operationId = "ci_get_all_status"
+    operationId = "ci_get_all_status_for_pull_request"
   )
   @ApiResponse(
     responseCode = "200",
@@ -103,8 +90,8 @@ public class CIStatusResource {
     )
   )
   public HalRepresentation getAll() {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
-    return collectionDtoMapper.map(ciStatusCollection.stream(), repository, changesetId);
+    CIStatusCollection ciStatusCollection = ciStatusMerger.mergePullRequestCIStatuses(repository, pullRequestId);
+    return collectionDtoMapper.map(ciStatusCollection.stream(), repository, pullRequestId);
   }
 
   @GET
@@ -112,9 +99,9 @@ public class CIStatusResource {
   @Produces(MEDIA_TYPE)
   @Operation(
     summary = "Get single ci status",
-    description = "Returns single ci status for a changeset.",
+    description = "Returns single ci status for a pull request.",
     tags = "CI Plugin",
-    operationId = "ci_get_single_status"
+    operationId = "ci_get_single_status_for_pull_request"
   )
   @ApiResponse(
     responseCode = "200",
@@ -135,19 +122,19 @@ public class CIStatusResource {
       schema = @Schema(implementation = ErrorDto.class)
     )
   )
+
   public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(repository, changesetId);
-    return mapper.map(repository, changesetId, ciStatusCollection.get(type, ciName));
+    return super.get(type, ciName);
   }
 
   @PUT
   @Consumes(MEDIA_TYPE)
   @Path("{type}/{ciName}")
   @Operation(
-    summary = "Update ci status",
-    description = "Updates single ci status.",
+    summary = "Update pull request ci status",
+    description = "Updates single ci status for pull request.",
     tags = "CI Plugin",
-    operationId = "ci_put_status"
+    operationId = "ci_put_status_for_pull_request"
   )
   @ApiResponse(responseCode = "204", description = "update success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
@@ -160,14 +147,7 @@ public class CIStatusResource {
       schema = @Schema(implementation = ErrorDto.class)
     )
   )
-  public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
-    if (!type.equals(ciStatusDto.getType()) || !ciName.equals(ciStatusDto.getName())) {
-      throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
-        ciStatusDto.getName() + ":" + ciStatusDto.getType()), "changing identifier attributes is not allowed");
-    }
-    CIStatus ciStatus = mapper.map(ciStatusDto);
-    ciStatusService.put(repository, changesetId, ciStatus);
-
-    return Response.noContent().build();
+  public void put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
+    super.put(type, ciName, ciStatusDto);
   }
 }
