@@ -35,6 +35,7 @@ import sonia.scm.version.Version;
 import javax.inject.Inject;
 import java.nio.file.Path;
 
+import static com.cloudogu.scm.ci.cistatus.CIStatusStore.CHANGESET_STORE;
 import static sonia.scm.version.Version.parse;
 
 @Extension
@@ -54,7 +55,7 @@ public class StoreUpdateStep implements UpdateStep {
     repositoryLocationResolver.forClass(Path.class).forAllLocations((repositoryId, path) -> {
       DataStore<CIStatusCollection> newStore = dataStoreFactory
         .withType(CIStatusCollection.class)
-        .withName("changesetCiStatus")
+        .withName(CHANGESET_STORE.name)
         .forRepository(repositoryId)
         .build();
       dataStoreFactory
