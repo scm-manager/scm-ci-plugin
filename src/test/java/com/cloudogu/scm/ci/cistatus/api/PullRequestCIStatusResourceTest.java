@@ -125,9 +125,8 @@ class PullRequestCIStatusResourceTest {
 
     PullRequestCIStatusResource pullRequestCIStatusResource = new PullRequestCIStatusResource(ciStatusService, mapper, collectionDtoMapper, ciStatusMerger, repository, pullRequestId);
 
-    Response response = pullRequestCIStatusResource.put(type, ciName, dtoOne);
+    pullRequestCIStatusResource.put(type, ciName, dtoOne);
 
-    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NO_CONTENT);
     verify(ciStatusService).put(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId, ciStatusOne);
   }
 

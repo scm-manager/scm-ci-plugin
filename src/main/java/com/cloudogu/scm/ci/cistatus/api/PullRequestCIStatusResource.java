@@ -25,7 +25,6 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.cistatus.CIStatusStore;
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusMerger;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
@@ -45,23 +44,18 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import static com.cloudogu.scm.ci.cistatus.Constants.MEDIA_TYPE;
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusUtil.validateCIStatus;
 
-public class PullRequestCIStatusResource {
+public class PullRequestCIStatusResource extends BaseCIStatusResource {
 
-  private final CIStatusService ciStatusService;
-  private final CIStatusMapper mapper;
   private final CIStatusCollectionDtoMapper collectionDtoMapper;
   private final CIStatusMerger ciStatusMerger;
   private final Repository repository;
   private final String pullRequestId;
 
   PullRequestCIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, CIStatusMerger ciStatusMerger, Repository repository, String pullRequestId) {
-    this.ciStatusService = ciStatusService;
-    this.mapper = mapper;
+    super(ciStatusService, mapper, repository, pullRequestId, CIStatusStore.PULL_REQUEST_STORE);
     this.collectionDtoMapper = collectionDtoMapper;
     this.ciStatusMerger = ciStatusMerger;
     this.repository = repository;
@@ -130,8 +124,7 @@ public class PullRequestCIStatusResource {
   )
 
   public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId);
-    return mapper.map(repository, pullRequestId, ciStatusCollection.get(type, ciName));
+    return super.get(type, ciName);
   }
 
   @PUT
@@ -154,11 +147,7 @@ public class PullRequestCIStatusResource {
       schema = @Schema(implementation = ErrorDto.class)
     )
   )
-  public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
-    validateCIStatus(type, ciName, ciStatusDto);
-    CIStatus ciStatus = mapper.map(ciStatusDto);
-    ciStatusService.put(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId, ciStatus);
-
-    return Response.noContent().build();
+  public void put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
+    super.put(type, ciName, ciStatusDto);
   }
 }

@@ -24,7 +24,6 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.cistatus.CIStatusStore;
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.common.annotations.VisibleForTesting;
@@ -44,22 +43,19 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import static com.cloudogu.scm.ci.cistatus.Constants.MEDIA_TYPE;
-import static com.cloudogu.scm.ci.cistatus.api.CIStatusUtil.validateCIStatus;
 
-public class ChangesetCIStatusResource {
+public class ChangesetCIStatusResource extends BaseCIStatusResource {
 
   private final CIStatusService ciStatusService;
-  private final CIStatusMapper mapper;
   private final CIStatusCollectionDtoMapper collectionDtoMapper;
   private final Repository repository;
   private final String changesetId;
 
   ChangesetCIStatusResource(CIStatusService ciStatusService, CIStatusMapper mapper, CIStatusCollectionDtoMapper collectionDtoMapper, Repository repository, String changesetId) {
+    super(ciStatusService, mapper, repository, changesetId, CIStatusStore.CHANGESET_STORE);
     this.ciStatusService = ciStatusService;
-    this.mapper = mapper;
     this.collectionDtoMapper = collectionDtoMapper;
     this.repository = repository;
     this.changesetId = changesetId;
@@ -136,8 +132,7 @@ public class ChangesetCIStatusResource {
     )
   )
   public CIStatusDto get(@PathParam("type") String type, @PathParam("ciName") String ciName) {
-    CIStatusCollection ciStatusCollection = ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId);
-    return mapper.map(repository, changesetId, ciStatusCollection.get(type, ciName));
+    return super.get(type, ciName);
   }
 
   @PUT
@@ -160,11 +155,7 @@ public class ChangesetCIStatusResource {
       schema = @Schema(implementation = ErrorDto.class)
     )
   )
-  public Response put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
-    validateCIStatus(type, ciName, ciStatusDto);
-    CIStatus ciStatus = mapper.map(ciStatusDto);
-    ciStatusService.put(CIStatusStore.CHANGESET_STORE, repository, changesetId, ciStatus);
-
-    return Response.noContent().build();
+  public void put(@PathParam("type") String type, @PathParam("ciName") String ciName, @Valid CIStatusDto ciStatusDto) {
+    super.put(type, ciName, ciStatusDto);
   }
 }
