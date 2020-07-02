@@ -25,8 +25,10 @@
 package com.cloudogu.scm.ci.cistatus.workflow;
 
 import com.cloudogu.scm.ci.cistatus.CIStatusStore;
+import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
+import com.cloudogu.scm.ci.cistatus.service.Status;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.workflow.Context;
 import org.junit.jupiter.api.Test;
@@ -60,17 +62,25 @@ class CIStatusResolverTest {
     Repository repository = RepositoryTestData.createHeartOfGold();
     PullRequest pullRequest = new PullRequest();
     pullRequest.setSource("feature/spaceship");
+    pullRequest.setId("21");
 
-    CIStatusCollection collection = new CIStatusCollection();
+    CIStatus changesetCiStatus = new CIStatus("jenkins", "jenkins", "jenkins", Status.SUCCESS, "jenkins.io");
+    CIStatusCollection changesetCiStatuses = new CIStatusCollection();
+    changesetCiStatuses.put(changesetCiStatus);
+
+    CIStatus prCiStatus = new CIStatus("teamscale", "teamscale", "Teamscale", Status.SUCCESS, "teamscale.com");
+    CIStatusCollection pullRequestCiStatuses = new CIStatusCollection();
+    pullRequestCiStatuses.put(prCiStatus);
 
     when(sourceRevisionResolver.resolve(repository, "feature/spaceship")).thenReturn("42");
-    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE,repository, "42")).thenReturn(collection);
+    when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, "42")).thenReturn(changesetCiStatuses);
+    when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, "21")).thenReturn(pullRequestCiStatuses);
 
     when(context.getRepository()).thenReturn(repository);
     when(context.getPullRequest()).thenReturn(pullRequest);
 
     CIStatusCollection resolved = resolver.resolve(context);
-    assertThat(resolved).isSameAs(collection);
+    assertThat(resolved).containsExactly(changesetCiStatus, prCiStatus);
   }
 
 }

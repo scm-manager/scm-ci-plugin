@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Documentation in English and German ([#11](https://github.com/scm-manager/scm-ci-plugin/pull/11))
 
+### Fixed
+- Workflow engine rules also consider pull request ci status for validation ([#12](https://github.com/scm-manager/scm-ci-plugin/pull/12))
+
 ## 2.0.0 - 2020-06-04
 ### Changed
 - Rebuild for api changes from core
