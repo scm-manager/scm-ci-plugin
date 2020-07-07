@@ -47,6 +47,7 @@
     "rule": {
       "CIStatusAllSuccessRule": {
         "name": "All CI status successful",
+        "sortKey": "Continuous-Integration",
         "description": "Every CI status is successful.",
         "success": "Every CI status is successful.",
         "failed": "At least one CI status is not successful.",
@@ -54,6 +55,7 @@
       },
       "CIStatusXSuccessRule": {
         "name": "Number of CI status successful",
+        "sortKey": "Continuous-Integration",
         "description": "At least {{ numberOfSuccessful }} CI status are successful.",
         "success": "A sufficient number of CI status are successful.",
         "failed": "Only {{ current }} of {{ expected }} required successful CI status present.",
@@ -68,6 +70,7 @@
       },
       "CIStatusNamedSuccessRule": {
         "name": "Named CI status successful",
+        "sortKey": "Continuous-Integration",
         "description": "The CI status with name '{{ name }}' of type '{{ type }}' is successful.",
         "success": "The CI status {{ type }}:{{ name }} is successful.",
         "failed": {
@@ -90,6 +93,7 @@
       },
       "CIStatusOfTypeSuccessRule": {
         "name": "All CI status of type successful",
+        "sortKey": "Continuous-Integration",
         "description": "Every CI status of type '{{ type }}' is successful.",
         "success": "Every CI status of type '{{ type }}' is successful.",
         "failed": {
