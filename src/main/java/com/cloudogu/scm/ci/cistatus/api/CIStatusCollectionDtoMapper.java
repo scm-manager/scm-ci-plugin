@@ -46,7 +46,7 @@ public class CIStatusCollectionDtoMapper {
 
   HalRepresentation map(Stream<CIStatus> ciStatus, Repository repository, String changesetId) {
     return new HalRepresentation(
-      new Links.Builder().self(ciStatusPathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).build(),
+      new Links.Builder().self(ciStatusPathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).build(),
       Embedded.embedded("ciStatus", ciStatus
         .map(s -> mapper.map(repository, changesetId, s))
         .collect(Collectors.toList())));

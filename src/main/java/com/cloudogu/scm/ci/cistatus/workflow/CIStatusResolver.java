@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
@@ -47,7 +48,17 @@ public class CIStatusResolver {
     Repository repository = context.getRepository();
     PullRequest pullRequest = context.getPullRequest();
     String sourceRevision = sourceRevisionResolver.resolve(repository, pullRequest.getSource());
-    return ciStatusService.get(repository, sourceRevision);
+    CIStatusCollection ciStatusCollection = new CIStatusCollection();
+
+    ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, sourceRevision)
+      .stream()
+      .forEach(ciStatusCollection::put);
+
+    ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequest.getId())
+      .stream()
+      .forEach(ciStatusCollection::put);
+
+    return ciStatusCollection;
   }
 
 }

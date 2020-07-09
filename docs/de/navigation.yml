@@ -1,0 +1,6 @@
+- section: Erste Schritte
+  entries:
+    - /example-of-integration/
+    - /status-bar/
+    - /status-dialog/
+    - /status-per-commit/

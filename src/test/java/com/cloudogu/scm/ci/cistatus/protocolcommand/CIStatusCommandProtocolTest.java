@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ci.cistatus.protocolcommand;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.ci.cistatus.service.Status;
@@ -68,18 +69,18 @@ public class CIStatusCommandProtocolTest {
     commandProtocol.handle(commandContext, repositoryContext);
 
     CIStatus ciStatus = new CIStatus("jenkins", "scm-plugin", "scm-plugin", Status.SUCCESS, "http://localhost:8080/jenkins/job/scm-plugin/11/");
-    verify(service).put(repositoryContext.getRepository(), "1a2b3c4d5e6f", ciStatus);
+    verify(service).put(CIStatusStore.CHANGESET_STORE, repositoryContext.getRepository(), "1a2b3c4d5e6f", ciStatus);
   }
 
   @Test
   void shouldThrowIllegalArgumentExceptionIfCouldNotUnmarshal() throws FileNotFoundException {
-    CommandContext commandContext = createCommandContext(SSH_COMMAND,"protocolcommand/cistatus/1a2b3c4d5e6f_invalid.xml");
+    CommandContext commandContext = createCommandContext(SSH_COMMAND, "protocolcommand/cistatus/1a2b3c4d5e6f_invalid.xml");
     assertThrows(IllegalArgumentException.class, () -> commandProtocol.handle(commandContext, repositoryContext));
   }
 
   @Test
   void shouldThrowIllegalArgumentExceptionIfRevisionIsMissing() throws FileNotFoundException {
-    CommandContext commandContext = createCommandContext(SSH_COMMAND_WITHOUT_REVISION,"protocolcommand/cistatus/1a2b3c4d5e6f.xml");
+    CommandContext commandContext = createCommandContext(SSH_COMMAND_WITHOUT_REVISION, "protocolcommand/cistatus/1a2b3c4d5e6f.xml");
     assertThrows(IllegalArgumentException.class, () -> commandProtocol.handle(commandContext, repositoryContext));
   }
 

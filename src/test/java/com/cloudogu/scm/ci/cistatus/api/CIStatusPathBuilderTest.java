@@ -49,7 +49,7 @@ class CIStatusPathBuilderTest {
 
   @Test
   void shouldCreateSelfLink() {
-    String commentSelfUri = ciStatusPathBuilder.createCiStatusSelfUri("space", "name", "changesetId", "jenkins", "build1");
+    String commentSelfUri = ciStatusPathBuilder.createChangesetCiStatusSelfUri("space", "name", "changesetId", "jenkins", "build1");
     Assertions.assertThat(commentSelfUri).isEqualTo("/api/v2/ci/space/name/changesets/changesetId/jenkins/build1");
   }
 }

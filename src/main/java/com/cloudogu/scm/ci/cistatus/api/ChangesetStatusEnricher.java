@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
@@ -58,9 +59,9 @@ public class ChangesetStatusEnricher implements HalEnricher {
     Changeset changeset = context.oneRequireByType(Changeset.class);
 
     if (mayRead(repository)) {
-      appender.appendLink("ciStatus", pathBuilder.createCollectionUri(repository.getNamespace(), repository.getName(), changeset.getId()));
+      appender.appendLink("ciStatus", pathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changeset.getId()));
       appender.appendEmbedded("ciStatus",
-        ciStatusService.get(repository, changeset.getId())
+        ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, changeset.getId())
           .stream()
           .map(ciStatus -> mapper.map(repository, changeset.getId(), ciStatus))
           .collect(Collectors.toList()));
