@@ -46,6 +46,7 @@
     "rule": {
       "CIStatusAllSuccessRule": {
         "name": "Alle CI-Status erfolgreich.",
+        "sortKey": "Continuous-Integration",
         "description": "Alle CI-Status sind erfolgreich.",
         "success": "Alle CI-Status sind erfolgreich.",
         "failed": "Mindestens ein CI-Status ist nicht erfolgreich.",
@@ -53,6 +54,7 @@
       },
       "CIStatusXSuccessRule": {
         "name": "Anzahl CI-Status",
+        "sortKey": "Continuous-Integration",
         "description": "Mindestens {{ numberOfSuccessful }} CI-Status sind erfolgreich.",
         "success": "Ausreichend viele CI-Status sind erfolgreich.",
         "failed": "Es sind nur {{ current }} von {{ expected }} erfolreiche CI-Status vorhanden.",
@@ -67,6 +69,7 @@
       },
       "CIStatusNamedSuccessRule": {
         "name": "Benannte CI-Status erfolgreich",
+        "sortKey": "Continuous-Integration",
         "description": "Die CI-Status mit dem Namen '{{ name }}' vom Typ '{{ type }}' ist erfolgreich.",
         "success": "Der CI-Status {{ type }}:{{ name }} ist erfolgreich.",
         "failed": {
@@ -89,6 +92,7 @@
       },
       "CIStatusOfTypeSuccessRule": {
         "name": "Alle CI-Status von Typ erfolgreich",
+        "sortKey": "Continuous-Integration",
         "description": "Alle CI-Status vom Typ '{{ type }}' sind erfolgreich.",
         "success": "Alle CI-Status vom Typ '{{ type }}' sind erfolgreich.",
         "failed": {
