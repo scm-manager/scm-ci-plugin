@@ -34,7 +34,7 @@ final class CIStatusUtil {
   static boolean validateCIStatus(String type, String ciName, CIStatusDto statusDto) {
     if (!type.equals(statusDto.getType()) || !ciName.equals(statusDto.getName())) {
       throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
-        statusDto.getName() + ":" + statusDto.getType()), "changing identifier attributes is not allowed");
+        statusDto.getName() + ":" + statusDto.getType()), String.format("changing identifier attributes is not allowed (type '%s' != '%s' or name '%s' != '%s'", type, statusDto.getType(), ciName, statusDto.getName()));
     }
     return true;
   }
