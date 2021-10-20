@@ -24,8 +24,8 @@
 
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import sonia.scm.ContextEntry;
-import sonia.scm.NotFoundException;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.InternalRepositoryException;
 import sonia.scm.repository.Repository;
@@ -34,7 +34,10 @@ import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Optional;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static sonia.scm.ContextEntry.ContextBuilder.entity;
 
 public class SourceRevisionResolver {
@@ -46,13 +49,17 @@ public class SourceRevisionResolver {
     this.repositoryServiceFactory = repositoryServiceFactory;
   }
 
-  public String resolve(Repository repository, String source) {
+  public Optional<String> resolveRevisionOfSource(Repository repository, PullRequest pullRequest) {
+    if (pullRequest.getSourceRevision() != null) {
+      return of(pullRequest.getSourceRevision());
+    }
+    String source = pullRequest.getSource();
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
       Changeset changeset = repositoryService.getLogCommand().getChangeset(source);
       if (changeset == null) {
-        throw NotFoundException.notFound(context(repository, source));
+        return empty();
       }
-      return changeset.getId();
+      return of(changeset.getId());
     } catch (IOException ex) {
       throw new InternalRepositoryException(context(repository, source), "failed to fetch changeset");
     }

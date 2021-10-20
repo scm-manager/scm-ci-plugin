@@ -23,7 +23,9 @@
  */
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,10 +41,13 @@ import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,38 +59,56 @@ class SourceRevisionResolverTest {
   @InjectMocks
   private SourceRevisionResolver revisionResolver;
 
-  @Mock
-  private RepositoryService repositoryService;
-
-  @Mock
-  private LogCommandBuilder logCommand;
-
   private final Repository repository = RepositoryTestData.createHeartOfGold();
+  @Nested
+  class WithBranch {
 
-  @BeforeEach
-  void setUpRepositoryService() {
-    when(repositoryServiceFactory.create(repository)).thenReturn(repositoryService);
-    when(repositoryService.getLogCommand()).thenReturn(logCommand);
+    @Mock
+    private RepositoryService repositoryService;
+
+    @Mock
+    private LogCommandBuilder logCommand;
+
+    @BeforeEach
+    void setUpRepositoryService() {
+      when(repositoryServiceFactory.create(repository)).thenReturn(repositoryService);
+      when(repositoryService.getLogCommand()).thenReturn(logCommand);
+    }
+
+    @Test
+    void shouldReturnEmptyResultIfChangesetCouldNotBeDetermined() {
+      Optional<String> sourceRevision = revisionResolver.resolveRevisionOfSource(repository, mockPullRequest("feature/spaceship", null));
+
+      assertThat(sourceRevision).isEmpty();
+    }
+
+    @Test
+    void shouldReturnChangesetIdIfBranchExists() throws IOException {
+      Changeset changeset = new Changeset("42", 1L, null);
+      when(logCommand.getChangeset("feature/spaceship")).thenReturn(changeset);
+
+      Optional<String> sourceRevision = revisionResolver.resolveRevisionOfSource(repository, mockPullRequest("feature/spaceship", null));
+      assertThat(sourceRevision).get().isEqualTo("42");
+    }
+
+    @Test
+    void shouldThrowInternalRepositoryExceptionOnFailure() throws IOException {
+      when(logCommand.getChangeset(anyString())).thenThrow(new IOException("failure"));
+      PullRequest pullRequest = mockPullRequest("feature/spaceship", null);
+
+      assertThrows(InternalRepositoryException.class, () -> revisionResolver.resolveRevisionOfSource(repository, pullRequest));
+    }
   }
 
   @Test
-  void shouldReturnIdOfChangeset() throws IOException {
-    Changeset changeset = new Changeset("42", 1L, null);
-    when(logCommand.getChangeset("feature/spaceship")).thenReturn(changeset);
-
-    String sourceRevision = revisionResolver.resolve(repository, "feature/spaceship");
-    assertThat(sourceRevision).isEqualTo("42");
+  void shouldReturnChangesetIdOfPullRequestIfExists() {
+    Optional<String> sourceRevision = revisionResolver.resolveRevisionOfSource(repository, mockPullRequest("feature/spaceship", "42"));
+    assertThat(sourceRevision).get().isEqualTo("42");
   }
 
-  @Test
-  void shouldThrowNotFoundExceptionIfChangesetCouldNotBeFound() {
-    assertThrows(NotFoundException.class, () ->revisionResolver.resolve(repository, "feature/spaceship"));
+  private PullRequest mockPullRequest(String sourceBranch, String sourceRevision) {
+    PullRequest pullRequest = new PullRequest("1", sourceBranch, null);
+    pullRequest.setSourceRevision(sourceRevision);
+    return pullRequest;
   }
-
-  @Test
-  void shouldThrowInternalRepositoryExceptionOnFailure() throws IOException {
-    when(logCommand.getChangeset(anyString())).thenThrow(new IOException("failure"));
-    assertThrows(InternalRepositoryException.class, () ->revisionResolver.resolve(repository, "feature/spaceship"));
-  }
-
 }

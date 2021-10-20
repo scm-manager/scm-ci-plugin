@@ -49,19 +49,20 @@ public class CIStatusMerger {
 
   public CIStatusCollection mergePullRequestCIStatuses(Repository repository, String pullRequestId) {
     PullRequest pullRequest = pullRequestService.get(repository, pullRequestId);
-    String changesetId = sourceRevisionResolver.resolve(repository, pullRequest.getSource());
 
     CIStatusCollection mergedCIStatusCollection = new CIStatusCollection();
+    sourceRevisionResolver.resolveRevisionOfSource(repository, pullRequest)
+      .ifPresent(changesetId -> {
+        CIStatusCollection pullRequestCIStatusCollection = statusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId);
+        pullRequestCIStatusCollection.stream().forEach(mergedCIStatusCollection::put);
 
-    CIStatusCollection pullRequestCIStatusCollection = statusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequestId);
-    pullRequestCIStatusCollection.stream().forEach(mergedCIStatusCollection::put);
-
-    CIStatusCollection changesetCIStatusCollection = statusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId);
-    for (CIStatus status : changesetCIStatusCollection) {
-      if (isStatusNotContainedInPullRequestStatus(mergedCIStatusCollection, status)) {
-        mergedCIStatusCollection.put(status);
-      }
-    }
+        CIStatusCollection changesetCIStatusCollection = statusService.get(CIStatusStore.CHANGESET_STORE, repository, changesetId);
+        for (CIStatus status : changesetCIStatusCollection) {
+          if (isStatusNotContainedInPullRequestStatus(mergedCIStatusCollection, status)) {
+            mergedCIStatusCollection.put(status);
+          }
+        }
+      });
 
     return mergedCIStatusCollection;
   }
