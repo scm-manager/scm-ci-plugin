@@ -24,6 +24,7 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
+import com.cloudogu.scm.review.pullrequest.service.PullRequestStatus;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.AfterEach;
@@ -62,6 +63,8 @@ class PullRequestLinkEnricherTest {
   @Mock
   Subject subject;
 
+    PullRequest pr = new PullRequest("1", "source", "target");
+
   @BeforeEach
   void bindSubject() {
     ThreadContext.bind(subject);
@@ -72,15 +75,18 @@ class PullRequestLinkEnricherTest {
     ThreadContext.unbindSubject();
   }
 
+  @BeforeEach
+  void mockContext() {
+    when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
+    when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);
+  }
+
   @Test
-  void shouldEnrichCILinkToPullRequest() {
-    PullRequest pr = new PullRequest();
-    pr.setId("1");
+  void shouldEnrichCILinkToPullRequestIfOpen() {
+    pr.setStatus(PullRequestStatus.OPEN);
 
     when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
     when(pathBuilder.createPullRequestCiStatusCollectionUri(REPOSITORY.getNamespace(), REPOSITORY.getName(), pr.getId())).thenReturn("http://scm.com/pullRequest/" + pr.getId());
-    when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
-    when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);
 
     pullRequestLinkEnricher.enrich(context, appender);
 
@@ -89,12 +95,18 @@ class PullRequestLinkEnricherTest {
   }
 
   @Test
+  void shouldNoEnrichCILinkToPullRequestIfClosed() {
+    PullRequest pr = new PullRequest();
+    pr.setStatus(PullRequestStatus.REJECTED);
+
+    pullRequestLinkEnricher.enrich(context, appender);
+
+    verify(appender, never()).appendLink(any(), any());
+  }
+
+  @Test
   void shouldNotEnrichCiLinkIfNotPermitted() {
     PullRequest pr = new PullRequest();
-    pr.setId("1");
-
-    when(context.oneRequireByType(Repository.class)).thenReturn(REPOSITORY);
-    when(context.oneRequireByType(PullRequest.class)).thenReturn(pr);
 
     pullRequestLinkEnricher.enrich(context, appender);
 

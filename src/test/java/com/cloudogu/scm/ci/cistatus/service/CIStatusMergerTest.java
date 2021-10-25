@@ -36,6 +36,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -93,6 +95,16 @@ class CIStatusMergerTest {
     assertThat(result.get(status2, status2).getStatus()).isEqualTo(Status.FAILURE);
   }
 
+  @Test
+  void shouldHandleMissingChangeset() {
+    PullRequest pullRequest = createPullRequest();
+    when(sourceRevisionResolver.resolveRevisionOfSource(REPOSITORY, pullRequest)).thenReturn(empty());
+
+    CIStatusCollection result = merger.mergePullRequestCIStatuses(REPOSITORY, pullRequest.getId());
+
+    assertThat(result.stream()).isEmpty();
+  }
+
   private CIStatusCollection createCIStatusCollection(String type, String name, Status status) {
     CIStatus prCIStatus = new CIStatus(type, name, name, status, "");
     CIStatusCollection prCIStatusCollection = new CIStatusCollection();
@@ -125,12 +137,12 @@ class CIStatusMergerTest {
     PullRequest pullRequest = new PullRequest();
     pullRequest.setId("1");
     pullRequest.setSource("develop");
+    when(pullRequestService.get(REPOSITORY, pullRequest.getId())).thenReturn(pullRequest);
     return pullRequest;
   }
 
   private void mockServices(String changesetId, PullRequest pullRequest, CIStatusCollection changesetCIStatusCollection, CIStatusCollection prCIStatusCollection) {
-    when(pullRequestService.get(REPOSITORY, pullRequest.getId())).thenReturn(pullRequest);
-    when(sourceRevisionResolver.resolve(REPOSITORY, pullRequest.getSource())).thenReturn(changesetId);
+    when(sourceRevisionResolver.resolveRevisionOfSource(REPOSITORY, pullRequest)).thenReturn(of(changesetId));
     when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, REPOSITORY, changesetId)).thenReturn(changesetCIStatusCollection);
     when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, REPOSITORY, pullRequest.getId())).thenReturn(prCIStatusCollection);
   }

@@ -25,6 +25,7 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
+import com.cloudogu.scm.review.pullrequest.service.PullRequestStatus;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
@@ -54,7 +55,7 @@ public class PullRequestLinkEnricher implements HalEnricher {
     Repository repository = context.oneRequireByType(Repository.class);
     PullRequest pullRequest = context.oneRequireByType(PullRequest.class);
 
-    if (mayRead(repository)) {
+    if (pullRequest.getStatus() == PullRequestStatus.OPEN && mayRead(repository)) {
       appender.appendLink("ciStatus", pathBuilder.createPullRequestCiStatusCollectionUri(repository.getNamespace(), repository.getName(), pullRequest.getId()));
     }
   }

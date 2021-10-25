@@ -31,6 +31,7 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.ci.cistatus.service.Status;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.workflow.Context;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,7 +40,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,13 +64,17 @@ class CIStatusResolverTest {
   @Mock
   private Context context;
 
+  private final Repository repository = RepositoryTestData.createHeartOfGold();
+  private final PullRequest pullRequest = createPullRequest();
+
+  @BeforeEach
+  void mockContext() {
+    when(context.getRepository()).thenReturn(repository);
+    when(context.getPullRequest()).thenReturn(pullRequest);
+  }
+
   @Test
   void shouldResolveCiStatus() {
-    Repository repository = RepositoryTestData.createHeartOfGold();
-    PullRequest pullRequest = new PullRequest();
-    pullRequest.setSource("feature/spaceship");
-    pullRequest.setId("21");
-
     CIStatus changesetCiStatus = new CIStatus("jenkins", "jenkins", "jenkins", Status.SUCCESS, "jenkins.io");
     CIStatusCollection changesetCiStatuses = new CIStatusCollection();
     changesetCiStatuses.put(changesetCiStatus);
@@ -72,15 +83,29 @@ class CIStatusResolverTest {
     CIStatusCollection pullRequestCiStatuses = new CIStatusCollection();
     pullRequestCiStatuses.put(prCiStatus);
 
-    when(sourceRevisionResolver.resolve(repository, "feature/spaceship")).thenReturn("42");
+    when(sourceRevisionResolver.resolveRevisionOfSource(repository, pullRequest)).thenReturn(of("42"));
     when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, "42")).thenReturn(changesetCiStatuses);
     when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, "21")).thenReturn(pullRequestCiStatuses);
-
-    when(context.getRepository()).thenReturn(repository);
-    when(context.getPullRequest()).thenReturn(pullRequest);
 
     CIStatusCollection resolved = resolver.resolve(context);
     assertThat(resolved).containsExactly(changesetCiStatus, prCiStatus);
   }
 
+  @Test
+  void shouldIgnoreMissingRevision() {
+    when(sourceRevisionResolver.resolveRevisionOfSource(repository, pullRequest)).thenReturn(empty());
+    when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, "21")).thenReturn(new CIStatusCollection());
+
+    CIStatusCollection resolved = resolver.resolve(context);
+    assertThat(resolved).isEmpty();
+
+    verify(ciStatusService, never()).get(eq(CIStatusStore.CHANGESET_STORE), any(), any());
+  }
+
+  private PullRequest createPullRequest() {
+    PullRequest pullRequest = new PullRequest();
+    pullRequest.setSource("feature/spaceship");
+    pullRequest.setId("21");
+    return pullRequest;
+  }
 }

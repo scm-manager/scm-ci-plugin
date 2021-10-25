@@ -47,12 +47,13 @@ public class CIStatusResolver {
   public CIStatusCollection resolve(Context context) {
     Repository repository = context.getRepository();
     PullRequest pullRequest = context.getPullRequest();
-    String sourceRevision = sourceRevisionResolver.resolve(repository, pullRequest.getSource());
+
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
 
-    ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, sourceRevision)
-      .stream()
-      .forEach(ciStatusCollection::put);
+    sourceRevisionResolver.resolveRevisionOfSource(repository, pullRequest)
+      .ifPresent(sourceRevision -> ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, sourceRevision)
+        .stream()
+        .forEach(ciStatusCollection::put));
 
     ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequest.getId())
       .stream()
