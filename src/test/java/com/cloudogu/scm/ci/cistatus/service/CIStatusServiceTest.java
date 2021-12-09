@@ -33,26 +33,38 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.repository.Changeset;
+import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.api.LogCommandBuilder;
+import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 import sonia.scm.store.InMemoryDataStore;
 import sonia.scm.store.TypedStoreParameters;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.cloudogu.scm.ci.cistatus.CIStatusStore.CHANGESET_STORE;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
-import static sonia.scm.repository.RepositoryTestData.createHeartOfGold;
+import static org.mockito.Mockito.when;
 import static sonia.scm.repository.RepositoryTestData.createRestaurantAtTheEndOfTheUniverse;
 
 @ExtendWith(MockitoExtension.class)
 class CIStatusServiceTest {
+
+  public static final Repository REPOSITORY = new Repository("42", "git", "hitchhiker", "hog");
+
+  @Mock
+  private RepositoryServiceFactory repositoryServiceFactory;
 
   private CIStatusService ciStatusService;
 
@@ -64,7 +76,7 @@ class CIStatusServiceTest {
 
     @BeforeEach
     void setUpDataStoreFactory() {
-      ciStatusService = new CIStatusService(new TestingDataStoreFactory());
+      ciStatusService = new CIStatusService(new TestingDataStoreFactory(), repositoryServiceFactory);
       ThreadContext.bind(subject);
       doThrow(new UnauthorizedException()).when(subject).checkPermission(any(String.class));
     }
@@ -76,8 +88,7 @@ class CIStatusServiceTest {
 
     @Test
     void shouldThrowAuthorizationExceptionWhenMissingPermissions() {
-      Repository repository = createHeartOfGold();
-      repository.setId("42");
+      Repository repository = REPOSITORY;
 
       assertThrows(UnauthorizedException.class, () -> ciStatusService.get(CHANGESET_STORE, repository, "1234"));
       assertThrows(UnauthorizedException.class, () -> ciStatusService.put(CHANGESET_STORE, repository, "1234", new CIStatus()));
@@ -92,7 +103,7 @@ class CIStatusServiceTest {
 
     @BeforeEach
     void setUpDataStoreFactory() {
-      ciStatusService = new CIStatusService(new TestingDataStoreFactory());
+      ciStatusService = new CIStatusService(new TestingDataStoreFactory(), repositoryServiceFactory);
       ThreadContext.bind(subject);
       lenient().when(subject.isPermitted(any(String.class))).thenReturn(true);
     }
@@ -104,47 +115,66 @@ class CIStatusServiceTest {
 
     @Test
     void shouldReturnEmptyCollection() {
-      Repository repository = createHeartOfGold();
-      repository.setId("42");
-
-      CIStatusCollection ciStatusCollection = ciStatusService.get(CHANGESET_STORE, repository, "1234");
+      CIStatusCollection ciStatusCollection = ciStatusService.get(CHANGESET_STORE, REPOSITORY, "1234");
       assertThat(ciStatusCollection).isNotNull().isEmpty();
     }
 
     @Test
     void shouldPutAndGetOneRepositoryAndTwoChangesets() {
-      Repository repository = createHeartOfGold();
-      repository.setId("42");
-
       CIStatus ciStatus = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
-      ciStatusService.put(CHANGESET_STORE, repository, "123456", ciStatus);
-      ciStatusService.put(CHANGESET_STORE, repository, "654321", ciStatus);
+      ciStatusService.put(CHANGESET_STORE, REPOSITORY, "123456", ciStatus);
+      ciStatusService.put(CHANGESET_STORE, REPOSITORY, "654321", ciStatus);
 
-      CIStatusCollection result = ciStatusService.get(CHANGESET_STORE, repository, "123456");
+      CIStatusCollection result = ciStatusService.get(CHANGESET_STORE, REPOSITORY, "123456");
 
       assertThat(result.get("test", "name")).isSameAs(ciStatus);
     }
 
     @Test
     void shouldPutAndGetTwoRepositoriesAndOneChangesetEach() {
-      Repository repository1 = createHeartOfGold();
-      repository1.setId("42");
-
       Repository repository2 = createRestaurantAtTheEndOfTheUniverse();
       repository2.setId("24");
 
       CIStatus ciStatus1 = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
-      ciStatusService.put(CHANGESET_STORE, repository1, "123456", ciStatus1);
+      ciStatusService.put(CHANGESET_STORE, REPOSITORY, "123456", ciStatus1);
       CIStatus ciStatus2 = new CIStatus("test2", "name2", null, Status.PENDING, "http://abc.de");
       ciStatusService.put(CHANGESET_STORE, repository2, "654321", ciStatus2);
 
-      CIStatusCollection resultWithRepo1 = ciStatusService.get(CHANGESET_STORE, repository1, "123456");
+      CIStatusCollection resultWithRepo1 = ciStatusService.get(CHANGESET_STORE, REPOSITORY, "123456");
       CIStatusCollection resultWithRepo2 = ciStatusService.get(CHANGESET_STORE, repository2, "654321");
 
       assertThat(resultWithRepo1.get("test", "name")).isSameAs(ciStatus1);
       assertThat(resultWithRepo2.get("test2", "name2")).isSameAs(ciStatus2);
     }
 
+    @Nested
+    class ForBranch {
+
+      @Mock
+      private RepositoryService repositoryService;
+      @Mock
+      private LogCommandBuilder logCommandBuilder;
+
+      @BeforeEach
+      void setUpRepositoryService() {
+        lenient().when(repositoryServiceFactory.create(REPOSITORY)).thenReturn(repositoryService);
+      }
+
+      @Test
+      void shouldGetStatus() throws IOException {
+        when(repositoryService.getLogCommand()).thenReturn(logCommandBuilder);
+        when(logCommandBuilder.setBranch("develop")).thenReturn(logCommandBuilder);
+        when(logCommandBuilder.setPagingLimit(1)).thenReturn(logCommandBuilder);
+        when(logCommandBuilder.getChangesets()).thenReturn(new ChangesetPagingResult(1, singletonList(new Changeset("123456", null, null, null))));
+
+        CIStatus ciStatus = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
+        ciStatusService.put(CHANGESET_STORE, REPOSITORY, "123456", ciStatus);
+
+        CIStatusCollection result = ciStatusService.getByBranch(CHANGESET_STORE, REPOSITORY, "develop");
+
+        assertThat(result.get("test", "name")).isSameAs(ciStatus);
+      }
+    }
   }
 
   @SuppressWarnings("unchecked")

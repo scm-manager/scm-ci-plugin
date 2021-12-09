@@ -24,7 +24,8 @@
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import classNames from "classnames";
-import { Repository, Changeset } from "@scm-manager/ui-types";
+import { Repository, Changeset, BranchDetails } from "@scm-manager/ui-types";
+import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 import { CIStatus } from "./CIStatus";
 import StatusIcon, { SuccessIcon, FailureIcon, UnstableIcon } from "./StatusIcon";
 import CIStatusModalView from "./CIStatusModalView";
@@ -33,7 +34,8 @@ import styled from "styled-components";
 
 type Props = WithTranslation & {
   repository: Repository;
-  changeset: Changeset;
+  changeset?: Changeset;
+  details?: BranchDetails;
 };
 
 type State = {
@@ -58,14 +60,19 @@ class CIStatusSummary extends React.Component<Props, State> {
   }
 
   render() {
-    const { changeset, t } = this.props;
+    const { changeset, details: branchDetails, t } = this.props;
     const { modalOpen } = this.state;
-    const ciStatus: CIStatus[] = changeset._embedded.ciStatus;
+
+    if (!changeset && !branchDetails) {
+      return <SmallLoadingSpinner />;
+    }
+
+    const ciStatus: CIStatus[] = changeset ? changeset._embedded.ciStatus : branchDetails._embedded.ciStatus;
     if (!ciStatus) {
       return null;
     }
 
-    let icon = null;
+    let icon;
     if (ciStatus.length === 0) {
       icon = <StatusIcon />;
     } else if (ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {

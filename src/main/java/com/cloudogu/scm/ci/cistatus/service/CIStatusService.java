@@ -25,21 +25,31 @@ package com.cloudogu.scm.ci.cistatus.service;
 
 import com.cloudogu.scm.ci.PermissionCheck;
 import com.cloudogu.scm.ci.cistatus.CIStatusStore;
+import sonia.scm.repository.ChangesetPagingResult;
+import sonia.scm.repository.InternalRepositoryException;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
+
+import static sonia.scm.ContextEntry.ContextBuilder.entity;
+import static sonia.scm.NotFoundException.notFound;
 
 @Singleton
 public class CIStatusService {
 
   private final DataStoreFactory dataStoreFactory;
+  private final RepositoryServiceFactory repositoryServiceFactory;
 
   @Inject
-  public CIStatusService(DataStoreFactory dataStoreFactory) {
+  public CIStatusService(DataStoreFactory dataStoreFactory, RepositoryServiceFactory repositoryServiceFactory) {
     this.dataStoreFactory = dataStoreFactory;
+    this.repositoryServiceFactory = repositoryServiceFactory;
   }
 
   public void put(CIStatusStore store, Repository repository, String id, CIStatus ciStatus) {
@@ -53,6 +63,21 @@ public class CIStatusService {
     PermissionCheck.checkRead(repository);
     CIStatusCollection collection = getStore(storeName, repository).get(id);
     return  collection != null ? collection : new CIStatusCollection();
+  }
+
+  public CIStatusCollection getByBranch(CIStatusStore storeName, Repository repository, String branch) {
+    try (RepositoryService service = repositoryServiceFactory.create(repository)) {
+      final ChangesetPagingResult changesets = service.getLogCommand().setBranch(branch).setPagingLimit(1).getChangesets();
+      if (changesets.getChangesets().isEmpty()) {
+        throw notFound(entity("Branch", branch).in(repository));
+      }
+      return get(storeName, repository, changesets.getChangesets().get(0).getId());
+    } catch (IOException e) {
+      throw new InternalRepositoryException(
+        entity("Branch", branch).in(repository).build(),
+        "could not read changeset for branch " + branch + " in repository " + repository,
+        e);
+    }
   }
 
   private DataStore<CIStatusCollection> getStore(CIStatusStore store, Repository repository) {

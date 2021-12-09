@@ -29,6 +29,7 @@ import CIStatusOfTypeSuccessRuleConfiguration from "./workflow/CIStatusOfTypeSuc
 import CIStatusNamedSuccessRuleConfiguration from "./workflow/CIStatusNamedSuccessRuleConfiguration";
 
 binder.bind("changeset.right", CIStatusSummary);
+binder.bind("repos.branches.row.details", CIStatusSummary);
 binder.bind("reviewPlugin.pullrequest.top", CIStatusBar);
 
 binder.bind("reviewPlugin.workflow.config.CIStatusXSuccessRule", CIStatusXSuccessRuleConfiguration);
