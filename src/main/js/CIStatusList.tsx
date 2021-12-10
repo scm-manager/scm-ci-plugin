@@ -33,23 +33,32 @@ type Props = {
 const CIStatusList: FC<Props> = ({ ciStatus }) => {
   return (
     <>
-      {ciStatus.map(ci =>
-        ci.status === "SUCCESS" ? (
-          <ModalRow status={<SuccessIcon titleType={ci.type} title={getDisplayName(ci)} size="lg"/>} ciUrl={ci.url}/>
-        ) : ci.status === "FAILURE" ? (
-          <ModalRow
-            status={<FailureIcon titleType={ci.type} title={getDisplayName(ci)} size="lg"/>}
-            ciUrl={ci.url}
-          />
-        ) : ci.status === "UNSTABLE" ? (
-          <ModalRow
-            status={<UnstableIcon titleType={ci.type} title={getDisplayName(ci)} size="lg"/>}
-            ciUrl={ci.url}
-          />
-        ) : (
-          <ModalRow status={<StatusIcon titleType={ci.type} title={getDisplayName(ci)} size="lg"/>} ciUrl={ci.url}/>
-        )
-      )}
+      {ciStatus.map((ci, key) => (
+        <>
+          {ci.status === "SUCCESS" ? (
+            <ModalRow
+              status={<SuccessIcon titleType={ci.type} title={getDisplayName(ci)} size="lg" />}
+              ciUrl={ci.url}
+            />
+          ) : ci.status === "FAILURE" ? (
+            <ModalRow
+              status={<FailureIcon titleType={ci.type} title={getDisplayName(ci)} size="lg" />}
+              ciUrl={ci.url}
+            />
+          ) : ci.status === "UNSTABLE" ? (
+            <ModalRow
+              status={<UnstableIcon titleType={ci.type} title={getDisplayName(ci)} size="lg" />}
+              ciUrl={ci.url}
+            />
+          ) : (
+            <ModalRow
+              status={<StatusIcon titleType={ci.type} title={getDisplayName(ci)} size="lg"/>}
+              ciUrl={ci.url}
+            />
+          )}
+          {key < ciStatus.length - 1 && key < 2 ? <hr className="m-0" /> : null}
+        </>
+      ))}
     </>
   );
 };
