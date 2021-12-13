@@ -170,7 +170,7 @@ class CIStatusServiceTest {
         CIStatus ciStatus = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
         ciStatusService.put(CHANGESET_STORE, REPOSITORY, "123456", ciStatus);
 
-        CIStatusCollection result = ciStatusService.getByBranch(CHANGESET_STORE, REPOSITORY, "develop");
+        CIStatusCollection result = ciStatusService.getByBranch(REPOSITORY, "develop");
 
         assertThat(result.get("test", "name")).isSameAs(ciStatus);
       }

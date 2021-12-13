@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 
+import static com.cloudogu.scm.ci.cistatus.CIStatusStore.CHANGESET_STORE;
 import static sonia.scm.ContextEntry.ContextBuilder.entity;
 import static sonia.scm.NotFoundException.notFound;
 
@@ -65,13 +66,13 @@ public class CIStatusService {
     return  collection != null ? collection : new CIStatusCollection();
   }
 
-  public CIStatusCollection getByBranch(CIStatusStore storeName, Repository repository, String branch) {
+  public CIStatusCollection getByBranch(Repository repository, String branch) {
     try (RepositoryService service = repositoryServiceFactory.create(repository)) {
       final ChangesetPagingResult changesets = service.getLogCommand().setBranch(branch).setPagingLimit(1).getChangesets();
       if (changesets.getChangesets().isEmpty()) {
         throw notFound(entity("Branch", branch).in(repository));
       }
-      return get(storeName, repository, changesets.getChangesets().get(0).getId());
+      return get(CHANGESET_STORE, repository, changesets.getChangesets().get(0).getId());
     } catch (IOException e) {
       throw new InternalRepositoryException(
         entity("Branch", branch).in(repository).build(),

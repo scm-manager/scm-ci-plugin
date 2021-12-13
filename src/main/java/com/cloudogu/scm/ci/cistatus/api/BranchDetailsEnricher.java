@@ -24,7 +24,6 @@
 
 package com.cloudogu.scm.ci.cistatus.api;
 
-import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
@@ -59,7 +58,7 @@ public class BranchDetailsEnricher implements HalEnricher {
 
     if (mayRead(repository)) {
       appender.appendEmbedded("ciStatus",
-        ciStatusService.getByBranch(CIStatusStore.CHANGESET_STORE, repository, branchName)
+        ciStatusService.getByBranch(repository, branchName)
           .stream()
           .map(ciStatus -> mapper.map(repository, branchName, ciStatus))
           .collect(Collectors.toList()));
