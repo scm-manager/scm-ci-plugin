@@ -52,7 +52,7 @@ const CIStatusSummary: FC<Props> = ({ repository, changeset, details }) => {
   }
 
   let ciStatus: CIStatus[] | undefined;
-  if (changeset) {
+  if (changeset?._embedded?.ciStatus) {
     ciStatus = changeset?._embedded?.ciStatus;
   } else if (details?._embedded?.ciStatus) {
     ciStatus = details?._embedded?.ciStatus;
