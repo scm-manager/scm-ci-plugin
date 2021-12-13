@@ -1,0 +1,2 @@
+- type: added
+  description: Show ci information on branch details and overview ([#37](https://github.com/scm-manager/scm-ci-plugin/pull/37))
