@@ -53,9 +53,9 @@ const CIStatusSummary: FC<Props> = ({ repository, changeset, details }) => {
 
   let ciStatus: CIStatus[] | undefined;
   if (changeset?._embedded?.ciStatus) {
-    ciStatus = changeset?._embedded?.ciStatus;
+    ciStatus = changeset._embedded.ciStatus as CIStatus[];
   } else if (details?._embedded?.ciStatus) {
-    ciStatus = details?._embedded?.ciStatus;
+    ciStatus = details._embedded.ciStatus as CIStatus[];
   } else {
     return null;
   }
@@ -73,9 +73,8 @@ const CIStatusSummary: FC<Props> = ({ repository, changeset, details }) => {
     icon = <StatusIcon />;
   }
 
-  const ciStatusModalView = ciStatus && modalOpen ? (
-    <CIStatusModalView onClose={() => setModalOpen(false)} ciStatus={ciStatus} />
-  ) : null;
+  const ciStatusModalView =
+    ciStatus && modalOpen ? <CIStatusModalView onClose={() => setModalOpen(false)} ciStatus={ciStatus} /> : null;
 
   const hasAnalyzes = ciStatus && ciStatus.length !== 0;
 
