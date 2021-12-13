@@ -25,7 +25,7 @@ import React, { FC } from "react";
 import { useTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
 
-type Props = WithTranslation & {
+type Props = {
   status: any;
   ciUrl: any;
 };

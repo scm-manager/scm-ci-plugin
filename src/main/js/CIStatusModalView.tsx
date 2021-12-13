@@ -29,7 +29,7 @@ import { getColor } from "./StatusIcon";
 import CIStatusList from "./CIStatusList";
 
 type Props = WithTranslation & {
-  ciStatus: CIStatus;
+  ciStatus: CIStatus[];
   onClose: () => void;
 };
 

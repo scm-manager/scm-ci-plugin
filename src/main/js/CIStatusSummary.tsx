@@ -51,13 +51,17 @@ const CIStatusSummary: FC<Props> = ({ repository, changeset, details }) => {
     return <SmallLoadingSpinner />;
   }
 
-  const ciStatus: CIStatus[] = changeset ? changeset._embedded.ciStatus : details._embedded.ciStatus;
-  if (!ciStatus) {
+  let ciStatus: CIStatus[] | undefined;
+  if (changeset) {
+    ciStatus = changeset?._embedded?.ciStatus;
+  } else if (details?._embedded?.ciStatus) {
+    ciStatus = details?._embedded?.ciStatus;
+  } else {
     return null;
   }
 
   let icon;
-  if (ciStatus.length === 0) {
+  if (!ciStatus || ciStatus.length === 0) {
     icon = <StatusIcon />;
   } else if (ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     icon = <FailureIcon />;
@@ -69,7 +73,7 @@ const CIStatusSummary: FC<Props> = ({ repository, changeset, details }) => {
     icon = <StatusIcon />;
   }
 
-  const ciStatusModalView = modalOpen ? (
+  const ciStatusModalView = ciStatus && modalOpen ? (
     <CIStatusModalView onClose={() => setModalOpen(false)} ciStatus={ciStatus} />
   ) : null;
 

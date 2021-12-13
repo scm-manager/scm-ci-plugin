@@ -27,7 +27,7 @@ import ModalRow from "./ModalRow";
 import { CIStatus, getDisplayName } from "./CIStatus";
 
 type Props = {
-  ciStatus: CIStatus;
+  ciStatus: CIStatus[];
 };
 
 const CIStatusList: FC<Props> = ({ ciStatus }) => {
@@ -37,22 +37,22 @@ const CIStatusList: FC<Props> = ({ ciStatus }) => {
         <>
           {ci.status === "SUCCESS" ? (
             <ModalRow
-              status={<SuccessIcon titleType={ci.type} title={getDisplayName(ci)} size="lg" />}
+              status={<SuccessIcon titleType={ci.type} title={getDisplayName(ci)} />}
               ciUrl={ci.url}
             />
           ) : ci.status === "FAILURE" ? (
             <ModalRow
-              status={<FailureIcon titleType={ci.type} title={getDisplayName(ci)} size="lg" />}
+              status={<FailureIcon titleType={ci.type} title={getDisplayName(ci)} />}
               ciUrl={ci.url}
             />
           ) : ci.status === "UNSTABLE" ? (
             <ModalRow
-              status={<UnstableIcon titleType={ci.type} title={getDisplayName(ci)} size="lg" />}
+              status={<UnstableIcon titleType={ci.type} title={getDisplayName(ci)} />}
               ciUrl={ci.url}
             />
           ) : (
             <ModalRow
-              status={<StatusIcon titleType={ci.type} title={getDisplayName(ci)} size="lg"/>}
+              status={<StatusIcon titleType={ci.type} title={getDisplayName(ci)} />}
               ciUrl={ci.url}
             />
           )}
