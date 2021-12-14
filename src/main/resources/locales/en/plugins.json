@@ -6,6 +6,7 @@
       "title_plural": "Analysis: {{count}} errors found"
     },
     "statusbar": {
+      "title": "Analyzes",
       "analysis": "{{count}} analysis",
       "analysis_plural": "{{count}} analyzes",
       "error": "{{count}} error",

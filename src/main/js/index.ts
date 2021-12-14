@@ -21,15 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { binder, ExtensionPointDefinition } from "@scm-manager/ui-extensions";
+import { binder } from "@scm-manager/ui-extensions";
 import CIStatusSummary from "./CIStatusSummary";
 import CIStatusBar from "./CIStatusBar";
 import CIStatusXSuccessRuleConfiguration from "./workflow/CIStatusXSuccessRuleConfiguration";
 import CIStatusOfTypeSuccessRuleConfiguration from "./workflow/CIStatusOfTypeSuccessRuleConfiguration";
 import CIStatusNamedSuccessRuleConfiguration from "./workflow/CIStatusNamedSuccessRuleConfiguration";
-import { Branch, Repository } from "@scm-manager/ui-types";
-import styled from "styled-components";
+import BranchDetailWrapper from "./BranchDetailWrapper";
 
 binder.bind("changeset.right", CIStatusSummary);
 binder.bind("repos.branches.row.details", CIStatusSummary);
@@ -39,11 +37,4 @@ binder.bind("reviewPlugin.workflow.config.CIStatusXSuccessRule", CIStatusXSucces
 binder.bind("reviewPlugin.workflow.config.CIStatusOfTypeSuccessRule", CIStatusOfTypeSuccessRuleConfiguration);
 binder.bind("reviewPlugin.workflow.config.CIStatusNamedSuccessRule", CIStatusNamedSuccessRuleConfiguration);
 
-const HR = styled.hr`
-  height: 3px;
-`;
-
-binder.bind<ExtensionPointDefinition<"repos.branch-details.information", { repository: Repository; branch: Branch }>>(
-  "repos.branch-details.information",
-  ({ repository, branch }) => <><HR /><CIStatusBar repository={repository} branch={branch} /></>
-);
+binder.bind("repos.branch-details.information", BranchDetailWrapper);

@@ -3,7 +3,7 @@
   "private": true,
   "version": "2.2.2-SNAPSHOT",
   "license": "MIT",
-  "main": "./src/main/js/index.tsx",
+  "main": "./src/main/js/index.ts",
   "scripts": {
     "build": "plugin-scripts build",
     "watch": "plugin-scripts watch",
