@@ -71,10 +71,7 @@ class BranchDetailsEnricherTest {
   @Test
   @SubjectAware(value = "tricia", permissions = "repository:readCIStatus:42")
   void shouldEnrichWithStatus() {
-    HalEnricherContext context = new HalEnricherContext.Builder()
-      .put(Repository.class, REPOSITORY)
-      .put(BranchDetails.class, new BranchDetails("master"))
-      .build();
+    HalEnricherContext context = mockContext();
     CIStatusCollection ciStatus = createStatusCollection("jenkins", "sonar");
 
     when(mapper.map(any(), any(), any())).thenAnswer(invocation -> {
@@ -82,8 +79,7 @@ class BranchDetailsEnricherTest {
       dto.setType(invocation.getArgument(2, CIStatus.class).getType());
       return dto;
     });
-    when(service.getByBranch(REPOSITORY, "master"))
-      .thenReturn(ciStatus);
+    when(service.getByBranch(REPOSITORY, "master")).thenReturn(ciStatus);
 
     enricher.enrich(context, appender);
 
@@ -102,16 +98,20 @@ class BranchDetailsEnricherTest {
   @Test
   @SubjectAware(value = "tricia", permissions = "repository:readCIStatus:23")
   void shouldSkipStatusWithoutPermission() {
-    HalEnricherContext context = new HalEnricherContext.Builder()
-      .put(Repository.class, REPOSITORY)
-      .put(BranchDetails.class, new BranchDetails("master"))
-      .build();
+    HalEnricherContext context = mockContext();
 
     enricher.enrich(context, appender);
 
     verify(appender, never()).appendEmbedded(
       any(),
       any(List.class));
+  }
+
+  private HalEnricherContext mockContext() {
+    return new HalEnricherContext.Builder()
+      .put(Repository.class, REPOSITORY)
+      .put(BranchDetails.class, new BranchDetails("master"))
+      .build();
   }
 
   private CIStatusCollection createStatusCollection(String... types) {
