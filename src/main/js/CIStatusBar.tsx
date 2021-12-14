@@ -85,7 +85,7 @@ export default class CIStatusBar extends React.Component<Props, State> {
   };
 
   fetchCIStatusFromPullRequest = () => {
-    const {pullRequest} = this.props;
+    const { pullRequest } = this.props;
     const url = (pullRequest._links.ciStatus as Link)?.href;
     this.fetchCIStatusFromUrl(url);
   };
@@ -97,7 +97,7 @@ export default class CIStatusBar extends React.Component<Props, State> {
   };
 
   fetchCIStatus = () => {
-    const {pullRequest, branch} = this.props;
+    const { pullRequest, branch } = this.props;
     if (pullRequest) {
       this.fetchCIStatusFromPullRequest();
     } else if (branch) {
