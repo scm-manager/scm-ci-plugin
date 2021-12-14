@@ -44,7 +44,7 @@ const OverlayLink = styled.a`
 const Entry = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 1rem 0;
+  padding: 1rem 0rem;
 
   // css adjacent with same component
   & + & {

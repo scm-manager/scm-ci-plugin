@@ -52,7 +52,7 @@ const CIStatusList: FC<Props> = ({ ciStatus }) => {
       {ciStatus.map((ci, key) => (
         <>
           {createRow(ci)}
-          {key < ciStatus.length - 1 && key < 2 ? <hr className="m-0" /> : null}
+          {key < ciStatus.length - 1 ? <hr className="m-0" /> : null}
         </>
       ))}
     </>
