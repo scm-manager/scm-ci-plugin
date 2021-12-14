@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
-import { useTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 type Props = {
@@ -52,10 +52,6 @@ const Entry = styled.div`
   }
 `;
 
-const Left = styled.div`
-  flex: 1;
-`;
-
 const ModalRow: FC<Props> = ({ status, ciUrl }) => {
   const [t] = useTranslation("plugins");
 
@@ -69,7 +65,7 @@ const ModalRow: FC<Props> = ({ status, ciUrl }) => {
         aria-label={t("overview.ariaLabel", { name: status })}
       />
       <Entry>
-        <Left>{status}</Left>
+        <div className={"px-2 pb-2"}>{status}</div>
       </Entry>
     </>
   );
