@@ -2,12 +2,13 @@
   "scm-ci-plugin": {
     "modal": {
       "details": "Details",
-      "title": "Analysis: {{count}} error found",
-      "title_plural": "Analysis: {{count}} errors found"
+      "title": "Analyses: {{count}} error found",
+      "title_plural": "Analyses: {{count}} errors found"
     },
     "statusbar": {
+      "title": "Analyses",
       "analysis": "{{count}} analysis",
-      "analysis_plural": "{{count}} analyzes",
+      "analysis_plural": "{{count}} analyses",
       "error": "{{count}} error",
       "error_plural": "{{count}} errors"
     },

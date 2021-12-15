@@ -26,12 +26,13 @@ import { apiClient, ErrorNotification, Loading, NotFoundError } from "@scm-manag
 import CIStatusModalView from "./CIStatusModalView";
 import StatusBar from "./StatusBar";
 import { getColor, getIcon } from "./StatusIcon";
-import { Repository, Link } from "@scm-manager/ui-types";
+import { Branch, Repository, Link } from "@scm-manager/ui-types";
 import { CIStatus } from "./CIStatus";
 
 type Props = {
   repository: Repository;
-  pullRequest: any;
+  pullRequest?: any;
+  branch?: Branch;
 };
 
 type State = {
@@ -56,37 +57,51 @@ export default class CIStatusBar extends React.Component<Props, State> {
     this.props.repository._links.ciStatus && this.fetchCIStatus();
   }
 
-  fetchCIStatus = () => {
+  fetchCIStatusFromUrl = (url?: string) => {
+    apiClient
+      .get(url)
+      .then(response => response.json())
+      .then(json => {
+        this.setState(
+          {
+            ciStatus: json._embedded.ciStatus,
+            loading: false
+          },
+          this.setStatus
+        );
+      })
+      .catch(error => {
+        if (error instanceof NotFoundError) {
+          this.setState({
+            loading: false
+          });
+        } else {
+          this.setState({
+            error,
+            loading: false
+          });
+        }
+      });
+  };
+
+  fetchCIStatusFromPullRequest = () => {
     const { pullRequest } = this.props;
     const url = (pullRequest._links.ciStatus as Link)?.href;
-    if (url) {
-      this.setState({
-        loading: true
-      });
-      apiClient
-        .get(url)
-        .then(response => response.json())
-        .then(json => {
-          this.setState(
-            {
-              ciStatus: json._embedded.ciStatus,
-              loading: false
-            },
-            this.setStatus
-          );
-        })
-        .catch(error => {
-          if (error instanceof NotFoundError) {
-            this.setState({
-              loading: false
-            });
-          } else {
-            this.setState({
-              error,
-              loading: false
-            });
-          }
-        });
+    this.fetchCIStatusFromUrl(url);
+  };
+
+  fetchCIStatusFromBranch = () => {
+    const { branch } = this.props;
+    const url = (branch._links.details as Link)?.href;
+    this.fetchCIStatusFromUrl(url);
+  };
+
+  fetchCIStatus = () => {
+    const { pullRequest, branch } = this.props;
+    if (pullRequest) {
+      this.fetchCIStatusFromPullRequest();
+    } else if (branch) {
+      this.fetchCIStatusFromBranch();
     }
   };
 

@@ -21,26 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import React, { FC } from "react";
+import { Branch, Repository } from "@scm-manager/ui-types";
+import CIStatusBar from "./CIStatusBar";
+import { useTranslation } from "react-i18next";
 
-plugins {
-  id 'org.scm-manager.smp' version '0.10.1'
-}
+const BranchDetailWrapper: FC<{ repository: Repository; branch: Branch }> = ({ repository, branch }) => {
+  const [t] = useTranslation("plugins");
+  return (
+    <>
+      <h3 className={"is-size-5"}>{t("scm-ci-plugin.statusbar.title")}</h3>
+      <CIStatusBar repository={repository} branch={branch} />
+    </>
+  );
+};
 
-dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:2.0.0"
-  optionalPlugin "sonia.scm.plugins:scm-mail-plugin:2.1.0"
-}
-
-scmPlugin {
-  scmVersion = "2.27.3-SNAPSHOT"
-  displayName = "Continuous Integration"
-  description = "Accepts analysis status and displays it"
-  author = "Cloudogu GmbH"
-  category = "Continuous Integration"
-
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ci.cistatus.api",
-    ]
-  }
-}
+export default BranchDetailWrapper;

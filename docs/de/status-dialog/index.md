@@ -8,6 +8,6 @@ Der Dialog zeigt folgende Informationen an:
 - **Status:** Resultat der Analyse als farblicher Icon
 - **Typ:** Art des CI-System (In diesem Fall Jenkins)
 - **Name:** Name der Analyse (Im diesem Fall heißt der Build-Job "jenkins")
-- **Details:** Link zur ausgeführten Analyse bzw. zum Build-Job
+- **Details:** Die Zeile ist ein Link zur ausgeführten Analyse bzw. zum Build-Job
 
 ![Statusbar Unstable](assets/status-modal-failure.png)

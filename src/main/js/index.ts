@@ -27,10 +27,14 @@ import CIStatusBar from "./CIStatusBar";
 import CIStatusXSuccessRuleConfiguration from "./workflow/CIStatusXSuccessRuleConfiguration";
 import CIStatusOfTypeSuccessRuleConfiguration from "./workflow/CIStatusOfTypeSuccessRuleConfiguration";
 import CIStatusNamedSuccessRuleConfiguration from "./workflow/CIStatusNamedSuccessRuleConfiguration";
+import BranchDetailWrapper from "./BranchDetailWrapper";
 
 binder.bind("changeset.right", CIStatusSummary);
+binder.bind("repos.branches.row.details", CIStatusSummary);
 binder.bind("reviewPlugin.pullrequest.top", CIStatusBar);
 
 binder.bind("reviewPlugin.workflow.config.CIStatusXSuccessRule", CIStatusXSuccessRuleConfiguration);
 binder.bind("reviewPlugin.workflow.config.CIStatusOfTypeSuccessRule", CIStatusOfTypeSuccessRuleConfiguration);
 binder.bind("reviewPlugin.workflow.config.CIStatusNamedSuccessRule", CIStatusNamedSuccessRuleConfiguration);
+
+binder.bind("repos.branch-details.information", BranchDetailWrapper);

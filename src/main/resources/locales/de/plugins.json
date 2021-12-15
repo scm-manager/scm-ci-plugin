@@ -5,6 +5,7 @@
       "title": "Analysen: {{count}} Fehler gefunden"
     },
     "statusbar": {
+      "title": "Analysen",
       "analysis": "{{count}} Analyse",
       "analysis_plural": "{{count}} Analysen",
       "error": "{{count}} Fehler",

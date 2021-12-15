@@ -21,14 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { withTranslation, WithTranslation } from "react-i18next";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-type Props = WithTranslation & {
+type Props = {
   status: any;
   ciUrl: any;
 };
+
+const OverlayLink = styled.a`
+  width: 90%;
+  position: absolute;
+  height: calc(80px - 1.5rem);
+  pointer-events: all;
+  border-radius: 4px;
+  :hover {
+    cursor: pointer;
+  }
+`;
 
 const Entry = styled.div`
   display: flex;
@@ -41,33 +52,23 @@ const Entry = styled.div`
   }
 `;
 
-const Left = styled.div`
-  flex: 1;
-`;
+const ModalRow: FC<Props> = ({ status, ciUrl }) => {
+  const [t] = useTranslation("plugins");
 
-const Icon = styled.i`
-  padding-right: 0.25rem;
-`;
-
-const LinkColor = styled.a`
-  color: initial;
-`;
-
-class ModalRow extends React.Component<Props> {
-  render() {
-    const { status, ciUrl, t } = this.props;
-    return (
+  return (
+    <>
+      <OverlayLink
+        href={ciUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="has-hover-background-blue"
+        aria-label={t("overview.ariaLabel", { name: status })}
+      />
       <Entry>
-        <Left>{status}</Left>
-        <div className="is-pulled-right">
-          <Icon className="fas fa-angle-right" />
-          <LinkColor href={ciUrl} target="_blank" rel="noopener noreferrer">
-            {t("scm-ci-plugin.modal.details")}
-          </LinkColor>
-        </div>
+        <div className={"px-2 pb-2"}>{status}</div>
       </Entry>
-    );
-  }
-}
+    </>
+  );
+};
 
-export default withTranslation("plugins")(ModalRow);
+export default ModalRow;

@@ -21,26 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import React, { FC } from "react";
+import StatusIcon, { SuccessIcon, FailureIcon, UnstableIcon } from "./StatusIcon";
+import ModalRow from "./ModalRow";
+import { CIStatus, getDisplayName } from "./CIStatus";
 
-plugins {
-  id 'org.scm-manager.smp' version '0.10.1'
-}
+type Props = {
+  ciStatus: CIStatus[];
+};
 
-dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:2.0.0"
-  optionalPlugin "sonia.scm.plugins:scm-mail-plugin:2.1.0"
-}
-
-scmPlugin {
-  scmVersion = "2.27.3-SNAPSHOT"
-  displayName = "Continuous Integration"
-  description = "Accepts analysis status and displays it"
-  author = "Cloudogu GmbH"
-  category = "Continuous Integration"
-
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ci.cistatus.api",
-    ]
+const createRow = (ci: CIStatus) => {
+  switch (ci.status) {
+    case "SUCCESS":
+      return <ModalRow status={<SuccessIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
+    case "FAILURE":
+      return <ModalRow status={<FailureIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
+    case "UNSTABLE":
+      return <ModalRow status={<UnstableIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
+    default:
+      return <ModalRow status={<StatusIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
   }
-}
+};
+
+const CIStatusList: FC<Props> = ({ ciStatus }) => {
+  if (!ciStatus) {
+    return null;
+  }
+  return (
+    <>
+      {ciStatus.map((ci, key) => (
+        <>
+          {createRow(ci)}
+          {key < ciStatus.length - 1 ? <hr className="m-0" /> : null}
+        </>
+      ))}
+    </>
+  );
+};
+
+export default CIStatusList;
