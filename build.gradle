@@ -32,7 +32,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "2.27.3-SNAPSHOT"
+  scmVersion = "2.28.0"
   displayName = "Continuous Integration"
   description = "Accepts analysis status and displays it"
   author = "Cloudogu GmbH"
