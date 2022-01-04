@@ -35,19 +35,9 @@ type Props = WithTranslation & {
 };
 
 const Notification = styled.div`
-  margin-top: 1rem;
-  margin-bottom: 0 !important;
   padding: 1rem 1.25rem;
   line-height: 1;
   border-top: none !important;
-`;
-
-const Icon = styled.i`
-  padding-right: 0.5rem;
-`;
-
-const AngleRight = styled.i`
-  margin: 0 0.5rem;
 `;
 
 class StatusBar extends React.Component<Props> {
@@ -60,16 +50,22 @@ class StatusBar extends React.Component<Props> {
     const hasAnalyzes = ciStatus && ciStatus.length !== 0;
     return (
       <Notification
-        className={classNames("media", `notification is-${backgroundColor}`, hasAnalyzes ? "has-cursor-pointer" : "")}
+        className={classNames(
+          "media",
+          `notification is-${backgroundColor}`,
+          hasAnalyzes ? "has-cursor-pointer" : "",
+          "mt-4",
+          "mb-0"
+        )}
         onClick={hasAnalyzes ? onClick : ""}
       >
-        <Icon className={`fas fa-${icon} fa-lg has-text-${iconColor}`} />
+        <i className={`fas fa-${icon} fa-lg pr-2 has-text-${iconColor}`} />
         <span className="has-text-weight-bold">
           {t("scm-ci-plugin.statusbar.analysis", {
             count: ciStatus && ciStatus.length
           })}
         </span>
-        <AngleRight className="fas fa-angle-right" />
+        <i className="fas fa-angle-right mx-2 my-0" />
         <span>
           {t("scm-ci-plugin.statusbar.error", {
             count: errors
