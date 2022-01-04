@@ -41,17 +41,6 @@ const OverlayLink = styled.a`
   }
 `;
 
-const Entry = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 1rem 0rem;
-
-  // css adjacent with same component
-  & + & {
-    border-top: 1px solid rgba(219, 219, 219, 0.5);
-  }
-`;
-
 const ModalRow: FC<Props> = ({ status, ciUrl }) => {
   const [t] = useTranslation("plugins");
 
@@ -64,9 +53,9 @@ const ModalRow: FC<Props> = ({ status, ciUrl }) => {
         className="has-hover-background-blue"
         aria-label={t("overview.ariaLabel", { name: status })}
       />
-      <Entry>
-        <div className={"px-2 pb-2"}>{status}</div>
-      </Entry>
+      <div className="is-flex is-flex-direction-row px-0 py-4">
+        <div className="px-2 pb-2">{status}</div>
+      </div>
     </>
   );
 };
