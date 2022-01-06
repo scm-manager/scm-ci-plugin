@@ -35,7 +35,7 @@ type Props = BaseProps & {
 
 class StatusIcon extends React.Component<Props> {
   static defaultProps = {
-    color: "grey-lighter",
+    color: "secondary",
     icon: "circle-notch",
     size: "1x"
   };

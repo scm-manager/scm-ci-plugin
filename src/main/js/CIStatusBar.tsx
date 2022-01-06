@@ -60,7 +60,7 @@ const CIStatusBar: FC<Props> = ({ repository, pullRequest, branch }) => {
         <StatusBar
           icon={icon}
           backgroundColor={success ? "secondary" : color}
-          iconColor={success ? color : color === "secondary" ? "grey-lighter" : "undefined"}
+          iconColor={success ? color : color === "secondary" ? "secondary" : "undefined"}
           onClick={() => setShowModal(true)}
           ciStatus={ciStatus}
         />
