@@ -47,8 +47,11 @@ const CIStatusBar: FC<Props> = ({ repository, pullRequest, branch }) => {
   if (error) {
     return <ErrorNotification error={error} />;
   }
-  if (isLoading || !ciStatus) {
+  if (isLoading) {
     return <Loading />;
+  }
+  if (!ciStatus) {
+    return null;
   }
 
   const success = ciStatus?.every((ci: CIStatus) => ci.status === "SUCCESS");
