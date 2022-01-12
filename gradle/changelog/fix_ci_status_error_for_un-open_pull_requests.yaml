@@ -1,0 +1,2 @@
+- type: fixed
+  description: Ci status error for un-open pull requests ([#40](https://github.com/scm-manager/scm-ci-plugin/pull/40))
