@@ -28,6 +28,8 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.inject.Inject;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import sonia.scm.ContextEntry;
+import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
@@ -37,6 +39,7 @@ import javax.ws.rs.PathParam;
 import java.io.IOException;
 
 import static com.cloudogu.scm.ci.cistatus.Constants.CI_PATH_V2;
+import static sonia.scm.NotFoundException.notFound;
 
 @OpenAPIDefinition(tags = {
   @Tag(name = "CI Plugin", description = "CI plugin provided endpoints")
@@ -63,7 +66,11 @@ public class ChangesetCIStatusRootResource {
   public ChangesetCIStatusResource getChangesetCIStatusResource(@PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("changesetId") String changesetId) throws IOException {
     Repository repository = repositoryResolver.resolve(namespace, name);
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
-      String resolvedChangesetId = repositoryService.getLogCommand().getChangeset(changesetId).getId();
+      Changeset changeset = repositoryService.getLogCommand().getChangeset(changesetId);
+      if (changeset == null) {
+        throw notFound(ContextEntry.ContextBuilder.entity("Revision", changesetId).in(repository));
+      }
+      String resolvedChangesetId = changeset.getId();
       return new ChangesetCIStatusResource(ciStatusService, mapper, collectionDtoMapper, repository, resolvedChangesetId);
     }
   }

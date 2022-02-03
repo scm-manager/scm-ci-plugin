@@ -25,11 +25,13 @@ package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.RepositoryResolver;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.NotFoundException;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
@@ -81,5 +83,16 @@ class ChangesetCIStatusRootResourceTest {
 
     assertThat(resource.getRepository()).isSameAs(repository);
     assertThat(resource.getChangesetId()).isEqualTo("42");
+  }
+
+  @Test
+  void shouldFailForUnknownRevision() throws IOException {
+    Repository repository = RepositoryTestData.createHeartOfGold();
+    when(resolver.resolve("hitchhiker", "heart-of-gold")).thenReturn(repository);
+    when(repositoryServiceFactory.create(any(Repository.class))).thenReturn(repositoryService);
+    when(repositoryService.getLogCommand()).thenReturn(logCommandBuilder);
+    when(logCommandBuilder.getChangeset("42")).thenReturn(null);
+
+    Assert.assertThrows(NotFoundException.class, () -> rootResource.getChangesetCIStatusResource("hitchhiker", "heart-of-gold", "42"));
   }
 }
