@@ -1,0 +1,2 @@
+- type: fixed
+  description: NullPointerException thrown for unknown revision ([#43](https://github.com/scm-manager/scm-ci-plugin/pull/43))
