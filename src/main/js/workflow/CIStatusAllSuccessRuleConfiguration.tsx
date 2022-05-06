@@ -45,12 +45,15 @@ const CIStatusAllSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }
   useEffect(() => configurationChanged({ ...createConfigurationFor(false) }, true), []);
 
   return (
-    <Checkbox
-      checked={ignoreChangesetStatus}
-      label={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.label")}
-      helpText={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.helpText")}
-      onChange={onValueChange}
-    />
+    <>
+      <br></br>
+      <Checkbox
+        checked={ignoreChangesetStatus}
+        label={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.label")}
+        helpText={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.helpText")}
+        onChange={onValueChange}
+      />
+    </>
   );
 };
 
