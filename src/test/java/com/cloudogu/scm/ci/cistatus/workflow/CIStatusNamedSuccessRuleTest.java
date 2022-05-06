@@ -44,6 +44,7 @@ import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static sonia.scm.store.SerializationTestUtil.toAndFromJsonAndXml;
 import static sonia.scm.web.api.DtoValidator.validate;
@@ -196,5 +197,17 @@ class CIStatusNamedSuccessRuleTest {
       assertThat(errorContext.getType()).isEqualTo("jenkins");
       assertThat(errorContext.getName()).isEqualTo("build");
     }
+  }
+
+  @Test
+  void shouldHeedIgnoreChangesetStatusConfiguration() {
+    CIStatusNamedSuccessRuleConfiguration configuration = mock(CIStatusNamedSuccessRuleConfiguration.class);
+    when(configuration.isIgnoreChangesetStatus()).thenReturn(true);
+    when(context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class)).thenReturn(configuration);
+
+    when(statusResolver.resolve(context, true)).thenReturn(new CIStatusCollection());
+
+    Result result = rule.validate(context);
+    assertThat(result.isFailed()).isTrue();
   }
 }

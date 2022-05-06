@@ -56,10 +56,13 @@ class CIStatusAllSuccessRuleTest {
   @Mock
   private Context context;
 
+  @Mock
+  private CIStatusAllSuccessRule.Configuration configuration;
+
   @BeforeEach
   void initConfiguration() {
     when(context.getConfiguration(CIStatusAllSuccessRule.Configuration.class))
-      .thenReturn(new CIStatusAllSuccessRule.Configuration());
+      .thenReturn(configuration);
   }
 
   @Test
@@ -100,6 +103,17 @@ class CIStatusAllSuccessRuleTest {
 
     Result result = rule.validate(context);
     assertThat(result.isFailed()).isTrue();
+  }
+
+  @Test
+  void shouldHeedIgnoreChangesetStatusConfiguration() {
+    when(configuration.isIgnoreChangesetStatus()).thenReturn(true);
+
+    CIStatusCollection collection = new CIStatusCollection();
+    when(statusResolver.resolve(context, true)).thenReturn(collection);
+
+    Result result = rule.validate(context);
+    assertThat(result.isSuccess()).isTrue();
   }
 
   private CIStatus createStatus(Status status) {

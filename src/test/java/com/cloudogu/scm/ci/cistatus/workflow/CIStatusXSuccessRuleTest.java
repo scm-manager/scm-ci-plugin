@@ -40,6 +40,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,6 +95,18 @@ class CIStatusXSuccessRuleTest {
     assertThat(failedContext.getCurrent()).isZero();
   }
 
+
+  @Test
+  void shouldHeedIgnoreChangesetStatusConfiguration() {
+    CIStatusXSuccessRule.Configuration configuration = mock(CIStatusXSuccessRule.Configuration.class);
+    when(configuration.isIgnoreChangesetStatus()).thenReturn(true);
+    when(context.getConfiguration(CIStatusXSuccessRule.Configuration.class)).thenReturn(configuration);
+
+    when(statusResolver.resolve(context, true)).thenReturn(new CIStatusCollection());
+
+    Result result = rule.validate(context);
+    assertThat(result.isFailed()).isFalse();
+  }
   private CIStatus createStatus(Status status) {
     return createStatus("spaceship", status);
   }
