@@ -25,11 +25,9 @@
 import React, { FC, useEffect, useState } from "react";
 import { Checkbox } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
-import { BasicConfiguration } from "./BasicConfiguration";
+import { BasicConfiguration, createConfigurationFor } from "./BasicConfiguration";
 
-type Configuration = BasicConfiguration & {
-  ignoreChangesetStatus: boolean;
-};
+type Configuration = BasicConfiguration;
 
 type Props = {
   configurationChanged: (newRuleConfiguration: Configuration, valid: boolean) => void;
@@ -41,13 +39,10 @@ const CIStatusAllSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }
 
   const onValueChange = (val: boolean) => {
     setIgnoreChangesetStatus(val);
-    configurationChanged(
-      { ignoreChangesetStatus: val, context: val ? "ignoreChangesetStatus" : "includeChangesetStatus" },
-      true
-    );
+    configurationChanged({ ...createConfigurationFor(val) }, true);
   };
 
-  useEffect(() => configurationChanged({ ignoreChangesetStatus: false, context: "includeChangesetStatus" }, true), []);
+  useEffect(() => configurationChanged({ ...createConfigurationFor(false) }, true), []);
 
   return (
     <Checkbox

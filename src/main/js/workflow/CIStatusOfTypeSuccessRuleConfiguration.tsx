@@ -23,10 +23,11 @@
  */
 
 import React, { FC, useEffect, useState } from "react";
-import { InputField } from "@scm-manager/ui-components";
+import { Checkbox, InputField } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
+import { BasicConfiguration, createConfigurationFor } from "./BasicConfiguration";
 
-type Configuration = {
+type Configuration = BasicConfiguration & {
   type: string;
 };
 
@@ -36,7 +37,8 @@ type Props = {
 
 const CIStatusOfTypeSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) => {
   const [t] = useTranslation("plugins");
-  const [typeOfSuccessful, setTypeOfSuccessful] = useState<string | undefined>();
+  const [typeOfSuccessful, setTypeOfSuccessful] = useState("");
+  const [ignoreChangesetStatus, setIgnoreChangesetStatus] = useState<boolean>(false);
   const [validationError, setValidationError] = useState(false);
 
   const onValueChange = (val: string) => {
@@ -44,26 +46,45 @@ const CIStatusOfTypeSuccessRuleConfiguration: FC<Props> = ({ configurationChange
     const trimmedVal = val?.trim();
     if (trimmedVal && trimmedVal.length > 0) {
       setValidationError(false);
-      configurationChanged({ type: trimmedVal }, true);
+      configurationChanged({ type: trimmedVal, ...createConfigurationFor(ignoreChangesetStatus) }, true);
     } else {
       setValidationError(true);
-      configurationChanged({ type: "" }, false);
+      configurationChanged({ type: "", ...createConfigurationFor(false) }, false);
     }
   };
 
-  useEffect(() => configurationChanged({ type: "" }, false), []);
+  useEffect(() => configurationChanged({ type: "", ...createConfigurationFor(false) }, false), []);
+
+  const onIgnoreChangesetStatusChange = (val: boolean) => {
+    setIgnoreChangesetStatus(val);
+    configurationChanged(
+      {
+        type: typeOfSuccessful,
+        ...createConfigurationFor(val)
+      },
+      true
+    );
+  };
 
   return (
-    <InputField
-      type="text"
-      value={typeOfSuccessful}
-      label={t("workflow.rule.CIStatusOfTypeSuccessRule.form.type.label")}
-      helpText={t("workflow.rule.CIStatusOfTypeSuccessRule.form.type.helpText")}
-      validationError={validationError}
-      errorMessage={t("workflow.rule.CIStatusOfTypeSuccessRule.form.type.errorMessage")}
-      autofocus={true}
-      onChange={onValueChange}
-    />
+    <>
+      <InputField
+        type="text"
+        value={typeOfSuccessful}
+        label={t("workflow.rule.CIStatusOfTypeSuccessRule.form.type.label")}
+        helpText={t("workflow.rule.CIStatusOfTypeSuccessRule.form.type.helpText")}
+        validationError={validationError}
+        errorMessage={t("workflow.rule.CIStatusOfTypeSuccessRule.form.type.errorMessage")}
+        autofocus={true}
+        onChange={onValueChange}
+      />
+      <Checkbox
+        checked={ignoreChangesetStatus}
+        label={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.label")}
+        helpText={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.helpText")}
+        onChange={onIgnoreChangesetStatusChange}
+      />
+    </>
   );
 };
 

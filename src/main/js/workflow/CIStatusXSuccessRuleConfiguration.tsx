@@ -25,7 +25,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { Checkbox, InputField } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
-import { BasicConfiguration } from "./BasicConfiguration";
+import { BasicConfiguration, createConfigurationFor } from "./BasicConfiguration";
 
 type Configuration = BasicConfiguration & {
   numberOfSuccessful: number;
@@ -40,8 +40,8 @@ const CIStatusXSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) 
   const [t] = useTranslation("plugins");
   const [numberOfSuccessful, setNumberOfSuccessful] = useState<string | undefined>();
   const [numberOfSuccessfulValue, setNumberOfSuccessfulValue] = useState<number>(0);
-  const [validationError, setValidationError] = useState(false);
   const [ignoreChangesetStatus, setIgnoreChangesetStatus] = useState<boolean>(false);
+  const [validationError, setValidationError] = useState(false);
 
   const onValueChange = (val: string) => {
     setNumberOfSuccessful(val);
@@ -52,8 +52,7 @@ const CIStatusXSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) 
       configurationChanged(
         {
           numberOfSuccessful: numberVal,
-          ignoreChangesetStatus,
-          context: ignoreChangesetStatus ? "ignoreChangesetStatus" : "includeChangesetStatus"
+          ...createConfigurationFor(ignoreChangesetStatus)
         },
         true
       );
@@ -63,8 +62,7 @@ const CIStatusXSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) 
       configurationChanged(
         {
           numberOfSuccessful: 0,
-          ignoreChangesetStatus,
-          context: ignoreChangesetStatus ? "ignoreChangesetStatus" : "includeChangesetStatus"
+          ...createConfigurationFor(ignoreChangesetStatus)
         },
         false
       );
@@ -76,21 +74,13 @@ const CIStatusXSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) 
     configurationChanged(
       {
         numberOfSuccessful: numberOfSuccessfulValue,
-        ignoreChangesetStatus: val,
-        context: val ? "ignoreChangesetStatus" : "includeChangesetStatus"
+        ...createConfigurationFor(val)
       },
       true
     );
   };
 
-  useEffect(
-    () =>
-      configurationChanged(
-        { numberOfSuccessful: 0, ignoreChangesetStatus: false, context: "includeChangesetStatus" },
-        false
-      ),
-    []
-  );
+  useEffect(() => configurationChanged({ numberOfSuccessful: 0, ...createConfigurationFor(false) }, false), []);
 
   return (
     <>

@@ -23,5 +23,16 @@
  */
 
 export type BasicConfiguration = {
+  ignoreChangesetStatus: boolean;
   context: "ignoreChangesetStatus" | "includeChangesetStatus";
+};
+
+type configurationBuilder = (ignoreChangesetStatus: boolean) => BasicConfiguration;
+
+export const createConfigurationFor: configurationBuilder = (ignoreChangesetStatus: boolean) => {
+  if (ignoreChangesetStatus) {
+    return { ignoreChangesetStatus, context: "ignoreChangesetStatus" };
+  } else {
+    return { ignoreChangesetStatus, context: "includeChangesetStatus" };
+  }
 };

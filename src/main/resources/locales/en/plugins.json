@@ -82,7 +82,8 @@
       "CIStatusNamedSuccessRule": {
         "name": "Named CI status successful",
         "sortKey": "Continuous-Integration",
-        "description": "The CI status with name '{{ name }}' of type '{{ type }}' is successful.",
+        "description_includeChangesetStatus": "The CI status with name '{{ name }}' of type '{{ type }}' is successful (including changeset status).",
+        "description_ignoreChangesetStatus": "The CI status with name '{{ name }}' of type '{{ type }}' is successful (changeset status will be ignored).",
         "success": "The CI status {{ type }}:{{ name }} is successful.",
         "failed": {
           "CiStatusNotSuccessful": "The CI status {{ type }}:{{ name }} is not successful.",
@@ -105,7 +106,8 @@
       "CIStatusOfTypeSuccessRule": {
         "name": "All CI status of type successful",
         "sortKey": "Continuous-Integration",
-        "description": "Every CI status of type '{{ type }}' is successful.",
+        "description_includeChangesetStatus": "Every CI status of type '{{ type }}' is successful (including changeset status).",
+        "description_ignoreChangesetStatus": "Every CI status of type '{{ type }}' is successful (changeset status will be ignored).",
         "success": "Every CI status of type '{{ type }}' is successful.",
         "failed": {
           "CiStatusNotSuccessful": "Not all CI status of type '{{ type }}' are successful.",
