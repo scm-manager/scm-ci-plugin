@@ -108,7 +108,7 @@ class CIStatusNamedSuccessRuleTest {
     @Test
     void shouldFailWhenCIStatusCollectionIsEmpty() {
       CIStatusCollection collection = new CIStatusCollection();
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
@@ -127,7 +127,7 @@ class CIStatusNamedSuccessRuleTest {
       status.setName("build");
       status.setStatus(Status.SUCCESS);
       collection.put(status);
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isSuccess()).isTrue();
@@ -143,7 +143,7 @@ class CIStatusNamedSuccessRuleTest {
       status.setStatus(Status.PENDING);
       collection.put(status);
 
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
@@ -165,7 +165,7 @@ class CIStatusNamedSuccessRuleTest {
       status.setStatus(Status.FAILURE);
       collection.put(status);
 
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
@@ -186,7 +186,7 @@ class CIStatusNamedSuccessRuleTest {
       status.setStatus(Status.FAILURE);
       collection.put(status);
 
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();

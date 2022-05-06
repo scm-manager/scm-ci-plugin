@@ -94,7 +94,7 @@ class CIStatusOfTypeSuccessRuleTest {
     @Test
     void shouldFailWhenCIStatusCollectionIsEmpty() {
       CIStatusCollection collection = new CIStatusCollection();
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();
@@ -119,7 +119,7 @@ class CIStatusOfTypeSuccessRuleTest {
       status2.setStatus(Status.SUCCESS);
       collection.put(status2);
 
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isSuccess()).isTrue();
@@ -146,7 +146,7 @@ class CIStatusOfTypeSuccessRuleTest {
       pendingStatus.setStatus(Status.PENDING);
       collection.put(pendingStatus);
 
-      when(statusResolver.resolve(context)).thenReturn(collection);
+      when(statusResolver.resolve(context, false)).thenReturn(collection);
 
       Result result = rule.validate(context);
       assertThat(result.isFailed()).isTrue();

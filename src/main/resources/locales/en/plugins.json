@@ -46,10 +46,19 @@
   },
   "workflow": {
     "rule": {
+      "CIStatusRule": {
+        "form": {
+          "ignoreChangesetStatus": {
+            "label": "Ignore changeset status",
+            "helpText": "If this is checked, only status send for the pull request are taken into account."
+          }
+        }
+      },
       "CIStatusAllSuccessRule": {
         "name": "All CI status successful",
         "sortKey": "Continuous-Integration",
-        "description": "Every CI status is successful.",
+        "description_includeChangesetStatus": "Every CI status is successful (including changeset status).",
+        "description_ignoreChangesetStatus": "Every CI status is successful (changeset status will be ignored).",
         "success": "Every CI status is successful.",
         "failed": "At least one CI status is not successful.",
         "obstacle": "At least one CI status is not successful."
@@ -57,7 +66,8 @@
       "CIStatusXSuccessRule": {
         "name": "Number of CI status successful",
         "sortKey": "Continuous-Integration",
-        "description": "At least {{ numberOfSuccessful }} CI status are successful.",
+        "description_includeChangesetStatus": "At least {{ numberOfSuccessful }} CI status are successful (including changeset status).",
+        "description_ignoreChangesetStatus": "At least {{ numberOfSuccessful }} CI status are successful (changeset status will be ignored).",
         "success": "A sufficient number of CI status are successful.",
         "failed": "Only {{ current }} of {{ expected }} required successful CI status present.",
         "obstacle": "Not enough successful CI status available.",

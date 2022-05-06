@@ -33,27 +33,29 @@ import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
 
-public class CIStatusResolver {
+class CIStatusResolver {
 
   private final CIStatusService ciStatusService;
   private final SourceRevisionResolver sourceRevisionResolver;
 
   @Inject
-  public CIStatusResolver(CIStatusService ciStatusService, SourceRevisionResolver sourceRevisionResolver) {
+  CIStatusResolver(CIStatusService ciStatusService, SourceRevisionResolver sourceRevisionResolver) {
     this.ciStatusService = ciStatusService;
     this.sourceRevisionResolver = sourceRevisionResolver;
   }
 
-  public CIStatusCollection resolve(Context context) {
+  CIStatusCollection resolve(Context context, boolean ignoreChangesetStatus) {
     Repository repository = context.getRepository();
     PullRequest pullRequest = context.getPullRequest();
 
     CIStatusCollection ciStatusCollection = new CIStatusCollection();
 
-    sourceRevisionResolver.resolveRevisionOfSource(repository, pullRequest)
-      .ifPresent(sourceRevision -> ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, sourceRevision)
-        .stream()
-        .forEach(ciStatusCollection::put));
+    if (!ignoreChangesetStatus) {
+      sourceRevisionResolver.resolveRevisionOfSource(repository, pullRequest)
+        .ifPresent(sourceRevision -> ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, sourceRevision)
+          .stream()
+          .forEach(ciStatusCollection::put));
+    }
 
     ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, pullRequest.getId())
       .stream()

@@ -60,7 +60,7 @@ class CIStatusXSuccessRuleTest {
     when(context.getConfiguration(CIStatusXSuccessRule.Configuration.class)).thenReturn(configuration);
     CIStatusCollection collection = new CIStatusCollection();
     collection.put(createStatus(Status.SUCCESS));
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isSuccess()).isTrue();
@@ -74,7 +74,7 @@ class CIStatusXSuccessRuleTest {
     collection.put(createStatus("heartOfGold", Status.FAILURE));
     collection.put(createStatus("magratea", Status.SUCCESS));
     collection.put(createStatus("deepThroat", Status.SUCCESS));
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isSuccess()).isTrue();
@@ -85,13 +85,13 @@ class CIStatusXSuccessRuleTest {
     CIStatusXSuccessRule.Configuration configuration = new CIStatusXSuccessRule.Configuration(1);
     when(context.getConfiguration(CIStatusXSuccessRule.Configuration.class)).thenReturn(configuration);
     CIStatusCollection collection = new CIStatusCollection();
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isFailed()).isTrue();
     CIStatusXSuccessRule.FailedContext failedContext = (CIStatusXSuccessRule.FailedContext) result.getContext();
     assertThat(failedContext.getExpected()).isEqualTo(1);
-    assertThat(failedContext.getCurrent()).isEqualTo(0);
+    assertThat(failedContext.getCurrent()).isZero();
   }
 
   private CIStatus createStatus(Status status) {

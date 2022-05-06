@@ -24,6 +24,7 @@
 import { binder } from "@scm-manager/ui-extensions";
 import CIStatusSummary from "./CIStatusSummary";
 import CIStatusBar from "./CIStatusBar";
+import CIStatusAllSuccessRuleConfiguration from "./workflow/CIStatusAllSuccessRuleConfiguration";
 import CIStatusXSuccessRuleConfiguration from "./workflow/CIStatusXSuccessRuleConfiguration";
 import CIStatusOfTypeSuccessRuleConfiguration from "./workflow/CIStatusOfTypeSuccessRuleConfiguration";
 import CIStatusNamedSuccessRuleConfiguration from "./workflow/CIStatusNamedSuccessRuleConfiguration";
@@ -33,6 +34,7 @@ binder.bind("changeset.right", CIStatusSummary);
 binder.bind("repos.branches.row.details", CIStatusSummary);
 binder.bind("reviewPlugin.pullrequest.top", CIStatusBar);
 
+binder.bind("reviewPlugin.workflow.config.CIStatusAllSuccessRule", CIStatusAllSuccessRuleConfiguration);
 binder.bind("reviewPlugin.workflow.config.CIStatusXSuccessRule", CIStatusXSuccessRuleConfiguration);
 binder.bind("reviewPlugin.workflow.config.CIStatusOfTypeSuccessRule", CIStatusOfTypeSuccessRuleConfiguration);
 binder.bind("reviewPlugin.workflow.config.CIStatusNamedSuccessRule", CIStatusNamedSuccessRuleConfiguration);

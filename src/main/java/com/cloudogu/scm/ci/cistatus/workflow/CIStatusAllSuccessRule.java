@@ -33,6 +33,8 @@ import sonia.scm.plugin.Extension;
 import sonia.scm.plugin.Requires;
 
 import javax.inject.Inject;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Optional;
 
 
 @Extension
@@ -47,8 +49,14 @@ public class CIStatusAllSuccessRule implements Rule {
   }
 
   @Override
+  public Optional<Class<?>> getConfigurationType() {
+    return Optional.of(Configuration.class);
+  }
+
+  @Override
   public Result validate(Context context) {
-    CIStatusCollection ciStatuses = statusResolver.resolve(context);
+    Configuration configuration = context.getConfiguration(Configuration.class);
+    CIStatusCollection ciStatuses = statusResolver.resolve(context, configuration.isIgnoreChangesetStatus());
     for (CIStatus status : ciStatuses) {
       if (status.getStatus() != Status.SUCCESS) {
         return failed();
@@ -56,5 +64,9 @@ public class CIStatusAllSuccessRule implements Rule {
     }
 
     return success();
+  }
+
+  @XmlRootElement
+  public static class Configuration extends BasicConfigration {
   }
 }
