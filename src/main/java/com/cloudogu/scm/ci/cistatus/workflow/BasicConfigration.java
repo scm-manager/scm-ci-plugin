@@ -35,6 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
 class BasicConfigration {
   private boolean ignoreChangesetStatus;
 
+  /**
+   * @implNote Used as a suffix for frontend translation keys. The name `context` is required.
+   */
   @XmlTransient
   public String getContext() {
     return ignoreChangesetStatus ? "ignoreChangesetStatus" : "includeChangesetStatus";

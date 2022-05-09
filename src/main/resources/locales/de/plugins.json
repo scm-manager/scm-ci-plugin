@@ -48,8 +48,8 @@
       "CIStatusRule": {
         "form": {
           "ignoreChangesetStatus": {
-            "label": "Ignore changeset status",
-            "helpText": "If this is checked, only status send for the pull request are taken into account."
+            "label": "Changeset Status ignorieren",
+            "helpText": "Wenn aktiv, wird nur der Status des Pull Requests berücksichtigt."
           }
         }
       },
