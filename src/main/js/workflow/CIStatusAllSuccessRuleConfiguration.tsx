@@ -39,10 +39,10 @@ const CIStatusAllSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }
 
   const onValueChange = (val: boolean) => {
     setIgnoreChangesetStatus(val);
-    configurationChanged({ ...createConfigurationFor(val) }, true);
+    configurationChanged(createConfigurationFor(val), true);
   };
 
-  useEffect(() => configurationChanged({ ...createConfigurationFor(false) }, true), []);
+  useEffect(() => configurationChanged(createConfigurationFor(false), true), []);
 
   return (
     <>
