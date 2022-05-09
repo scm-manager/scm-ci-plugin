@@ -23,11 +23,13 @@
  */
 
 import React, { FC, useEffect, useState } from "react";
-import { InputField } from "@scm-manager/ui-components";
+import { Checkbox, InputField } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
+import { BasicConfiguration, createConfigurationFor } from "./BasicConfiguration";
 
-type Configuration = {
+type Configuration = BasicConfiguration & {
   numberOfSuccessful: number;
+  ignoreChangesetStatus: boolean;
 };
 
 type Props = {
@@ -37,6 +39,8 @@ type Props = {
 const CIStatusXSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) => {
   const [t] = useTranslation("plugins");
   const [numberOfSuccessful, setNumberOfSuccessful] = useState<string | undefined>();
+  const [numberOfSuccessfulValue, setNumberOfSuccessfulValue] = useState<number>(0);
+  const [ignoreChangesetStatus, setIgnoreChangesetStatus] = useState<boolean>(false);
   const [validationError, setValidationError] = useState(false);
 
   const onValueChange = (val: string) => {
@@ -44,26 +48,59 @@ const CIStatusXSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) 
     const numberVal = parseInt(val);
     if (!isNaN(numberVal) && numberVal > 0) {
       setValidationError(false);
-      configurationChanged({ numberOfSuccessful: numberVal }, true);
+      setNumberOfSuccessfulValue(numberVal);
+      configurationChanged(
+        {
+          numberOfSuccessful: numberVal,
+          ...createConfigurationFor(ignoreChangesetStatus)
+        },
+        true
+      );
     } else {
       setValidationError(true);
-      configurationChanged({ numberOfSuccessful: 0 }, false);
+      setNumberOfSuccessfulValue(0);
+      configurationChanged(
+        {
+          numberOfSuccessful: 0,
+          ...createConfigurationFor(ignoreChangesetStatus)
+        },
+        false
+      );
     }
   };
 
-  useEffect(() => configurationChanged({ numberOfSuccessful: 0 }, false), []);
+  const onIgnoreChangesetStatusChange = (val: boolean) => {
+    setIgnoreChangesetStatus(val);
+    configurationChanged(
+      {
+        numberOfSuccessful: numberOfSuccessfulValue,
+        ...createConfigurationFor(val)
+      },
+      true
+    );
+  };
+
+  useEffect(() => configurationChanged({ numberOfSuccessful: 0, ...createConfigurationFor(false) }, false), []);
 
   return (
-    <InputField
-      type="number"
-      value={numberOfSuccessful}
-      label={t("workflow.rule.CIStatusXSuccessRule.form.numberOfSuccessful.label")}
-      helpText={t("workflow.rule.CIStatusXSuccessRule.form.numberOfSuccessful.helpText")}
-      validationError={validationError}
-      errorMessage={t("workflow.rule.CIStatusXSuccessRule.form.numberOfSuccessful.errorMessage")}
-      autofocus={true}
-      onChange={onValueChange}
-    />
+    <>
+      <InputField
+        type="number"
+        value={numberOfSuccessful}
+        label={t("workflow.rule.CIStatusXSuccessRule.form.numberOfSuccessful.label")}
+        helpText={t("workflow.rule.CIStatusXSuccessRule.form.numberOfSuccessful.helpText")}
+        validationError={validationError}
+        errorMessage={t("workflow.rule.CIStatusXSuccessRule.form.numberOfSuccessful.errorMessage")}
+        autofocus={true}
+        onChange={onValueChange}
+      />
+      <Checkbox
+        checked={ignoreChangesetStatus}
+        label={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.label")}
+        helpText={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.helpText")}
+        onChange={onIgnoreChangesetStatusChange}
+      />
+    </>
   );
 };
 

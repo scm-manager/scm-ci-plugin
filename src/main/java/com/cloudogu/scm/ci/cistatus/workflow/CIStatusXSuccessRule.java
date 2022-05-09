@@ -56,15 +56,15 @@ public class CIStatusXSuccessRule implements Rule {
   @Override
   public Result validate(Context context) {
     Configuration configuration = context.getConfiguration(Configuration.class);
-    long successfulCount = countSuccessful(context);
+    long successfulCount = countSuccessful(context, configuration);
     if (successfulCount >= configuration.getNumberOfSuccessful()) {
       return success();
     }
     return failed(new FailedContext(configuration.getNumberOfSuccessful(), successfulCount));
   }
 
-  private long countSuccessful(Context context) {
-    return statusResolver.resolve(context)
+  private long countSuccessful(Context context, Configuration configuration) {
+    return statusResolver.resolve(context, configuration.isIgnoreChangesetStatus())
       .stream()
       .map(CIStatus::getStatus)
       .filter(s -> s == Status.SUCCESS)
@@ -88,7 +88,7 @@ public class CIStatusXSuccessRule implements Rule {
   @NoArgsConstructor
   @AllArgsConstructor
   @XmlAccessorType(XmlAccessType.FIELD)
-  public static class Configuration {
+  public static class Configuration extends BasicConfigration {
     @Min(1)
     private int numberOfSuccessful;
   }

@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-import React, {FC, useEffect, useState} from "react";
-import {InputField} from "@scm-manager/ui-components";
-import {useTranslation} from "react-i18next";
+import React, { FC, useEffect, useState } from "react";
+import { Checkbox, InputField } from "@scm-manager/ui-components";
+import { useTranslation } from "react-i18next";
+import { BasicConfiguration, createConfigurationFor } from "./BasicConfiguration";
 
-type Configuration = {
+type Configuration = BasicConfiguration & {
   type: string | undefined;
   name: string | undefined;
 };
@@ -35,10 +36,11 @@ type Props = {
   configurationChanged: (newRuleConfiguration: Configuration, valid: boolean) => void;
 };
 
-const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}) => {
+const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({ configurationChanged }) => {
   const [t] = useTranslation("plugins");
-  const [typeOfSuccessful, setTypeOfSuccessful] = useState<string>();
-  const [nameOfSuccessful, setNameOfSuccessful] = useState<string>();
+  const [typeOfSuccessful, setTypeOfSuccessful] = useState("");
+  const [nameOfSuccessful, setNameOfSuccessful] = useState("");
+  const [ignoreChangesetStatus, setIgnoreChangesetStatus] = useState<boolean>(false);
   const [validationError, setValidationError] = useState({
     name: false,
     type: false
@@ -48,11 +50,25 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
     setTypeOfSuccessful(val);
     const trimmedVal = val?.trim();
     if (trimmedVal && trimmedVal.length > 0) {
-      setValidationError({type: false, name: validationError.name});
-      configurationChanged({type: trimmedVal, name: nameOfSuccessful}, true);
+      setValidationError({ type: false, name: validationError.name });
+      configurationChanged(
+        {
+          type: trimmedVal,
+          name: nameOfSuccessful,
+          ...createConfigurationFor(ignoreChangesetStatus)
+        },
+        true
+      );
     } else {
-      setValidationError({type: true, name: validationError.name});
-      configurationChanged({type: undefined, name: undefined}, false);
+      setValidationError({ type: true, name: validationError.name });
+      configurationChanged(
+        {
+          type: undefined,
+          name: undefined,
+          ...createConfigurationFor(ignoreChangesetStatus)
+        },
+        false
+      );
     }
   };
 
@@ -60,15 +76,40 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
     setNameOfSuccessful(val);
     const trimmedVal = val?.trim();
     if (trimmedVal && trimmedVal.length > 0) {
-      setValidationError({type: validationError.type, name: false});
-      configurationChanged({name: trimmedVal, type: typeOfSuccessful}, true);
+      setValidationError({ type: validationError.type, name: false });
+      configurationChanged(
+        {
+          name: trimmedVal,
+          type: typeOfSuccessful,
+          ...createConfigurationFor(ignoreChangesetStatus)
+        },
+        true
+      );
     } else {
-      setValidationError({type: validationError.type, name: true});
-      configurationChanged({type: undefined, name: undefined}, false);
+      setValidationError({ type: validationError.type, name: true });
+      configurationChanged(
+        { type: undefined, name: undefined, ...createConfigurationFor(ignoreChangesetStatus) },
+        false
+      );
     }
   };
 
-  useEffect(() => configurationChanged({type: undefined, name: undefined}, false), []);
+  const onIgnoreChangesetStatusChange = (val: boolean) => {
+    setIgnoreChangesetStatus(val);
+    configurationChanged(
+      {
+        name: nameOfSuccessful,
+        type: typeOfSuccessful,
+        ...createConfigurationFor(val)
+      },
+      true
+    );
+  };
+
+  useEffect(
+    () => configurationChanged({ type: undefined, name: undefined, ...createConfigurationFor(false) }, false),
+    []
+  );
 
   return (
     <>
@@ -90,6 +131,12 @@ const CIStatusNamedSuccessRuleConfiguration: FC<Props> = ({configurationChanged}
         validationError={validationError.name}
         errorMessage={t("workflow.rule.CIStatusNamedSuccessRule.form.name.errorMessage")}
         onChange={onNameChange}
+      />
+      <Checkbox
+        checked={ignoreChangesetStatus}
+        label={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.label")}
+        helpText={t("workflow.rule.CIStatusRule.form.ignoreChangesetStatus.helpText")}
+        onChange={onIgnoreChangesetStatusChange}
       />
     </>
   );

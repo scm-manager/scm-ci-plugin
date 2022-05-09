@@ -31,6 +31,7 @@ import com.cloudogu.scm.ci.cistatus.service.Status;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -55,10 +56,19 @@ class CIStatusAllSuccessRuleTest {
   @Mock
   private Context context;
 
+  @Mock
+  private CIStatusAllSuccessRule.Configuration configuration;
+
+  @BeforeEach
+  void initConfiguration() {
+    when(context.getConfiguration(CIStatusAllSuccessRule.Configuration.class))
+      .thenReturn(configuration);
+  }
+
   @Test
   void shouldReturnSuccessForEmptyCIStatusCollection() {
     CIStatusCollection collection = new CIStatusCollection();
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isSuccess()).isTrue();
@@ -68,7 +78,7 @@ class CIStatusAllSuccessRuleTest {
   void shouldReturnSuccessForOnlySuccessfulCIStatus() {
     CIStatusCollection collection = new CIStatusCollection();
     collection.put(createStatus(Status.SUCCESS));
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isSuccess()).isTrue();
@@ -78,7 +88,7 @@ class CIStatusAllSuccessRuleTest {
   void shouldReturnFailureIfOnlyFailedCIStatus() {
     CIStatusCollection collection = new CIStatusCollection();
     collection.put(createStatus(Status.FAILURE));
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isFailed()).isTrue();
@@ -89,10 +99,21 @@ class CIStatusAllSuccessRuleTest {
     CIStatusCollection collection = new CIStatusCollection();
     collection.put(createStatus(Status.SUCCESS));
     collection.put(createStatus(Status.FAILURE));
-    when(statusResolver.resolve(context)).thenReturn(collection);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
 
     Result result = rule.validate(context);
     assertThat(result.isFailed()).isTrue();
+  }
+
+  @Test
+  void shouldHeedIgnoreChangesetStatusConfiguration() {
+    when(configuration.isIgnoreChangesetStatus()).thenReturn(true);
+
+    CIStatusCollection collection = new CIStatusCollection();
+    when(statusResolver.resolve(context, true)).thenReturn(collection);
+
+    Result result = rule.validate(context);
+    assertThat(result.isSuccess()).isTrue();
   }
 
   private CIStatus createStatus(Status status) {

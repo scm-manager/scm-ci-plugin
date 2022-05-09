@@ -87,7 +87,7 @@ class CIStatusResolverTest {
     when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, repository, "42")).thenReturn(changesetCiStatuses);
     when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, "21")).thenReturn(pullRequestCiStatuses);
 
-    CIStatusCollection resolved = resolver.resolve(context);
+    CIStatusCollection resolved = resolver.resolve(context, false);
     assertThat(resolved).containsExactly(changesetCiStatus, prCiStatus);
   }
 
@@ -96,7 +96,7 @@ class CIStatusResolverTest {
     when(sourceRevisionResolver.resolveRevisionOfSource(repository, pullRequest)).thenReturn(empty());
     when(ciStatusService.get(CIStatusStore.PULL_REQUEST_STORE, repository, "21")).thenReturn(new CIStatusCollection());
 
-    CIStatusCollection resolved = resolver.resolve(context);
+    CIStatusCollection resolved = resolver.resolve(context, false);
     assertThat(resolved).isEmpty();
 
     verify(ciStatusService, never()).get(eq(CIStatusStore.CHANGESET_STORE), any(), any());

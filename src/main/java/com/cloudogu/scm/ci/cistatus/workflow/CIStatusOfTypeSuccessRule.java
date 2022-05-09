@@ -69,7 +69,7 @@ public class CIStatusOfTypeSuccessRule implements Rule {
   @Override
   public Result validate(Context context) {
     CIStatusOfTypeSuccessRuleConfiguration configuration = context.getConfiguration(CIStatusOfTypeSuccessRuleConfiguration.class);
-    CIStatusCollection ciStatuses = statusResolver.resolve(context);
+    CIStatusCollection ciStatuses = statusResolver.resolve(context, configuration.isIgnoreChangesetStatus());
     boolean ciStatusFound = false;
     for (CIStatus status : ciStatuses) {
       if (Objects.equals(status.getType(), configuration.getType())) {
@@ -96,7 +96,7 @@ public class CIStatusOfTypeSuccessRule implements Rule {
   @NoArgsConstructor
   @AllArgsConstructor
   @XmlAccessorType(XmlAccessType.FIELD)
-  public static class CIStatusOfTypeSuccessRuleConfiguration {
+  public static class CIStatusOfTypeSuccessRuleConfiguration extends BasicConfigration {
     @NotBlank
     private String type;
   }

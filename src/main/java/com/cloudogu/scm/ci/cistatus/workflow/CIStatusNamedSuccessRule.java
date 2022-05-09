@@ -69,7 +69,7 @@ public class CIStatusNamedSuccessRule implements Rule {
   @Override
   public Result validate(Context context) {
     CIStatusNamedSuccessRuleConfiguration configuration = context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class);
-    CIStatusCollection ciStatuses = statusResolver.resolve(context);
+    CIStatusCollection ciStatuses = statusResolver.resolve(context, configuration.isIgnoreChangesetStatus());
     for (CIStatus status : ciStatuses) {
       if (statusMatchesConfiguration(status, configuration)) {
         return status.getStatus() == Status.SUCCESS ? success() : failed(new CIStatusNamedSuccessRuleErrorContext(configuration.getType(), configuration.getName(), "CiStatusNotSuccessful"));
@@ -96,7 +96,7 @@ public class CIStatusNamedSuccessRule implements Rule {
   @NoArgsConstructor
   @AllArgsConstructor
   @XmlAccessorType(XmlAccessType.FIELD)
-  public static class CIStatusNamedSuccessRuleConfiguration {
+  public static class CIStatusNamedSuccessRuleConfiguration extends BasicConfigration {
     @NotBlank
     private String type;
     @NotBlank
