@@ -36,6 +36,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sonia.scm.plugin.Extension;
 import sonia.scm.plugin.Requires;
+import sonia.scm.util.GlobUtil;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotBlank;
@@ -80,7 +81,7 @@ public class CIStatusNamedSuccessRule implements Rule {
 
   private boolean statusMatchesConfiguration(CIStatus status, CIStatusNamedSuccessRuleConfiguration configuration) {
     return Objects.equals(status.getType(), configuration.getType())
-      && Objects.equals(configuration.getName(), status.getName());
+      && GlobUtil.matches(configuration.getName(), status.getName());
   }
 
   @Getter
