@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.4.0 - 2022-05-12
+### Added
+- Option to all rules to ignore status on changesets ([#49](https://github.com/scm-manager/scm-ci-plugin/pull/49))
+
 ## 2.3.3 - 2022-02-17
 ### Fixed
 - NullPointerException thrown for unknown revision ([#43](https://github.com/scm-manager/scm-ci-plugin/pull/43))
