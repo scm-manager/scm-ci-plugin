@@ -116,6 +116,19 @@ class CIStatusAllSuccessRuleTest {
     assertThat(result.isSuccess()).isTrue();
   }
 
+  @Test
+  void shouldNotFailWithMissingConfiguration() {
+    when(context.getConfiguration(CIStatusAllSuccessRule.Configuration.class))
+      .thenReturn(null);
+    CIStatusCollection collection = new CIStatusCollection();
+    collection.put(createStatus(Status.SUCCESS));
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
+
+    Result result = rule.validate(context);
+
+    assertThat(result.isSuccess()).isTrue();
+  }
+
   private CIStatus createStatus(Status status) {
     return new CIStatus("jenkins", "spaceship", "Spaceship", status, "http://hitchhiker.com");
   }

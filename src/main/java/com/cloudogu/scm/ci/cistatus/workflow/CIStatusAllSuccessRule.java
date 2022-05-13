@@ -56,7 +56,8 @@ public class CIStatusAllSuccessRule implements Rule {
   @Override
   public Result validate(Context context) {
     Configuration configuration = context.getConfiguration(Configuration.class);
-    CIStatusCollection ciStatuses = statusResolver.resolve(context, configuration.isIgnoreChangesetStatus());
+    boolean ignoreChangesetStatus = configuration != null && configuration.isIgnoreChangesetStatus();
+    CIStatusCollection ciStatuses = statusResolver.resolve(context, ignoreChangesetStatus);
     for (CIStatus status : ciStatuses) {
       if (status.getStatus() != Status.SUCCESS) {
         return failed();
