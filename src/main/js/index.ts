@@ -29,6 +29,7 @@ import CIStatusXSuccessRuleConfiguration from "./workflow/CIStatusXSuccessRuleCo
 import CIStatusOfTypeSuccessRuleConfiguration from "./workflow/CIStatusOfTypeSuccessRuleConfiguration";
 import CIStatusNamedSuccessRuleConfiguration from "./workflow/CIStatusNamedSuccessRuleConfiguration";
 import BranchDetailWrapper from "./BranchDetailWrapper";
+import RepositoryTableColumnExtension from "./RepositoryTableColumnExtension";
 
 binder.bind("changeset.right", CIStatusSummary);
 binder.bind("repos.branches.row.details", CIStatusSummary);
@@ -40,3 +41,4 @@ binder.bind("reviewPlugin.workflow.config.CIStatusOfTypeSuccessRule", CIStatusOf
 binder.bind("reviewPlugin.workflow.config.CIStatusNamedSuccessRule", CIStatusNamedSuccessRuleConfiguration);
 
 binder.bind("repos.branch-details.information", BranchDetailWrapper);
+binder.bind("pull-requests.table.column", RepositoryTableColumnExtension);

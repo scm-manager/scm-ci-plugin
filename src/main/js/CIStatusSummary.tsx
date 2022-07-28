@@ -36,18 +36,19 @@ type Props = {
   repository: Repository;
   changeset?: Changeset;
   details?: BranchDetails;
+  explicitCiStatus?: CIStatus[] | undefined;
 };
 
 const Wrapper = styled.div`
   margin: 0 0.35rem 0 1.1rem;
 `;
 
-const CIStatusSummary: FC<Props> = ({ repository, changeset, details }) => {
+const CIStatusSummary: FC<Props> = ({  changeset, details, explicitCiStatus }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const { popoverProps, triggerProps } = usePopover();
   const [t] = useTranslation("plugins");
 
-  if (!changeset && !details) {
+  if (!changeset && !details && !explicitCiStatus) {
     return <SmallLoadingSpinner />;
   }
 
@@ -56,6 +57,8 @@ const CIStatusSummary: FC<Props> = ({ repository, changeset, details }) => {
     ciStatus = changeset._embedded.ciStatus as CIStatus[];
   } else if (details?._embedded?.ciStatus) {
     ciStatus = details._embedded.ciStatus as CIStatus[];
+  } else if (explicitCiStatus) {
+    ciStatus = explicitCiStatus;
   } else {
     return null;
   }
