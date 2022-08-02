@@ -23,7 +23,7 @@
  */
 
 plugins {
-  id 'org.scm-manager.smp' version '0.10.1'
+  id 'org.scm-manager.smp' version '0.11.1'
 }
 
 dependencies {
@@ -32,7 +32,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "2.32.0"
+  scmVersion = "2.35.0"
   displayName = "Continuous Integration"
   description = "Accepts analysis status and displays it"
   author = "Cloudogu GmbH"
