@@ -23,14 +23,18 @@
  */
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import classNames from "classnames";
-import { Repository, Changeset, BranchDetails } from "@scm-manager/ui-types";
-import { Popover, SmallLoadingSpinner, usePopover } from "@scm-manager/ui-components";
+import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
+import { NoStyleButton, SmallLoadingSpinner } from "@scm-manager/ui-components";
 import { CIStatus } from "./CIStatus";
-import StatusIcon, { SuccessIcon, FailureIcon, UnstableIcon } from "./StatusIcon";
+import StatusIcon, { FailureIcon, SuccessIcon, UnstableIcon } from "./StatusIcon";
 import CIStatusModalView from "./CIStatusModalView";
 import styled from "styled-components";
 import CIStatusList from "./CIStatusList";
+import * as Tooltip from "@radix-ui/react-tooltip";
+
+const StyledArrow = styled(Tooltip.Arrow)`
+  fill: var(--scm-secondary-background);
+`;
 
 type Props = {
   repository: Repository;
@@ -43,9 +47,8 @@ const Wrapper = styled.div`
   margin: 0 0.35rem 0 1.1rem;
 `;
 
-const CIStatusSummary: FC<Props> = ({  changeset, details, explicitCiStatus }) => {
+const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { popoverProps, triggerProps } = usePopover();
   const [t] = useTranslation("plugins");
 
   if (!changeset && !details && !explicitCiStatus) {
@@ -79,8 +82,6 @@ const CIStatusSummary: FC<Props> = ({  changeset, details, explicitCiStatus }) =
   const ciStatusModalView =
     ciStatus && modalOpen ? <CIStatusModalView onClose={() => setModalOpen(false)} ciStatus={ciStatus} /> : null;
 
-  const hasAnalyzes = ciStatus && ciStatus.length !== 0;
-
   const errors =
     ciStatus && ciStatus.length > 0
       ? ciStatus.filter(ci => ci.status === "FAILURE" || ci.status === "UNSTABLE").length
@@ -90,25 +91,27 @@ const CIStatusSummary: FC<Props> = ({  changeset, details, explicitCiStatus }) =
     <>
       {ciStatusModalView}
       <Wrapper className="is-relative">
-        <Popover
-          title={
-            <h1 className="has-text-weight-bold is-size-5">
-              {t("scm-ci-plugin.modal.title", {
-                count: errors
-              })}
-            </h1>
-          }
-          width={400}
-          {...popoverProps}
-        >
-          <CIStatusList ciStatus={ciStatus}/>
-        </Popover>
-        <div
-          className={classNames("popover-trigger", hasAnalyzes ? "has-cursor-pointer" : "")}
-          {...triggerProps}
-        >
-          {icon}
-        </div>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild={true}>
+              <NoStyleButton>{icon}</NoStyleButton>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content>
+                <div className="box m-0">
+                  <h1 className="has-text-weight-bold is-size-5">
+                    {t("scm-ci-plugin.modal.title", {
+                      count: errors
+                    })}
+                  </h1>
+                  <hr className="my-2" />
+                  <CIStatusList ciStatus={ciStatus} />
+                </div>
+                <StyledArrow />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
       </Wrapper>
     </>
   );
