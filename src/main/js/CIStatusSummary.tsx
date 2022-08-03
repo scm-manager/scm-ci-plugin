@@ -33,7 +33,7 @@ import CIStatusList from "./CIStatusList";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 const StyledArrow = styled(Tooltip.Arrow)`
-  fill: var(--scm-secondary-background);
+  fill: var(--scm-popover-border-color));
 `;
 
 type Props = {
@@ -98,7 +98,7 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus }) =>
             </Tooltip.Trigger>
             <Tooltip.Portal>
               <Tooltip.Content>
-                <div className="box m-0">
+                <div className="box m-0 popover">
                   <h1 className="has-text-weight-bold is-size-5">
                     {t("scm-ci-plugin.modal.title", {
                       count: errors
