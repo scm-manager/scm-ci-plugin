@@ -33,7 +33,7 @@ import CIStatusList from "./CIStatusList";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 const StyledArrow = styled(Tooltip.Arrow)`
-  fill: var(--scm-popover-border-color));
+  fill: var(--scm-popover-border-color);
 `;
 
 type Props = {
