@@ -21,7 +21,8 @@
         "react-router-dom": "^5.1.2",
         "redux": "^4.0.0",
         "styled-components": "^5.1.0",
-        "react-hook-form": "^7.5.1"
+        "react-hook-form": "^7.5.1",
+        "@radix-ui/react-tooltip": "^1.0.0"
     },
     "babel": {
         "presets": [

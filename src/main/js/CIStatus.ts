@@ -44,7 +44,7 @@ export type CiStatusContext = {
 export const useCiStatus = (
   repository: Repository,
   context: CiStatusContext,
-  callback: (ciStatus: CIStatus[]) => void
+  callback?: (ciStatus: CIStatus[]) => void
 ) => {
   let url: string | undefined;
   if (context.pullRequest) {
@@ -53,7 +53,7 @@ export const useCiStatus = (
     url = (context.branch._links.details as Link)?.href;
   }
 
-  const { error, isLoading, data } = useQuery<CIStatus[], Error>(
+  const { error, isLoading, data } = useQuery<CIStatus[], Error, CIStatus[]>(
     [
       "repository",
       repository.namespace,
@@ -68,7 +68,9 @@ export const useCiStatus = (
         .then(response => response.json())
         .then(json => json._embedded.ciStatus)
         .then(ciStatus => {
-          callback(ciStatus);
+          if (callback) {
+            callback(ciStatus);
+          }
           return ciStatus;
         }),
     {

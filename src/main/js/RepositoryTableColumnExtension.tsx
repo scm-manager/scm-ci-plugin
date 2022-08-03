@@ -22,25 +22,17 @@
  * SOFTWARE.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.11.1'
-}
+import React from "react";
+import { Column } from "@scm-manager/ui-components";
+import CIStatusSummary from "./CIStatusSummary";
+import { useCiStatus } from "./CIStatus";
 
-dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:2.18.4-SNAPSHOT"
-  optionalPlugin "sonia.scm.plugins:scm-mail-plugin:2.1.0"
-}
+const CiStatusWrapper = ({ repository, pullRequest }) => {
+  const { data } = useCiStatus(repository, { pullRequest });
+  return <CIStatusSummary explicitCiStatus={data} repository={repository} />;
+};
 
-scmPlugin {
-  scmVersion = "2.35.0"
-  displayName = "Continuous Integration"
-  description = "Accepts analysis status and displays it"
-  author = "Cloudogu GmbH"
-  category = "Continuous Integration"
-
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ci.cistatus.api",
-    ]
-  }
-}
+export default ({ repository, t }) => (
+  <Column header={t("scm-ci-plugin.statusbar.title")}>
+    {pullRequest => <CiStatusWrapper repository={repository} pullRequest={pullRequest} />}
+  </Column>);
