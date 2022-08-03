@@ -36,6 +36,10 @@ const StyledArrow = styled(Tooltip.Arrow)`
   fill: var(--scm-popover-border-color);
 `;
 
+const PopoverWrapper = styled.div`
+  z-index: 500;
+`;
+
 type Props = {
   repository: Repository;
   changeset?: Changeset;
@@ -98,7 +102,7 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus }) =>
             </Tooltip.Trigger>
             <Tooltip.Portal>
               <Tooltip.Content>
-                <div className="box m-0 popover">
+                <PopoverWrapper className="box m-0 popover">
                   <h1 className="has-text-weight-bold is-size-5">
                     {t("scm-ci-plugin.modal.title", {
                       count: errors
@@ -106,7 +110,7 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus }) =>
                   </h1>
                   <hr className="my-2" />
                   <CIStatusList ciStatus={ciStatus} />
-                </div>
+                </PopoverWrapper>
                 <StyledArrow />
               </Tooltip.Content>
             </Tooltip.Portal>
