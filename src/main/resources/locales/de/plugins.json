@@ -97,7 +97,7 @@
           },
           "name": {
             "label": "Name",
-            "helpText": "Der Name des CI-Status (z. B. 'test' oder 'build')",
+            "helpText": "Der Name des CI-Status (z. B. 'test' oder 'build'). Um verschiedene Namen zu akzeptieren, können \"Wildcards\" ('*' und '?') genutzt werden.",
             "errorMessage": "Dieses Feld darf nicht leer sein."
           }
         }

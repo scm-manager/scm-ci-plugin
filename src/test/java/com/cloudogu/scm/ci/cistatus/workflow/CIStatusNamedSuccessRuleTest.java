@@ -210,4 +210,20 @@ class CIStatusNamedSuccessRuleTest {
     Result result = rule.validate(context);
     assertThat(result.isFailed()).isTrue();
   }
+
+  @Test
+  void shouldCheckWithGlobPattern() {
+    when(context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class)).thenReturn(new CIStatusNamedSuccessRuleConfiguration("jenkins", "* repo *"));
+    CIStatusCollection collection = new CIStatusCollection();
+    CIStatus status = new CIStatus();
+    status.setType("jenkins");
+    status.setName("orga » repo » feature/branch");
+    status.setStatus(Status.SUCCESS);
+    collection.put(status);
+    when(statusResolver.resolve(context, false)).thenReturn(collection);
+
+    Result result = rule.validate(context);
+
+    assertThat(result.isSuccess()).isTrue();
+  }
 }

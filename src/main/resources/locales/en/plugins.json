@@ -98,7 +98,7 @@
           },
           "name": {
             "label": "Name",
-            "helpText": "The name of the CI status (e.g. 'test' or 'build')",
+            "helpText": "The name of the CI status (e.g. 'test' or 'build'). You can use wildcards ('*' and '?') to match different names.",
             "errorMessage": "This field must not be blank."
           }
         }
