@@ -1,2 +1,0 @@
-- type: changed
-  description: Use glob patterns for name in rules ([#52](https://github.com/scm-manager/scm-ci-plugin/pull/52))

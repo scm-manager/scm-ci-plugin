@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.5.0 - 2022-08-05
+### Added
+- CI-Status information in pr table ([#55](https://github.com/scm-manager/scm-ci-plugin/pull/55))
+
+### Changed
+- Use glob patterns for name in rules ([#52](https://github.com/scm-manager/scm-ci-plugin/pull/52))
+
 ## 2.4.1 - 2022-05-13
 ### Fixed
 - Do not fail with old configuration ([#53](https://github.com/scm-manager/scm-ci-plugin/pull/53))
