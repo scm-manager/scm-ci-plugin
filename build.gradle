@@ -27,7 +27,7 @@ plugins {
 }
 
 dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:2.18.4-SNAPSHOT"
+  optionalPlugin "sonia.scm.plugins:scm-review-plugin:2.19.0"
   optionalPlugin "sonia.scm.plugins:scm-mail-plugin:2.1.0"
 }
 
