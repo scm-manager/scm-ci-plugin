@@ -35,4 +35,5 @@ const CiStatusWrapper = ({ repository, pullRequest }) => {
 export default ({ repository, t }) => (
   <Column header={t("scm-ci-plugin.statusbar.title")}>
     {pullRequest => <CiStatusWrapper repository={repository} pullRequest={pullRequest} />}
-  </Column>);
+  </Column>
+);
