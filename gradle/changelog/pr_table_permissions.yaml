@@ -1,0 +1,2 @@
+- type: fixed
+  description: Pull request table column permission check ([#56](https://github.com/scm-manager/scm-ci-plugin/pull/56))

@@ -41,4 +41,6 @@ binder.bind("reviewPlugin.workflow.config.CIStatusOfTypeSuccessRule", CIStatusOf
 binder.bind("reviewPlugin.workflow.config.CIStatusNamedSuccessRule", CIStatusNamedSuccessRuleConfiguration);
 
 binder.bind("repos.branch-details.information", BranchDetailWrapper);
-binder.bind("pull-requests.table.column", RepositoryTableColumnExtension);
+binder.bind("pull-requests.table.column", RepositoryTableColumnExtension, {
+  predicate: props => props.pullRequests?.length > 0 && !!props.pullRequests[0]._links.ciStatus
+});
