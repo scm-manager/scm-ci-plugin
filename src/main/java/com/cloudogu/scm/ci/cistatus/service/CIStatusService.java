@@ -59,11 +59,15 @@ public class CIStatusService {
     ciStatusCollection.put(ciStatus);
     getStore(store, repository).put(id, ciStatusCollection);
   }
-
   public CIStatusCollection get(CIStatusStore storeName, Repository repository, String id) {
     PermissionCheck.checkRead(repository);
     CIStatusCollection collection = getStore(storeName, repository).get(id);
     return  collection != null ? collection : new CIStatusCollection();
+  }
+
+  public void overwriteCollection(CIStatusStore store, Repository repository, String id, CIStatusCollection collection) {
+    PermissionCheck.checkWrite(repository);
+    getStore(store, repository).put(id, collection);
   }
 
   public CIStatusCollection getByBranch(Repository repository, String branch) {

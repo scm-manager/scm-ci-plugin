@@ -46,6 +46,7 @@ import sonia.scm.store.TypedStoreParameters;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.cloudogu.scm.ci.cistatus.CIStatusStore.CHANGESET_STORE;
@@ -92,6 +93,7 @@ class CIStatusServiceTest {
 
       assertThrows(UnauthorizedException.class, () -> ciStatusService.get(CHANGESET_STORE, repository, "1234"));
       assertThrows(UnauthorizedException.class, () -> ciStatusService.put(CHANGESET_STORE, repository, "1234", new CIStatus()));
+      assertThrows(UnauthorizedException.class, () -> ciStatusService.overwriteCollection(CHANGESET_STORE, repository, "1234", new CIStatusCollection()));
     }
   }
 
@@ -147,6 +149,26 @@ class CIStatusServiceTest {
       assertThat(resultWithRepo2.get("test2", "name2")).isSameAs(ciStatus2);
     }
 
+    @Test
+    void shouldOverwriteCiStatusCollection() {
+      Repository repository2 = createRestaurantAtTheEndOfTheUniverse();
+      repository2.setId("24");
+
+      CIStatus ciStatus1 = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
+      CIStatus ciStatus2 = new CIStatus("2", "2", null, Status.SUCCESS, "http://abc.fg");
+      ciStatusService.put(CHANGESET_STORE, REPOSITORY, "123456", ciStatus1);
+      ciStatusService.put(CHANGESET_STORE, REPOSITORY, "123456", ciStatus2);
+
+      CIStatus ciStatus3 = new CIStatus("test", "name", null, Status.PENDING, "http://abc.de");
+      ciStatusService.overwriteCollection(CHANGESET_STORE, REPOSITORY, "123456", CIStatusCollection.toCollection(List.of(ciStatus3)));
+
+      CIStatusCollection result = ciStatusService.get(CHANGESET_STORE, REPOSITORY, "123456");
+
+
+      assertThat(result).hasSize(1);
+      assertThat(result.iterator().next()).isSameAs(ciStatus3);
+    }
+
     @Nested
     class ForBranch {
 
@@ -178,9 +200,9 @@ class CIStatusServiceTest {
   }
 
   @SuppressWarnings("unchecked")
-  private class TestingDataStoreFactory implements DataStoreFactory {
+  private static class TestingDataStoreFactory implements DataStoreFactory {
 
-    private Map<String, DataStore> stores = new HashMap<>();
+    private final Map<String, DataStore> stores = new HashMap<>();
 
     @Override
     public <T> DataStore<T> getStore(TypedStoreParameters<T> storeParameters) {

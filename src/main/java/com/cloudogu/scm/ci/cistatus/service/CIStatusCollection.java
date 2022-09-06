@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -56,6 +57,12 @@ public class CIStatusCollection implements Iterable<CIStatus> {
 
   public Stream<CIStatus> stream() {
     return ciStatusList.values().stream();
+  }
+
+  public static CIStatusCollection toCollection(Collection<CIStatus> statuses) {
+    CIStatusCollection collection = new CIStatusCollection();
+    statuses.forEach(collection::put);
+    return collection;
   }
 
   @Data
