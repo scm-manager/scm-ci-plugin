@@ -29,6 +29,9 @@ import { useCiStatus } from "./CIStatus";
 
 const CiStatusWrapper = ({ repository, pullRequest }) => {
   const { data } = useCiStatus(repository, { pullRequest });
+  if (!pullRequest._links.ciStatus) {
+    return null;
+  }
   return <CIStatusSummary explicitCiStatus={data} repository={repository} />;
 };
 
