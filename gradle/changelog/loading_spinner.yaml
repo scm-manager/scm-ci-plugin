@@ -1,0 +1,2 @@
+- type: fixed
+  description: Loading spinner for ci status for closed pull requests in pull request table ([#59](https://github.com/scm-manager/scm-ci-plugin/pull/59))
