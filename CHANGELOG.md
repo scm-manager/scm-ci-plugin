@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.5.1 - 2022-09-15
+### Fixed
+- Pull request table column permission check ([#56](https://github.com/scm-manager/scm-ci-plugin/pull/56))
+- Loading spinner for ci status for closed pull requests in pull request table ([#59](https://github.com/scm-manager/scm-ci-plugin/pull/59))
+
 ## 2.5.0 - 2022-08-05
 ### Added
 - CI-Status information in pr table ([#55](https://github.com/scm-manager/scm-ci-plugin/pull/55))
