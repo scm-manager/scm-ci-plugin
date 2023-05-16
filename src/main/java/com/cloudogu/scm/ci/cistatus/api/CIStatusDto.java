@@ -33,7 +33,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -49,6 +48,7 @@ public class CIStatusDto extends HalRepresentation {
   private Status status;
   @NotBlank
   private String url;
+  private String replaces;
 
   public CIStatusDto(Links links) {
     super(links);

@@ -46,4 +46,9 @@ public class CIStatus {
     private String displayName;
     private Status status;
     private String url;
+    private String replaces;
+
+  public CIStatus(String type, String name, String displayName, Status status, String url) {
+    this(type, name, displayName, status, url, null);
+  }
 }

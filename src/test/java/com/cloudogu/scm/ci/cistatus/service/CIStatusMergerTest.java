@@ -96,6 +96,39 @@ class CIStatusMergerTest {
   }
 
   @Test
+  void shouldIgnoreChangesetStatusesReplacedByPullRequestStatuses() {
+    String changesetId = "1a2b3c4d";
+    PullRequest pullRequest = createPullRequest();
+
+    CIStatusCollection prCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/pr", Status.SUCCESS);
+    prCIStatusCollection.get("JENKINS", "pipeline/pr").setReplaces("pipeline/" + changesetId);
+    CIStatusCollection changesetCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/" + changesetId, Status.FAILURE);
+
+    mockServices(changesetId, pullRequest, changesetCIStatusCollection, prCIStatusCollection);
+
+    CIStatusCollection result = merger.mergePullRequestCIStatuses(REPOSITORY, pullRequest.getId());
+
+    assertThat((int) result.stream().count()).isEqualTo(1);
+    assertThat(result.get("JENKINS", "pipeline/pr").getStatus()).isEqualTo(Status.SUCCESS);
+  }
+
+  @Test
+  void shouldNotIgnoreChangesetStatusesReplacedByPullRequestStatusesForOtherType() {
+    String changesetId = "1a2b3c4d";
+    PullRequest pullRequest = createPullRequest();
+
+    CIStatusCollection prCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/pr", Status.SUCCESS);
+    prCIStatusCollection.get("JENKINS", "pipeline/pr").setReplaces("pipeline/" + changesetId);
+    CIStatusCollection changesetCIStatusCollection = createCIStatusCollection("SONAR", "pipeline/" + changesetId, Status.FAILURE);
+
+    mockServices(changesetId, pullRequest, changesetCIStatusCollection, prCIStatusCollection);
+
+    CIStatusCollection result = merger.mergePullRequestCIStatuses(REPOSITORY, pullRequest.getId());
+
+    assertThat((int) result.stream().count()).isEqualTo(2);
+  }
+
+  @Test
   void shouldHandleMissingChangeset() {
     PullRequest pullRequest = createPullRequest();
     when(sourceRevisionResolver.resolveRevisionOfSource(REPOSITORY, pullRequest)).thenReturn(empty());

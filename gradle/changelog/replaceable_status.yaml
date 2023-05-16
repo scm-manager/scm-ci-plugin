@@ -1,0 +1,2 @@
+- type: added
+  description: Optional field to replace ci status for changesets with pull request ci status

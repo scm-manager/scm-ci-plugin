@@ -68,6 +68,7 @@ public class CIStatusMerger {
   }
 
   private boolean isStatusNotContainedInPullRequestStatus(CIStatusCollection pullRequestCIStatusCollection, CIStatus status) {
-    return pullRequestCIStatusCollection.get(status.getType(), status.getName()) == null;
+    return pullRequestCIStatusCollection.get(status.getType(), status.getName()) == null &&
+            pullRequestCIStatusCollection.stream().noneMatch(ciStatus -> status.getType().equals(ciStatus.getType()) && status.getName().equals(ciStatus.getReplaces()));
   }
 }
