@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.6.0 - 2023-05-19
+### Added
+- Show CI status on draft pull requests
+- Optional field to replace ci status for changesets with pull request ci status
+
 ## 2.5.1 - 2022-09-15
 ### Fixed
 - Pull request table column permission check ([#56](https://github.com/scm-manager/scm-ci-plugin/pull/56))
