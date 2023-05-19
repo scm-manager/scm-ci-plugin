@@ -63,7 +63,7 @@ class PullRequestLinkEnricherTest {
   @Mock
   Subject subject;
 
-    PullRequest pr = new PullRequest("1", "source", "target");
+  PullRequest pr = new PullRequest("1", "source", "target");
 
   @BeforeEach
   void bindSubject() {
@@ -96,7 +96,6 @@ class PullRequestLinkEnricherTest {
 
   @Test
   void shouldNoEnrichCILinkToPullRequestIfClosed() {
-    PullRequest pr = new PullRequest();
     pr.setStatus(PullRequestStatus.REJECTED);
 
     pullRequestLinkEnricher.enrich(context, appender);
@@ -106,7 +105,7 @@ class PullRequestLinkEnricherTest {
 
   @Test
   void shouldNotEnrichCiLinkIfNotPermitted() {
-    PullRequest pr = new PullRequest();
+    pr.setStatus(PullRequestStatus.OPEN);
 
     pullRequestLinkEnricher.enrich(context, appender);
 

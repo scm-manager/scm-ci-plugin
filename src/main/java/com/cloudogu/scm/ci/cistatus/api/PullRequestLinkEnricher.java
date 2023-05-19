@@ -25,7 +25,6 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
-import com.cloudogu.scm.review.pullrequest.service.PullRequestStatus;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
@@ -55,7 +54,12 @@ public class PullRequestLinkEnricher implements HalEnricher {
     Repository repository = context.oneRequireByType(Repository.class);
     PullRequest pullRequest = context.oneRequireByType(PullRequest.class);
 
-    if (pullRequest.getStatus() == PullRequestStatus.OPEN && mayRead(repository)) {
+    // In the following we check for the #name of the status, because
+    // - the draft status was introduced in the review plugin with version 2.26.0
+    // - this version of the review plugin requires core version 2.40.0
+    // - but the minimal core version of the ci plugin is 2.39.0
+    // - and we don't want to increase this minimal version just for the drafts
+    if (("OPEN".equals(pullRequest.getStatus().name()) || "DRAFT".equals(pullRequest.getStatus().name())) && mayRead(repository)) {
       appender.appendLink("ciStatus", pathBuilder.createPullRequestCiStatusCollectionUri(repository.getNamespace(), repository.getName(), pullRequest.getId()));
     }
   }
