@@ -21,46 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
+import React, { FC } from "react";
+import { CIStatus } from "./CIStatus";
 
 type BaseProps = {
   titleType?: string;
   title?: string;
 };
 type Props = BaseProps & {
-  color: string;
-  icon: string;
-  size: string;
+  color?: string;
+  icon?: string;
+  size?: string;
 };
 
-class StatusIcon extends React.Component<Props> {
-  static defaultProps = {
-    color: "secondary",
-    icon: "circle-notch",
-    size: "1x"
-  };
+const StatusIcon: FC<Props> = ({ color = "secondary", icon = "circle-notch", size = "1x", titleType, title }) => {
+  return (
+    <>
+      <i className={`fas fa-${size} has-text-${color} fa-${icon}`} />
+      {(titleType || title) && (
+        <span className="ml-2">
+          {titleType && <span className="has-text-weight-bold">{titleType}: </span>}
+          {title}
+        </span>
+      )}
+    </>
+  );
+};
 
-  render() {
-    const { color, icon, size, titleType, title } = this.props;
-    return (
-      <>
-        <i className={`fas fa-${size} has-text-${color} fa-${icon}`} />
-        {(titleType || title) && (
-          <span
-            style={{
-              paddingLeft: "0.5rem"
-            }}
-          >
-            {titleType && <strong>{titleType}: </strong>}
-            {title && title}
-          </span>
-        )}
-      </>
-    );
-  }
-}
-
-export const getColor = (ciStatus: any) => {
+export const getColor = (ciStatus?: CIStatus[]) => {
   if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     return "danger";
   } else if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
@@ -72,11 +60,13 @@ export const getColor = (ciStatus: any) => {
   }
 };
 
-export const getIcon = (ciStatus: any) => {
-  if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
-    return "times-circle";
-  } else if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
-    return "exclamation-circle";
+export const getIcon = (ciStatus?: CIStatus[]) => {
+  if (
+    ciStatus &&
+    (ciStatus.filter(ci => ci.status === "FAILURE").length > 0 ||
+      ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0)
+  ) {
+    return "exclamation-triangle";
   } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
     return "check-circle";
   } else {
@@ -84,10 +74,10 @@ export const getIcon = (ciStatus: any) => {
   }
 };
 
-export const SuccessIcon: React.SFC<BaseProps> = props => <StatusIcon color="success" icon="check-circle" {...props} />;
-export const FailureIcon: React.SFC<BaseProps> = props => <StatusIcon color="danger" icon="times-circle" {...props} />;
-export const UnstableIcon: React.SFC<BaseProps> = props => (
-  <StatusIcon color="warning" icon="exclamation-circle" {...props} />
+export const SuccessIcon: FC<BaseProps> = props => <StatusIcon color="success" icon="check-circle" {...props} />;
+export const FailureIcon: FC<BaseProps> = props => <StatusIcon color="danger" icon="exclamation-triangle" {...props} />;
+export const UnstableIcon: FC<BaseProps> = props => (
+  <StatusIcon color="warning" icon="exclamation-triangle" {...props} />
 );
 
 export default StatusIcon;

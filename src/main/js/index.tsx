@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { binder } from "@scm-manager/ui-extensions";
+import { binder, extensionPoints } from "@scm-manager/ui-extensions";
 import CIStatusSummary from "./CIStatusSummary";
 import CIStatusBar from "./CIStatusBar";
 import CIStatusAllSuccessRuleConfiguration from "./workflow/CIStatusAllSuccessRuleConfiguration";
@@ -29,10 +29,16 @@ import CIStatusXSuccessRuleConfiguration from "./workflow/CIStatusXSuccessRuleCo
 import CIStatusOfTypeSuccessRuleConfiguration from "./workflow/CIStatusOfTypeSuccessRuleConfiguration";
 import CIStatusNamedSuccessRuleConfiguration from "./workflow/CIStatusNamedSuccessRuleConfiguration";
 import BranchDetailWrapper from "./BranchDetailWrapper";
-import RepositoryTableColumnExtension from "./RepositoryTableColumnExtension";
+import BranchDetailsCIStatusSummary from "./BranchDetailsCIStatusSummary";
+import PullRequestDetailsCIStatusSummary from "./PullRequestDetailsCIStatusSummary";
+import React from "react";
 
-binder.bind("changeset.right", CIStatusSummary);
-binder.bind("repos.branches.row.details", CIStatusSummary);
+binder.bind<extensionPoints.ChangesetRight>("changeset.right", props => (
+  <span className="ml-2">
+    <CIStatusSummary {...props} />
+  </span>
+));
+binder.bind<extensionPoints.BranchListDetail>("branches.list.detail", BranchDetailsCIStatusSummary);
 binder.bind("reviewPlugin.pullrequest.top", CIStatusBar);
 
 binder.bind("reviewPlugin.workflow.config.CIStatusAllSuccessRule", CIStatusAllSuccessRuleConfiguration);
@@ -41,6 +47,6 @@ binder.bind("reviewPlugin.workflow.config.CIStatusOfTypeSuccessRule", CIStatusOf
 binder.bind("reviewPlugin.workflow.config.CIStatusNamedSuccessRule", CIStatusNamedSuccessRuleConfiguration);
 
 binder.bind("repos.branch-details.information", BranchDetailWrapper);
-binder.bind("pull-requests.table.column", RepositoryTableColumnExtension, {
-  predicate: props => props.pullRequests?.length > 0 && !!props.pullRequests[0]._links.ciStatus
+binder.bind("pull-requests.list.detail", PullRequestDetailsCIStatusSummary, {
+  predicate: ({ pullRequest }) => pullRequest._links.ciStatus
 });

@@ -54,16 +54,14 @@ const CIStatusBar: FC<Props> = ({ repository, pullRequest, branch }) => {
     return null;
   }
 
-  const success = ciStatus?.every((ci: CIStatus) => ci.status === "SUCCESS");
-
   return (
     <>
       {showModal && <CIStatusModalView onClose={() => setShowModal(false)} ciStatus={ciStatus} />}
       {color && icon && (
         <StatusBar
           icon={icon}
-          backgroundColor={success ? "secondary" : color}
-          iconColor={success ? color : color === "secondary" ? "secondary" : "undefined"}
+          backgroundColor="secondary"
+          iconColor={color}
           onClick={() => setShowModal(true)}
           ciStatus={ciStatus}
         />

@@ -1,0 +1,4 @@
+- type: changed
+  description: Status icons and colors
+- type: changed
+  description: Use new extension points

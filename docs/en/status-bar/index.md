@@ -1,5 +1,5 @@
 ---
-title: Status bar
+title: Status Bar
 ---
 With the review plugin, SCM-Manager supports pull requests. The scm-ci-plugin can link into the pull requests and enrich them with useful information.
 

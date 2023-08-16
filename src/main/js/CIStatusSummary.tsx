@@ -21,70 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useState } from "react";
+import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
-import { NoStyleButton, SmallLoadingSpinner } from "@scm-manager/ui-components";
+import { NoStyleButton } from "@scm-manager/ui-components";
+import { Tooltip } from "@scm-manager/ui-overlays";
 import { CIStatus } from "./CIStatus";
-import StatusIcon, { FailureIcon, SuccessIcon, UnstableIcon } from "./StatusIcon";
-import CIStatusModalView from "./CIStatusModalView";
-import styled from "styled-components";
+import StatusIcon, { getColor, getIcon } from "./StatusIcon";
 import CIStatusList from "./CIStatusList";
-import * as Tooltip from "@radix-ui/react-tooltip";
-
-const StyledArrow = styled(Tooltip.Arrow)`
-  fill: var(--scm-popover-border-color);
-`;
-
-const StyledContent = styled(Tooltip.Content)`
-  z-index: 500;
-`;
 
 type Props = {
   repository: Repository;
   changeset?: Changeset;
   details?: BranchDetails;
-  explicitCiStatus?: CIStatus[] | undefined;
+  explicitCiStatus?: CIStatus[];
+  labelId?: string;
 };
 
-const Wrapper = styled.div`
-  margin: 0 0.35rem 0 1.1rem;
-`;
-
-const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus }) => {
-  const [modalOpen, setModalOpen] = useState(false);
+const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, labelId }) => {
   const [t] = useTranslation("plugins");
 
-  if (!changeset && !details && !explicitCiStatus) {
-    return <SmallLoadingSpinner />;
-  }
+  const ciStatus = useMemo(() => {
+    if (changeset?._embedded?.ciStatus) {
+      return changeset._embedded.ciStatus as CIStatus[];
+    } else if (details?._embedded?.ciStatus) {
+      return details._embedded.ciStatus as CIStatus[];
+    } else if (explicitCiStatus) {
+      return explicitCiStatus;
+    }
+  }, [changeset, details, explicitCiStatus]);
 
-  let ciStatus: CIStatus[] | undefined;
-  if (changeset?._embedded?.ciStatus) {
-    ciStatus = changeset._embedded.ciStatus as CIStatus[];
-  } else if (details?._embedded?.ciStatus) {
-    ciStatus = details._embedded.ciStatus as CIStatus[];
-  } else if (explicitCiStatus) {
-    ciStatus = explicitCiStatus;
-  } else {
-    return null;
-  }
-
-  let icon;
-  if (!ciStatus || ciStatus.length === 0) {
-    icon = <StatusIcon />;
-  } else if (ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
-    icon = <FailureIcon />;
-  } else if (ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
-    icon = <UnstableIcon />;
-  } else if (ciStatus.every(ci => ci.status === "SUCCESS")) {
-    icon = <SuccessIcon />;
-  } else {
-    icon = <StatusIcon />;
-  }
-
-  const ciStatusModalView =
-    ciStatus && modalOpen ? <CIStatusModalView onClose={() => setModalOpen(false)} ciStatus={ciStatus} /> : null;
+  const icon = <StatusIcon icon={getIcon(ciStatus)} color={getColor(ciStatus)} />;
 
   const errors =
     ciStatus && ciStatus.length > 0
@@ -92,30 +59,23 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus }) =>
       : 0;
 
   return (
-    <>
-      {ciStatusModalView}
-      <Wrapper className="is-relative">
-        <Tooltip.Provider>
-          <Tooltip.Root>
-            <Tooltip.Trigger asChild={true}>
-              <NoStyleButton>{icon}</NoStyleButton>
-            </Tooltip.Trigger>
-            <Tooltip.Portal>
-              <StyledContent className="box m-0 popover">
-                <h1 className="has-text-weight-bold is-size-5">
-                  {t("scm-ci-plugin.modal.title", {
-                    count: errors
-                  })}
-                </h1>
-                <hr className="my-2" />
-                <CIStatusList ciStatus={ciStatus} />
-                <StyledArrow />
-              </StyledContent>
-            </Tooltip.Portal>
-          </Tooltip.Root>
-        </Tooltip.Provider>
-      </Wrapper>
-    </>
+    <Tooltip
+      message={
+        <>
+          <h1 className="has-text-weight-bold is-size-5">
+            {t("scm-ci-plugin.modal.title", {
+              count: errors
+            })}
+          </h1>
+          <hr className="my-2" />
+          <CIStatusList ciStatus={ciStatus} />
+        </>
+      }
+    >
+      <NoStyleButton aria-labelledby={labelId} className="is-relative is-size-6">
+        {icon}
+      </NoStyleButton>
+    </Tooltip>
   );
 };
 

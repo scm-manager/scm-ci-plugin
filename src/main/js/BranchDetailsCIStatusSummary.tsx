@@ -21,42 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import React, { FC } from "react";
-import StatusIcon, { SuccessIcon, FailureIcon, UnstableIcon } from "./StatusIcon";
-import ModalRow from "./ModalRow";
-import { CIStatus, getDisplayName } from "./CIStatus";
+import { Branch, Repository } from "@scm-manager/ui-types";
+import { useTranslation } from "react-i18next";
+import { Card } from "@scm-manager/ui-layout";
+import CIStatusSummary from "./CIStatusSummary";
+import { useCiStatus } from "./CIStatus";
+import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 
 type Props = {
-  ciStatus?: CIStatus[];
+  repository: Repository;
+  branch: Branch;
 };
 
-const createRow = (ci: CIStatus) => {
-  switch (ci.status) {
-    case "SUCCESS":
-      return <ModalRow status={<SuccessIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
-    case "FAILURE":
-      return <ModalRow status={<FailureIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
-    case "UNSTABLE":
-      return <ModalRow status={<UnstableIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
-    default:
-      return <ModalRow status={<StatusIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
-  }
-};
+const BranchDetailsCIStatusSummary: FC<Props> = ({ repository, branch }) => {
+  const [t] = useTranslation("plugins");
+  const { data, isLoading } = useCiStatus(repository, { branch });
 
-const CIStatusList: FC<Props> = ({ ciStatus }) => {
-  if (!ciStatus) {
-    return null;
-  }
   return (
-    <>
-      {ciStatus.map((ci, key) => (
+    <Card.Details.Detail>
+      {({ labelId }) => (
         <>
-          {createRow(ci)}
-          {key < ciStatus.length - 1 ? <hr className="m-0" /> : null}
+          <Card.Details.Detail.Label id={labelId}>{t("scm-ci-plugin.statusbar.title")}</Card.Details.Detail.Label>
+          {isLoading ? (
+            <SmallLoadingSpinner />
+          ) : (
+            <CIStatusSummary explicitCiStatus={data} repository={repository} labelId={labelId} />
+          )}
         </>
-      ))}
-    </>
+      )}
+    </Card.Details.Detail>
   );
 };
 
-export default CIStatusList;
+export default BranchDetailsCIStatusSummary;

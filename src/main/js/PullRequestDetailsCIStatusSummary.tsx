@@ -22,21 +22,37 @@
  * SOFTWARE.
  */
 
-import React from "react";
-import { Column } from "@scm-manager/ui-components";
-import CIStatusSummary from "./CIStatusSummary";
+import React, { FC } from "react";
+import { HalRepresentation, Repository } from "@scm-manager/ui-types";
+import { useTranslation } from "react-i18next";
+import { Card } from "@scm-manager/ui-layout";
 import { useCiStatus } from "./CIStatus";
+import CIStatusSummary from "./CIStatusSummary";
+import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 
-const CiStatusWrapper = ({ repository, pullRequest }) => {
-  const { data } = useCiStatus(repository, { pullRequest });
-  if (!pullRequest._links.ciStatus) {
-    return null;
-  }
-  return <CIStatusSummary explicitCiStatus={data} repository={repository} />;
+type Props = {
+  repository: Repository;
+  pullRequest: HalRepresentation;
 };
 
-export default ({ repository, t }) => (
-  <Column header={t("scm-ci-plugin.statusbar.title")}>
-    {pullRequest => <CiStatusWrapper repository={repository} pullRequest={pullRequest} />}
-  </Column>
-);
+const PullRequestDetailsCIStatusSummary: FC<Props> = ({ repository, pullRequest }) => {
+  const [t] = useTranslation("plugins");
+  const { data, isLoading } = useCiStatus(repository, { pullRequest });
+
+  return (
+    <Card.Details.Detail>
+      {({ labelId }) => (
+        <>
+          <Card.Details.Detail.Label id={labelId}>{t("scm-ci-plugin.statusbar.title")}</Card.Details.Detail.Label>
+          {isLoading ? (
+            <SmallLoadingSpinner />
+          ) : (
+            <CIStatusSummary explicitCiStatus={data} repository={repository} labelId={labelId} />
+          )}
+        </>
+      )}
+    </Card.Details.Detail>
+  );
+};
+
+export default PullRequestDetailsCIStatusSummary;

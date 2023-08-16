@@ -25,13 +25,14 @@ import React from "react";
 import classNames from "classnames";
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
+import { CIStatus } from "./CIStatus";
 
 type Props = WithTranslation & {
   backgroundColor: string;
   icon: string;
   iconColor: string;
   onClick: () => void;
-  ciStatus: any;
+  ciStatus: CIStatus[];
 };
 
 const Notification = styled.div`
@@ -57,7 +58,7 @@ class StatusBar extends React.Component<Props> {
           "mt-4",
           "mb-0"
         )}
-        onClick={hasAnalyzes ? onClick : ""}
+        onClick={hasAnalyzes ? onClick : undefined}
       >
         <i className={`fas fa-${icon} fa-lg pr-2 has-text-${iconColor}`} />
         <span className="has-text-weight-bold">
