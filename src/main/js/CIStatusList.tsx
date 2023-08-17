@@ -49,6 +49,7 @@ const CIStatusList: FC<Props> = ({ ciStatus }) => {
   }
   return (
     <>
+      <hr className="mb-0 mt-4" />
       {ciStatus.map((ci, key) => (
         <>
           {createRow(ci)}

@@ -25,7 +25,7 @@ import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
 import { NoStyleButton } from "@scm-manager/ui-components";
-import { Tooltip } from "@scm-manager/ui-overlays";
+import { Popover } from "@scm-manager/ui-overlays";
 import { CIStatus } from "./CIStatus";
 import StatusIcon, { getColor, getIcon } from "./StatusIcon";
 import CIStatusList from "./CIStatusList";
@@ -58,24 +58,21 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, labe
       ? ciStatus.filter(ci => ci.status === "FAILURE" || ci.status === "UNSTABLE").length
       : 0;
 
+  const trigger = (
+    <NoStyleButton aria-labelledby={labelId} className="is-relative is-size-6">
+      {icon}
+    </NoStyleButton>
+  );
+  const title = (
+    <h1 className="has-text-weight-bold is-size-5">
+      {t("scm-ci-plugin.modal.title", {count: errors})}
+    </h1>
+  );
+
   return (
-    <Tooltip
-      message={
-        <>
-          <h1 className="has-text-weight-bold is-size-5">
-            {t("scm-ci-plugin.modal.title", {
-              count: errors
-            })}
-          </h1>
-          <hr className="my-2" />
-          <CIStatusList ciStatus={ciStatus} />
-        </>
-      }
-    >
-      <NoStyleButton aria-labelledby={labelId} className="is-relative is-size-6">
-        {icon}
-      </NoStyleButton>
-    </Tooltip>
+    <Popover trigger={trigger} title={title}>
+      <CIStatusList ciStatus={ciStatus} />
+    </Popover>
   );
 };
 

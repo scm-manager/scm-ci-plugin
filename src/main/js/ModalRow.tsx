@@ -31,8 +31,9 @@ type Props = {
 };
 
 const OverlayLink = styled.a`
-  width: 90%;
-  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 100%;
   height: calc(80px - 1.5rem);
   pointer-events: all;
   border-radius: 4px;
@@ -46,15 +47,16 @@ const ModalRow: FC<Props> = ({ status, ciUrl }) => {
 
   return (
     <>
-      <OverlayLink
-        href={ciUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="has-hover-background-blue"
-        aria-label={t("overview.ariaLabel", { name: status })}
-      />
       <div className="is-flex is-flex-direction-row px-0 py-4">
-        <div className="px-2 pb-2">{status}</div>
+        <OverlayLink
+          href={ciUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="has-hover-background-blue"
+          aria-label={t("overview.ariaLabel", { name: status })}
+        >
+          <span className="px-2 pb-2 has-text-default">{status}</span>
+        </OverlayLink>
       </div>
     </>
   );

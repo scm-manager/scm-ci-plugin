@@ -1,0 +1,2 @@
+- type: changed
+  description: The ci status now uses a popover instead of a tooltip
