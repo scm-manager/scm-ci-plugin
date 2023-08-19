@@ -23,6 +23,7 @@
  */
 import React, { FC } from "react";
 import { CIStatus } from "./CIStatus";
+import {Icon} from "@scm-manager/ui-buttons";
 
 type BaseProps = {
   titleType?: string;
@@ -37,7 +38,7 @@ type Props = BaseProps & {
 const StatusIcon: FC<Props> = ({ color = "secondary", icon = "circle-notch", size = "1x", titleType, title }) => {
   return (
     <>
-      <i className={`fas fa-${size} has-text-${color} fa-${icon}`} />
+      <Icon>{`${icon} has-text-${color} fa-${size}`}</Icon>
       {(titleType || title) && (
         <span className="ml-2">
           {titleType && <span className="has-text-weight-bold">{titleType}: </span>}

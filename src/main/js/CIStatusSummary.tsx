@@ -51,7 +51,7 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, labe
     }
   }, [changeset, details, explicitCiStatus]);
 
-  const icon = <StatusIcon icon={getIcon(ciStatus)} color={getColor(ciStatus)} />;
+  const icon = <StatusIcon icon={getIcon(ciStatus)} color={getColor(ciStatus)} size="lg"/>;
 
   const errors =
     ciStatus && ciStatus.length > 0
