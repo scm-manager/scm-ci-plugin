@@ -10,7 +10,16 @@
       "analysis": "{{count}} analysis",
       "analysis_plural": "{{count}} analyses",
       "error": "{{count}} error",
-      "error_plural": "{{count}} errors"
+      "error_plural": "{{count}} errors",
+      "aria": {
+        "label": "Analyses: {{status}}",
+        "status": {
+          "running": "Running",
+          "successful": "Successful",
+          "unstable": "Unstable",
+          "faulty": "Faulty"
+        }
+      }
     },
     "popover": {
       "noStatus" : "No status available"

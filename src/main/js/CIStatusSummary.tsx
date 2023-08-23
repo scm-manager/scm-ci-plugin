@@ -27,7 +27,7 @@ import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
 import { NoStyleButton } from "@scm-manager/ui-components";
 import { Popover } from "@scm-manager/ui-overlays";
 import { CIStatus } from "./CIStatus";
-import StatusIcon, { getColor, getIcon } from "./StatusIcon";
+import StatusIcon, {getColor, getIcon, getTitle} from "./StatusIcon";
 import CIStatusList from "./CIStatusList";
 
 type Props = {
@@ -59,7 +59,9 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, labe
       : 0;
 
   const trigger = (
-    <NoStyleButton aria-labelledby={labelId} className="is-relative is-size-6">
+    <NoStyleButton className="is-relative is-size-6" aria-label={t("scm-ci-plugin.statusbar.aria.label", {
+      status: t(`scm-ci-plugin.statusbar.aria.status.${getTitle(ciStatus)}`)
+    })}>
       {icon}
     </NoStyleButton>
   );

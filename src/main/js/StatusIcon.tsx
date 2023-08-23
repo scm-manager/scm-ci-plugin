@@ -75,6 +75,18 @@ export const getIcon = (ciStatus?: CIStatus[]) => {
   }
 };
 
+export const getTitle = (ciStatus?: CIStatus[]) => {
+  if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
+    return "faulty";
+  } else if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
+    return "unstable";
+  } else if (ciStatus && ciStatus.every(ci => ci.status === "SUCCESS")) {
+    return "successful";
+  } else {
+    return "running";
+  }
+};
+
 export const SuccessIcon: FC<BaseProps> = props => <StatusIcon color="success" icon="check-circle" {...props} />;
 export const FailureIcon: FC<BaseProps> = props => <StatusIcon color="danger" icon="exclamation-triangle" {...props} />;
 export const UnstableIcon: FC<BaseProps> = props => (

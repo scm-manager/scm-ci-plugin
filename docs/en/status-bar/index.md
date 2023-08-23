@@ -21,7 +21,7 @@ The Jenkins build job run was successful and is green in Jenkins.
 
 ![Statusbar Successful](assets/status-success.png)
 
-### Instable
+### Unstable
 The Jenkins build job is yellow. Maybe unit tests failed.
 
 ![Statusbar Unstable](assets/status-unstable.png)
