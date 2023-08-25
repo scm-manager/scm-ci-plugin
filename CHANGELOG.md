@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.7.0 - 2023-08-25
+### Fixed
+- Analyses icon accessible in PR Overview
+
+### Changed
+- Status icons and colors
+- Use new extension points
+- The ci status now uses a popover instead of a tooltip
+
 ## 2.6.0 - 2023-05-19
 ### Added
 - Show CI status on draft pull requests
