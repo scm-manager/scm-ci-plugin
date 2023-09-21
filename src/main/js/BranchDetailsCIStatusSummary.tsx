@@ -24,11 +24,8 @@
 
 import React, { FC } from "react";
 import { Branch, Repository } from "@scm-manager/ui-types";
-import { useTranslation } from "react-i18next";
-import { Card } from "@scm-manager/ui-layout";
 import CIStatusSummary from "./CIStatusSummary";
 import { useCiStatus } from "./CIStatus";
-import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 
 type Props = {
   repository: Repository;
@@ -36,23 +33,9 @@ type Props = {
 };
 
 const BranchDetailsCIStatusSummary: FC<Props> = ({ repository, branch }) => {
-  const [t] = useTranslation("plugins");
   const { data, isLoading } = useCiStatus(repository, { branch });
 
-  return (
-    <Card.Details.Detail>
-      {({ labelId }) => (
-        <>
-          <Card.Details.Detail.Label id={labelId}>{t("scm-ci-plugin.statusbar.title")}</Card.Details.Detail.Label>
-          {isLoading ? (
-            <SmallLoadingSpinner />
-          ) : (
-            <CIStatusSummary explicitCiStatus={data} repository={repository} labelId={labelId} />
-          )}
-        </>
-      )}
-    </Card.Details.Detail>
-  );
+  return <CIStatusSummary explicitCiStatus={data} repository={repository} loading={isLoading} />;
 };
 
 export default BranchDetailsCIStatusSummary;

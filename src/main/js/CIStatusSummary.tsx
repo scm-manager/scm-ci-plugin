@@ -24,21 +24,22 @@
 import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
-import { NoStyleButton } from "@scm-manager/ui-components";
+import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 import { Popover } from "@scm-manager/ui-overlays";
 import { CIStatus } from "./CIStatus";
-import StatusIcon, {getColor, getIcon, getTitle} from "./StatusIcon";
+import StatusIcon, { getColor, getIcon, getTitle } from "./StatusIcon";
 import CIStatusList from "./CIStatusList";
+import { Card } from "@scm-manager/ui-layout";
 
 type Props = {
   repository: Repository;
   changeset?: Changeset;
   details?: BranchDetails;
   explicitCiStatus?: CIStatus[];
-  labelId?: string;
+  loading?: boolean;
 };
 
-const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, labelId }) => {
+const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, loading }) => {
   const [t] = useTranslation("plugins");
 
   const ciStatus = useMemo(() => {
@@ -51,7 +52,16 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, labe
     }
   }, [changeset, details, explicitCiStatus]);
 
-  const icon = <StatusIcon icon={getIcon(ciStatus)} color={getColor(ciStatus)} size="lg"/>;
+  if (loading) {
+    return (
+      <Card.Details.Detail>
+        <Card.Details.Detail.Label>{t("scm-ci-plugin.statusbar.title")}</Card.Details.Detail.Label>
+        <SmallLoadingSpinner />
+      </Card.Details.Detail>
+    );
+  }
+
+  const icon = <StatusIcon icon={getIcon(ciStatus)} color={getColor(ciStatus)} size="lg" />;
 
   const errors =
     ciStatus && ciStatus.length > 0
@@ -59,17 +69,16 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, labe
       : 0;
 
   const trigger = (
-    <NoStyleButton className="is-relative is-size-6" aria-label={t("scm-ci-plugin.statusbar.aria.label", {
-      status: t(`scm-ci-plugin.statusbar.aria.status.${getTitle(ciStatus)}`)
-    })}>
+    <Card.Details.ButtonDetail
+      aria-label={t("scm-ci-plugin.statusbar.aria.label", {
+        status: t(`scm-ci-plugin.statusbar.aria.status.${getTitle(ciStatus)}`)
+      })}
+    >
+      <Card.Details.Detail.Label>{t("scm-ci-plugin.statusbar.title")}</Card.Details.Detail.Label>
       {icon}
-    </NoStyleButton>
+    </Card.Details.ButtonDetail>
   );
-  const title = (
-    <h1 className="has-text-weight-bold is-size-5">
-      {t("scm-ci-plugin.modal.title", {count: errors})}
-    </h1>
-  );
+  const title = <h1 className="has-text-weight-bold is-size-5">{t("scm-ci-plugin.modal.title", { count: errors })}</h1>;
 
   return (
     <Popover trigger={trigger} title={title}>
