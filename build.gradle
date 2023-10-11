@@ -27,12 +27,12 @@ plugins {
 }
 
 dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:2.30.2-SNAPSHOT"
+  optionalPlugin "sonia.scm.plugins:scm-review-plugin:2.31.0"
   optionalPlugin "sonia.scm.plugins:scm-mail-plugin:2.1.0"
 }
 
 scmPlugin {
-  scmVersion = "2.46.2-SNAPSHOT"
+  scmVersion = "2.47.0"
   displayName = "Continuous Integration"
   description = "Accepts analysis status and displays it"
   author = "Cloudogu GmbH"
