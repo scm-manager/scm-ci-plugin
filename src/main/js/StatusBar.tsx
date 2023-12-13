@@ -26,6 +26,7 @@ import classNames from "classnames";
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
 import { CIStatus } from "./CIStatus";
+import { Icon } from "@scm-manager/ui-components";
 
 type Props = WithTranslation & {
   backgroundColor: string;
@@ -51,16 +52,10 @@ class StatusBar extends React.Component<Props> {
     const hasAnalyzes = ciStatus && ciStatus.length !== 0;
     return (
       <Notification
-        className={classNames(
-          "media",
-          `notification is-${backgroundColor}`,
-          hasAnalyzes ? "has-cursor-pointer" : "",
-          "mt-4",
-          "mb-0"
-        )}
+        className={classNames("media", `notification is-${backgroundColor}`, hasAnalyzes ? "has-cursor-pointer" : "")}
         onClick={hasAnalyzes ? onClick : undefined}
       >
-        <i className={`fas fa-${icon} fa-lg pr-2 has-text-${iconColor}`} />
+        <Icon className="fa-lg pr-2" color={iconColor} name={icon} />
         <span className="has-text-weight-bold">
           {t("scm-ci-plugin.statusbar.analysis", {
             count: ciStatus && ciStatus.length
