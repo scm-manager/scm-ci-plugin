@@ -28,10 +28,9 @@ import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.workflow.SourceRevisionResolver;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.pullrequest.service.PullRequestService;
+import jakarta.inject.Inject;
 import sonia.scm.plugin.Requires;
 import sonia.scm.repository.Repository;
-
-import javax.inject.Inject;
 
 @Requires("scm-review-plugin")
 public class CIStatusMerger {

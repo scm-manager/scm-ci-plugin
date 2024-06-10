@@ -24,9 +24,8 @@
 package com.cloudogu.scm.ci.cistatus.service;
 
 import com.google.common.collect.Iterables;
+import jakarta.xml.bind.JAXB;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.bind.JAXB;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

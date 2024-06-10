@@ -25,13 +25,12 @@ package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import de.otto.edison.hal.Links;
+import jakarta.inject.Inject;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 import sonia.scm.repository.Repository;
-
-import javax.inject.Inject;
 
 @Mapper
 public abstract class CIStatusMapper {

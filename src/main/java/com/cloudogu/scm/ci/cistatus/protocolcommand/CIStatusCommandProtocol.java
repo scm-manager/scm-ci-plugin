@@ -26,11 +26,10 @@ package com.cloudogu.scm.ci.cistatus.protocolcommand;
 import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
+import jakarta.inject.Inject;
 import sonia.scm.protocolcommand.CommandContext;
 import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.protocolcommand.ScmCommandProtocol;
-
-import javax.inject.Inject;
 
 public class CIStatusCommandProtocol implements ScmCommandProtocol {
 

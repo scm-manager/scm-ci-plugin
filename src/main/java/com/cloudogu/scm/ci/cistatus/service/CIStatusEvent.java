@@ -21,34 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.ci.cistatus.api;
 
-import com.cloudogu.scm.ci.cistatus.service.CIStatus;
-import de.otto.edison.hal.Embedded;
-import de.otto.edison.hal.HalRepresentation;
-import de.otto.edison.hal.Links;
-import jakarta.inject.Inject;
+package com.cloudogu.scm.ci.cistatus.service;
+
+import com.cloudogu.scm.ci.cistatus.CIStatusStore;
+import lombok.Getter;
+import sonia.scm.event.Event;
 import sonia.scm.repository.Repository;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+@Event
+@Getter
+public class CIStatusEvent {
 
-public class CIStatusCollectionDtoMapper {
+  private final CIStatusStore type;
+  private final Repository repository;
+  private final String id;
+  private final CIStatus ciStatus;
 
-  private final CIStatusMapper mapper;
-  private final CIStatusPathBuilder ciStatusPathBuilder;
-
-  @Inject
-  public CIStatusCollectionDtoMapper(CIStatusMapper mapper, CIStatusPathBuilder ciStatusPathBuilder) {
-    this.mapper = mapper;
-    this.ciStatusPathBuilder = ciStatusPathBuilder;
-  }
-
-  HalRepresentation map(Stream<CIStatus> ciStatus, Repository repository, String changesetId) {
-    return new HalRepresentation(
-      new Links.Builder().self(ciStatusPathBuilder.createChangesetCiStatusCollectionUri(repository.getNamespace(), repository.getName(), changesetId)).build(),
-      Embedded.embedded("ciStatus", ciStatus
-        .map(s -> mapper.map(repository, changesetId, s))
-        .collect(Collectors.toList())));
+  public CIStatusEvent(Repository repository, CIStatusStore store, String id, CIStatus ciStatus) {
+    this.type = store;
+    this.repository = repository;
+    this.id = id;
+    this.ciStatus = ciStatus;
   }
 }

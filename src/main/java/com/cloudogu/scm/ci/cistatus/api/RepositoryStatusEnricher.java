@@ -23,14 +23,13 @@
  */
 package com.cloudogu.scm.ci.cistatus.api;
 
+import jakarta.inject.Inject;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Repository;
-
-import javax.inject.Inject;
 
 import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
 

@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ci.cistatus.protocolcommand;
 
+import jakarta.inject.Inject;
 import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.protocolcommand.RepositoryContextResolver;
 import sonia.scm.repository.NamespaceAndName;
@@ -30,7 +31,6 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryLocationResolver;
 import sonia.scm.repository.RepositoryManager;
 
-import javax.inject.Inject;
 import java.nio.file.Path;
 
 public class CIStatusRepositoryContextResolver implements RepositoryContextResolver {

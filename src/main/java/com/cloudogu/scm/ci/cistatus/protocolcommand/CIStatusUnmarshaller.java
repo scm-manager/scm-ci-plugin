@@ -24,11 +24,11 @@
 package com.cloudogu.scm.ci.cistatus.protocolcommand;
 
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
+import jakarta.inject.Singleton;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
-import javax.inject.Singleton;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 
 @Singleton

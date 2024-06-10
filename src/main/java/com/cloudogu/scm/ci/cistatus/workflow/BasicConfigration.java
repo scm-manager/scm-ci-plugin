@@ -24,11 +24,10 @@
 
 package com.cloudogu.scm.ci.cistatus.workflow;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Getter
 @XmlAccessorType(XmlAccessType.FIELD)

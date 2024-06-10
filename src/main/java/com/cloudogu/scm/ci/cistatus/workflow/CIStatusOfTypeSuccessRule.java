@@ -31,17 +31,17 @@ import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import com.cloudogu.scm.review.workflow.ResultContextWithTranslationCode;
 import com.cloudogu.scm.review.workflow.Rule;
+import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sonia.scm.plugin.Extension;
 import sonia.scm.plugin.Requires;
 
-import javax.inject.Inject;
-import javax.validation.constraints.NotBlank;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
 import java.util.Optional;
 

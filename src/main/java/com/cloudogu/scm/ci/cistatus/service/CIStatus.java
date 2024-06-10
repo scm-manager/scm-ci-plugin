@@ -23,18 +23,17 @@
  */
 package com.cloudogu.scm.ci.cistatus.service;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Getter
-@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -47,6 +46,10 @@ public class CIStatus {
     private Status status;
     private String url;
     private String replaces;
+
+  public CIStatus(String type, String name, String displayName, Status status) {
+    this(type, name, displayName, status, null);
+  }
 
   public CIStatus(String type, String name, String displayName, Status status, String url) {
     this(type, name, displayName, status, url, null);

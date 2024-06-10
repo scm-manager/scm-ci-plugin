@@ -25,6 +25,7 @@
 package com.cloudogu.scm.ci.cistatus.update;
 
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
+import jakarta.inject.Inject;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.RepositoryLocationResolver;
@@ -32,7 +33,6 @@ import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 import sonia.scm.version.Version;
 
-import javax.inject.Inject;
 import java.nio.file.Path;
 
 import static com.cloudogu.scm.ci.cistatus.CIStatusStore.CHANGESET_STORE;

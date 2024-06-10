@@ -29,6 +29,8 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.ci.cistatus.service.Status;
 import de.otto.edison.hal.HalRepresentation;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,9 +38,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.IllegalIdentifierChangeException;
 import sonia.scm.repository.Repository;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 
 import static de.otto.edison.hal.Links.emptyLinks;
 import static org.assertj.core.api.Assertions.assertThat;

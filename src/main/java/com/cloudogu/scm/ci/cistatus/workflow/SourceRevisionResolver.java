@@ -25,6 +25,7 @@
 package com.cloudogu.scm.ci.cistatus.workflow;
 
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
+import jakarta.inject.Inject;
 import sonia.scm.ContextEntry;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.InternalRepositoryException;
@@ -32,7 +33,6 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Optional;
 

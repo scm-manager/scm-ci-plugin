@@ -26,9 +26,7 @@ package com.cloudogu.scm.ci.cistatus.workflow;
 
 import com.cloudogu.scm.ci.cistatus.service.CIStatus;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
-import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.ci.cistatus.service.Status;
-import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,10 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryTestData;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

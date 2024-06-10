@@ -36,18 +36,16 @@ import sonia.scm.repository.RepositoryLocationResolver;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryTestData;
 
-import javax.naming.Name;
 import java.io.File;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CIStatusRepositoryContextResolverTest {
+class CIStatusRepositoryContextResolverTest {
 
   @Mock
   private RepositoryManager manager;

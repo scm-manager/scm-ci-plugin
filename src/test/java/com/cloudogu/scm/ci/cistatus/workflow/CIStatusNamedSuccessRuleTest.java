@@ -32,6 +32,7 @@ import com.cloudogu.scm.ci.cistatus.workflow.CIStatusNamedSuccessRule.CIStatusNa
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -123,10 +122,7 @@ class CIStatusNamedSuccessRuleTest {
     @Test
     void shouldSucceedWhenCIStatusOfTypeAndNameIsSuccessful() {
       CIStatusCollection collection = new CIStatusCollection();
-      CIStatus status = new CIStatus();
-      status.setType("jenkins");
-      status.setName("build");
-      status.setStatus(Status.SUCCESS);
+      CIStatus status = new CIStatus("jenkins", "build", null, Status.SUCCESS);
       collection.put(status);
       when(statusResolver.resolve(context, false)).thenReturn(collection);
 
@@ -138,10 +134,7 @@ class CIStatusNamedSuccessRuleTest {
     void shouldFailWhenCIStatusOfTypeAndNameIsNotSuccess() {
       CIStatusCollection collection = new CIStatusCollection();
 
-      CIStatus status = new CIStatus();
-      status.setType("jenkins");
-      status.setName("build");
-      status.setStatus(Status.PENDING);
+      CIStatus status = new CIStatus("jenkins", "build", null, Status.PENDING);
       collection.put(status);
 
       when(statusResolver.resolve(context, false)).thenReturn(collection);
@@ -160,10 +153,7 @@ class CIStatusNamedSuccessRuleTest {
     void shouldFailWhenNameDoesNotMatch() {
       CIStatusCollection collection = new CIStatusCollection();
 
-      CIStatus status = new CIStatus();
-      status.setType("jenkins");
-      status.setName("test");
-      status.setStatus(Status.FAILURE);
+      CIStatus status = new CIStatus("jenkins", "test", null, Status.FAILURE);
       collection.put(status);
 
       when(statusResolver.resolve(context, false)).thenReturn(collection);
@@ -181,10 +171,7 @@ class CIStatusNamedSuccessRuleTest {
     void shouldFailWhenTypeDoesNotMatch() {
       CIStatusCollection collection = new CIStatusCollection();
 
-      CIStatus status = new CIStatus();
-      status.setType("sonarqube");
-      status.setName("build");
-      status.setStatus(Status.FAILURE);
+      CIStatus status = new CIStatus("sonarqube", "build", null, Status.FAILURE);
       collection.put(status);
 
       when(statusResolver.resolve(context, false)).thenReturn(collection);
@@ -215,10 +202,7 @@ class CIStatusNamedSuccessRuleTest {
   void shouldCheckWithGlobPattern() {
     when(context.getConfiguration(CIStatusNamedSuccessRuleConfiguration.class)).thenReturn(new CIStatusNamedSuccessRuleConfiguration("jenkins", "* repo *"));
     CIStatusCollection collection = new CIStatusCollection();
-    CIStatus status = new CIStatus();
-    status.setType("jenkins");
-    status.setName("orga » repo » feature/branch");
-    status.setStatus(Status.SUCCESS);
+    CIStatus status = new CIStatus("jenkins", "orga » repo » feature/branch", null, Status.SUCCESS);
     collection.put(status);
     when(statusResolver.resolve(context, false)).thenReturn(collection);
 

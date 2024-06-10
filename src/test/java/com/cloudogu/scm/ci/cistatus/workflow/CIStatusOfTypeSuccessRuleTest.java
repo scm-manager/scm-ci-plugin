@@ -32,6 +32,7 @@ import com.cloudogu.scm.ci.cistatus.workflow.CIStatusOfTypeSuccessRule.CIStatusO
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -110,14 +109,10 @@ class CIStatusOfTypeSuccessRuleTest {
     void shouldSucceedWhenAllCIStatusOfTypeAreSuccessful() {
       CIStatusCollection collection = new CIStatusCollection();
 
-      CIStatus status = new CIStatus();
-      status.setType("jenkins");
-      status.setStatus(Status.SUCCESS);
+      CIStatus status = new CIStatus("jenkins", null, null, Status.SUCCESS);
       collection.put(status);
 
-      CIStatus status2 = new CIStatus();
-      status2.setType("jenkins");
-      status2.setStatus(Status.SUCCESS);
+      CIStatus status2 = new CIStatus("jenkins", null, null, Status.SUCCESS);
       collection.put(status2);
 
       when(statusResolver.resolve(context, false)).thenReturn(collection);
@@ -130,21 +125,13 @@ class CIStatusOfTypeSuccessRuleTest {
     void shouldFailWhenAtLeastOneJobIsNotSuccessful() {
       CIStatusCollection collection = new CIStatusCollection();
 
-      CIStatus successStatus = new CIStatus();
-      successStatus.setType("jenkins");
-      successStatus.setStatus(Status.SUCCESS);
+      CIStatus successStatus = new CIStatus("jenkins", null, null, Status.SUCCESS);
       collection.put(successStatus);
 
-      CIStatus failureStatus = new CIStatus();
-      failureStatus.setType("jenkins");
-      failureStatus.setDisplayName("build");
-      failureStatus.setStatus(Status.FAILURE);
+      CIStatus failureStatus = new CIStatus("jenkins", null, "build", Status.FAILURE);
       collection.put(failureStatus);
 
-      CIStatus pendingStatus = new CIStatus();
-      pendingStatus.setDisplayName("test");
-      pendingStatus.setType("jenkins");
-      pendingStatus.setStatus(Status.PENDING);
+      CIStatus pendingStatus = new CIStatus("jenkins", null, "test", Status.PENDING);
       collection.put(pendingStatus);
 
       when(statusResolver.resolve(context, false)).thenReturn(collection);

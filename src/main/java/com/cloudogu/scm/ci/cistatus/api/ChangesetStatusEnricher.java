@@ -25,6 +25,7 @@ package com.cloudogu.scm.ci.cistatus.api;
 
 import com.cloudogu.scm.ci.cistatus.CIStatusStore;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
+import jakarta.inject.Inject;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
@@ -33,7 +34,6 @@ import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 
-import javax.inject.Inject;
 import java.util.stream.Collectors;
 
 import static com.cloudogu.scm.ci.PermissionCheck.mayRead;

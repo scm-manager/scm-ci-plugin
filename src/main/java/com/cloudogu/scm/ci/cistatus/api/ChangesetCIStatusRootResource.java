@@ -28,14 +28,14 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.google.inject.Inject;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import sonia.scm.ContextEntry;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import java.io.IOException;
 
 import static com.cloudogu.scm.ci.cistatus.Constants.CI_PATH_V2;

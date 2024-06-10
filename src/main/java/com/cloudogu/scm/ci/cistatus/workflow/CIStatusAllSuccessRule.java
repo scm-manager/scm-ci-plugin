@@ -29,11 +29,11 @@ import com.cloudogu.scm.ci.cistatus.service.Status;
 import com.cloudogu.scm.review.workflow.Context;
 import com.cloudogu.scm.review.workflow.Result;
 import com.cloudogu.scm.review.workflow.Rule;
+import jakarta.inject.Inject;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import sonia.scm.plugin.Extension;
 import sonia.scm.plugin.Requires;
 
-import javax.inject.Inject;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Optional;
 
 

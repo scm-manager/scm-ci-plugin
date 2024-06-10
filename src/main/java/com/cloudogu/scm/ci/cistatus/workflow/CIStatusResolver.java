@@ -29,9 +29,8 @@ import com.cloudogu.scm.ci.cistatus.service.CIStatusCollection;
 import com.cloudogu.scm.ci.cistatus.service.CIStatusService;
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import com.cloudogu.scm.review.workflow.Context;
+import jakarta.inject.Inject;
 import sonia.scm.repository.Repository;
-
-import javax.inject.Inject;
 
 class CIStatusResolver {
 

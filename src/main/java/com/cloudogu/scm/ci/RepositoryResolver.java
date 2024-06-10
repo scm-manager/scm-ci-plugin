@@ -23,12 +23,11 @@
  */
 package com.cloudogu.scm.ci;
 
+import jakarta.inject.Inject;
 import sonia.scm.ContextEntry;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
-
-import javax.inject.Inject;
 
 import static sonia.scm.NotFoundException.notFound;
 

@@ -23,11 +23,11 @@
  */
 package com.cloudogu.scm.ci.cistatus.protocolcommand;
 
+import jakarta.inject.Inject;
 import sonia.scm.plugin.Extension;
 import sonia.scm.protocolcommand.CommandInterpreter;
 import sonia.scm.protocolcommand.CommandInterpreterFactory;
 
-import javax.inject.Inject;
 import java.util.Optional;
 
 import static java.util.Optional.of;

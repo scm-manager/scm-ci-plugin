@@ -24,10 +24,9 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import com.google.inject.Inject;
+import jakarta.inject.Provider;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
-
-import javax.inject.Provider;
 
 class CIStatusPathBuilder {
 

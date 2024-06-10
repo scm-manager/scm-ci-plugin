@@ -25,6 +25,9 @@ package com.cloudogu.scm.ci.cistatus.service;
 
 import com.cloudogu.scm.ci.PermissionCheck;
 import com.cloudogu.scm.ci.cistatus.CIStatusStore;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import sonia.scm.event.ScmEventBus;
 import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.InternalRepositoryException;
 import sonia.scm.repository.Repository;
@@ -33,8 +36,6 @@ import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.IOException;
 
 import static com.cloudogu.scm.ci.cistatus.CIStatusStore.CHANGESET_STORE;
@@ -46,11 +47,13 @@ public class CIStatusService {
 
   private final DataStoreFactory dataStoreFactory;
   private final RepositoryServiceFactory repositoryServiceFactory;
+  private final ScmEventBus eventBus;
 
   @Inject
-  public CIStatusService(DataStoreFactory dataStoreFactory, RepositoryServiceFactory repositoryServiceFactory) {
+  public CIStatusService(DataStoreFactory dataStoreFactory, RepositoryServiceFactory repositoryServiceFactory, ScmEventBus eventBus) {
     this.dataStoreFactory = dataStoreFactory;
     this.repositoryServiceFactory = repositoryServiceFactory;
+    this.eventBus = eventBus;
   }
 
   public void put(CIStatusStore store, Repository repository, String id, CIStatus ciStatus) {
@@ -58,6 +61,7 @@ public class CIStatusService {
     CIStatusCollection ciStatusCollection = get(store, repository, id);
     ciStatusCollection.put(ciStatus);
     getStore(store, repository).put(id, ciStatusCollection);
+    eventBus.post(new CIStatusEvent(repository, store, id, ciStatus));
   }
 
   public CIStatusCollection get(CIStatusStore storeName, Repository repository, String id) {

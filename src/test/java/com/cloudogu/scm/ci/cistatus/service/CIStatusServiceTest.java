@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.event.ScmEventBus;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.Repository;
@@ -51,10 +52,13 @@ import java.util.Map;
 import static com.cloudogu.scm.ci.cistatus.CIStatusStore.CHANGESET_STORE;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static sonia.scm.repository.RepositoryTestData.createRestaurantAtTheEndOfTheUniverse;
 
@@ -65,6 +69,8 @@ class CIStatusServiceTest {
 
   @Mock
   private RepositoryServiceFactory repositoryServiceFactory;
+  @Mock
+  private ScmEventBus eventBus;
 
   private CIStatusService ciStatusService;
 
@@ -76,7 +82,7 @@ class CIStatusServiceTest {
 
     @BeforeEach
     void setUpDataStoreFactory() {
-      ciStatusService = new CIStatusService(new TestingDataStoreFactory(), repositoryServiceFactory);
+      ciStatusService = new CIStatusService(new TestingDataStoreFactory(), repositoryServiceFactory, eventBus);
       ThreadContext.bind(subject);
       doThrow(new UnauthorizedException()).when(subject).checkPermission(any(String.class));
     }
@@ -103,7 +109,7 @@ class CIStatusServiceTest {
 
     @BeforeEach
     void setUpDataStoreFactory() {
-      ciStatusService = new CIStatusService(new TestingDataStoreFactory(), repositoryServiceFactory);
+      ciStatusService = new CIStatusService(new TestingDataStoreFactory(), repositoryServiceFactory, eventBus);
       ThreadContext.bind(subject);
       lenient().when(subject.isPermitted(any(String.class))).thenReturn(true);
     }
@@ -145,6 +151,23 @@ class CIStatusServiceTest {
 
       assertThat(resultWithRepo1.get("test", "name")).isSameAs(ciStatus1);
       assertThat(resultWithRepo2.get("test2", "name2")).isSameAs(ciStatus2);
+    }
+
+    @Test
+    void shouldPostEvent() {
+      CIStatus ciStatus = new CIStatus("test", "name", "displayName", Status.SUCCESS, "http://hog.org/", "nothing");
+
+      ciStatusService.put(CHANGESET_STORE, REPOSITORY, "42", ciStatus);
+
+      verify(eventBus).post(argThat(
+        event -> {
+          CIStatusEvent ciStatusEvent = assertInstanceOf(CIStatusEvent.class, event);
+          assertThat(ciStatusEvent.getCiStatus()).isSameAs(ciStatus);
+          assertThat(ciStatusEvent.getId()).isEqualTo("42");
+          assertThat(ciStatusEvent.getRepository()).isEqualTo(REPOSITORY);
+          return true;
+        }
+      ));
     }
 
     @Nested

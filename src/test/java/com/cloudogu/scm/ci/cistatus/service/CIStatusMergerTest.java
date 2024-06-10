@@ -100,8 +100,7 @@ class CIStatusMergerTest {
     String changesetId = "1a2b3c4d";
     PullRequest pullRequest = createPullRequest();
 
-    CIStatusCollection prCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/pr", Status.SUCCESS);
-    prCIStatusCollection.get("JENKINS", "pipeline/pr").setReplaces("pipeline/" + changesetId);
+    CIStatusCollection prCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/pr", Status.SUCCESS, "pipeline/" + changesetId);
     CIStatusCollection changesetCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/" + changesetId, Status.FAILURE);
 
     mockServices(changesetId, pullRequest, changesetCIStatusCollection, prCIStatusCollection);
@@ -117,8 +116,7 @@ class CIStatusMergerTest {
     String changesetId = "1a2b3c4d";
     PullRequest pullRequest = createPullRequest();
 
-    CIStatusCollection prCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/pr", Status.SUCCESS);
-    prCIStatusCollection.get("JENKINS", "pipeline/pr").setReplaces("pipeline/" + changesetId);
+    CIStatusCollection prCIStatusCollection = createCIStatusCollection("JENKINS", "pipeline/pr", Status.SUCCESS, "pipeline/" + changesetId);
     CIStatusCollection changesetCIStatusCollection = createCIStatusCollection("SONAR", "pipeline/" + changesetId, Status.FAILURE);
 
     mockServices(changesetId, pullRequest, changesetCIStatusCollection, prCIStatusCollection);
@@ -139,7 +137,11 @@ class CIStatusMergerTest {
   }
 
   private CIStatusCollection createCIStatusCollection(String type, String name, Status status) {
-    CIStatus prCIStatus = new CIStatus(type, name, name, status, "");
+    return createCIStatusCollection(type, name, status, null);
+  }
+
+  private CIStatusCollection createCIStatusCollection(String type, String name, Status status, String replaces) {
+    CIStatus prCIStatus = new CIStatus(type, name, name, status, "", replaces);
     CIStatusCollection prCIStatusCollection = new CIStatusCollection();
     prCIStatusCollection.put(prCIStatus);
     return prCIStatusCollection;
