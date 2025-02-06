@@ -16,7 +16,8 @@
 
 import React, { FC } from "react";
 import { CIStatus } from "./CIStatus";
-import {Icon} from "@scm-manager/ui-buttons";
+import { Icon } from "@scm-manager/ui-buttons";
+import { Deployment } from "./Deployment";
 
 type BaseProps = {
   titleType?: string;
@@ -42,7 +43,7 @@ const StatusIcon: FC<Props> = ({ color = "secondary", icon = "circle-notch", siz
   );
 };
 
-export const getColor = (ciStatus?: CIStatus[]) => {
+export const getColorForCIStatus = (ciStatus?: CIStatus[]) => {
   if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     return "danger";
   } else if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
@@ -54,7 +55,17 @@ export const getColor = (ciStatus?: CIStatus[]) => {
   }
 };
 
-export const getIcon = (ciStatus?: CIStatus[]) => {
+export const getColorForDeployments = (deployments: Deployment[]) => {
+  if (deployments.filter(deployment => deployment.status === "FAILURE").length > 0) {
+    return "danger";
+  } else if (deployments.filter(deployment => deployment.status === "PENDING").length > 0) {
+    return "secondary";
+  } else {
+    return "success";
+  }
+};
+
+export const getIconForCIStatus = (ciStatus?: CIStatus[]) => {
   if (
     ciStatus &&
     (ciStatus.filter(ci => ci.status === "FAILURE").length > 0 ||
@@ -68,7 +79,17 @@ export const getIcon = (ciStatus?: CIStatus[]) => {
   }
 };
 
-export const getTitle = (ciStatus?: CIStatus[]) => {
+export const getIconForDeployments = (deployments: Deployment[]) => {
+  if (deployments.filter(deployment => deployment.status === "FAILURE").length > 0) {
+    return "exclamation-triangle";
+  } else if (deployments.filter(deployment => deployment.status === "PENDING").length > 0) {
+    return "circle-notch";
+  } else {
+    return "check-circle";
+  }
+};
+
+export const getTitleForCIStatus = (ciStatus?: CIStatus[]) => {
   if (ciStatus && ciStatus.filter(ci => ci.status === "FAILURE").length > 0) {
     return "faulty";
   } else if (ciStatus && ciStatus.filter(ci => ci.status === "UNSTABLE").length > 0) {
@@ -81,6 +102,7 @@ export const getTitle = (ciStatus?: CIStatus[]) => {
 };
 
 export const SuccessIcon: FC<BaseProps> = props => <StatusIcon color="success" icon="check-circle" {...props} />;
+export const PendingIcon: FC<BaseProps> = props => <StatusIcon color="secondary" icon="circle-notch" {...props} />;
 export const FailureIcon: FC<BaseProps> = props => <StatusIcon color="danger" icon="exclamation-triangle" {...props} />;
 export const UnstableIcon: FC<BaseProps> = props => (
   <StatusIcon color="warning" icon="exclamation-triangle" {...props} />

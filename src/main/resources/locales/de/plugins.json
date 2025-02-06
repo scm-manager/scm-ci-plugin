@@ -1,15 +1,30 @@
 {
   "scm-ci-plugin": {
+    "deployment": {
+      "delete": "Deployment Status löschen",
+      "statusbar": {
+        "title": "Deployments",
+        "analysis_one": "{{count}} Deployment",
+        "analysis_other": "{{count}} Deployments",
+        "failed_deployment_one": "{{count}} fehlgeschlagenes Deployment",
+        "failed_deployment_other": "{{count}} fehlgeschlagene Deployments"
+      },
+      "modal": {
+        "title_one": "Deployments: {{count}} fehlgeschlagenes Deployment",
+        "title_other": "Deployments: {{count}} fehlgeschlagene Deployments",
+        "sourceAndEnvironment": "Quelle: {{source}} Umgebung: {{environment}}"
+      }
+    },
     "modal": {
       "details": "Details",
       "title": "Analysen: {{count}} Fehler gefunden"
     },
     "statusbar": {
       "title": "Analysen",
-      "analysis": "{{count}} Analyse",
-      "analysis_plural": "{{count}} Analysen",
-      "error": "{{count}} Fehler",
-      "error_plural": "{{count}} Fehler",
+      "analysis_one": "{{count}} Analyse",
+      "analysis_other": "{{count}} Analysen",
+      "error_one": "{{count}} Fehler",
+      "error_other": "{{count}} Fehler",
       "aria": {
         "label": "Analysen: {{status}}",
         "status": {
@@ -28,14 +43,14 @@
     "repository": {
       "readCIStatus": {
         "*": {
-          "displayName": "CI-Status lesen",
-          "description": "Darf CI-Status aus allen Repositories lesen"
+          "displayName": "CI- und Deployment-Status lesen",
+          "description": "Darf CI- und Deployment-Status aus allen Repositories lesen"
         }
       },
       "readCIStatus,writeCIStatus": {
         "*": {
-          "displayName": "CI-Status setzen",
-          "description": "Darf CI-Status für alle Repositories setzen bzw. ändern"
+          "displayName": "CI- und Deployment-Status setzen",
+          "description": "Darf CI und Deployment-Status für alle Repositories setzen bzw. ändern"
         }
       }
     }
@@ -43,12 +58,12 @@
   "verbs": {
     "repository": {
       "readCIStatus": {
-        "displayName": "CI-Status lesen",
-        "description": "Darf Status-Tags von CI-Servern lesen"
+        "displayName": "CI und Deployment-Status lesen",
+        "description": "Darf Status-Tags von CI-Servern und Deployments lesen"
       },
       "writeCIStatus": {
         "displayName": "CI-Status setzen",
-        "description": "Darf Status-Tags für CI-Server setzen"
+        "description": "Darf Status-Tags für CI-Server und Deployments setzen"
       }
     }
   },

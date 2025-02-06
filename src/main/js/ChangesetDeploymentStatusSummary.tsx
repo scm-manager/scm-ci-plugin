@@ -14,26 +14,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.17.0'
-}
+import React, { FC } from "react";
+import { Changeset, Repository } from "@scm-manager/ui-types";
+import DeploymentStatusSummary from "./DeploymentStatusSummary";
 
-dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:3.0.0"
-  optionalPlugin "sonia.scm.plugins:scm-mail-plugin:3.0.0"
-}
+type Props = {
+  repository: Repository;
+  changeset: Changeset;
+};
 
-scmPlugin {
-  scmVersion = "3.0.0"
-  displayName = "Continuous Integration"
-  description = "Accepts analysis status and displays it"
-  author = "Cloudogu GmbH"
-  category = "Continuous Integration"
-
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ci.cistatus.api",
-      "com.cloudogu.scm.ci.deployment.api"
-    ]
+const ChangesetDeploymentStatusSummary: FC<Props> = ({ repository, changeset }) => {
+  if (!changeset?._links?.["deploymentStatus"]) {
+    return null;
   }
-}
+
+  return <DeploymentStatusSummary repository={repository} changeset={changeset} />;
+};
+
+export default ChangesetDeploymentStatusSummary;

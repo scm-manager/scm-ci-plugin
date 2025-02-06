@@ -1,16 +1,31 @@
 {
   "scm-ci-plugin": {
+    "deployment": {
+      "delete": "Delete deployment status",
+      "statusbar": {
+        "title": "Deployments",
+        "analysis_one": "{{count}} deployment",
+        "analysis_other": "{{count}} deployments",
+        "failed_deployment_one": "{{count}} failed deployment",
+        "failed_deployment_other": "{{count}} failed deployments"
+      },
+      "modal": {
+        "title_one": "Deployments: {{count}} failed deployment",
+        "title_other": "Deployments: {{count}} failed deployments",
+        "sourceAndEnvironment": "Source: {{source}} Environment: {{environment}}"
+      }
+    },
     "modal": {
       "details": "Details",
-      "title": "Analyses: {{count}} error found",
-      "title_plural": "Analyses: {{count}} errors found"
+      "title_one": "Analyses: {{count}} error found",
+      "title_other": "Analyses: {{count}} errors found"
     },
     "statusbar": {
       "title": "Analyses",
-      "analysis": "{{count}} analysis",
-      "analysis_plural": "{{count}} analyses",
-      "error": "{{count}} error",
-      "error_plural": "{{count}} errors",
+      "analysis_one": "{{count}} analysis",
+      "analysis_other": "{{count}} analyses",
+      "error_one": "{{count}} error",
+      "error_other": "{{count}} errors",
       "aria": {
         "label": "Analyses: {{status}}",
         "status": {
@@ -29,14 +44,14 @@
     "repository": {
       "readCIStatus": {
         "*": {
-          "displayName": "Read CI status",
-          "description": "May see CI status results for all repositories"
+          "displayName": "Read CI and deployment status",
+          "description": "May see CI and deployment status results for all repositories"
         }
       },
       "readCIStatus,writeCIStatus": {
         "*": {
-          "displayName": "Modify and set CI status",
-          "description": "May modify and set CI status results for all repositories"
+          "displayName": "Modify and set CI and deployment status",
+          "description": "May modify and set CI and deployment status results for all repositories"
         }
       }
     }
@@ -44,12 +59,12 @@
   "verbs": {
     "repository": {
       "readCIStatus": {
-        "displayName": "read CI status",
-        "description": "May read status tags from CI servers"
+        "displayName": "read CI and deployment status",
+        "description": "May read status tags from CI servers and deployments"
       },
       "writeCIStatus": {
-        "displayName": "set CI status",
-        "description": "May set status tags for CI servers"
+        "displayName": "set CI and deployment status",
+        "description": "May set status tags for CI servers and deployments"
       }
     }
   },

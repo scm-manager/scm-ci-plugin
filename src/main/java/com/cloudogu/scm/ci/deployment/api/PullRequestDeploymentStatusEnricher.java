@@ -14,7 +14,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-package com.cloudogu.scm.ci.cistatus.api;
+package com.cloudogu.scm.ci.deployment.api;
 
 import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import jakarta.inject.Inject;
@@ -29,14 +29,14 @@ import sonia.scm.repository.Repository;
 import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
 
 @Requires("scm-review-plugin")
-@Enrich(PullRequest.class)
 @Extension
-public class PullRequestLinkEnricher implements HalEnricher {
+@Enrich(PullRequest.class)
+public class PullRequestDeploymentStatusEnricher implements HalEnricher {
 
-  private final CIStatusPathBuilder pathBuilder;
+  private final DeploymentStatusPathBuilder pathBuilder;
 
   @Inject
-  public PullRequestLinkEnricher(CIStatusPathBuilder pathBuilder) {
+  public PullRequestDeploymentStatusEnricher(DeploymentStatusPathBuilder pathBuilder) {
     this.pathBuilder = pathBuilder;
   }
 
@@ -45,8 +45,13 @@ public class PullRequestLinkEnricher implements HalEnricher {
     Repository repository = context.oneRequireByType(Repository.class);
     PullRequest pullRequest = context.oneRequireByType(PullRequest.class);
 
-    if (pullRequest.isInProgress() && mayRead(repository)) {
-      appender.appendLink("ciStatus", pathBuilder.createPullRequestCiStatusCollectionUri(repository.getNamespace(), repository.getName(), pullRequest.getId()));
+    if (!mayRead(repository) || pullRequest.isClosed()) {
+      return;
     }
+
+    appender.appendLink(
+      "deploymentStatus",
+      pathBuilder.createGetPullRequestDeploymentsLink(repository, pullRequest.getId())
+    );
   }
 }

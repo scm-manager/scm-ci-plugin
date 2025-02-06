@@ -14,26 +14,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.17.0'
-}
+import React, { FC } from "react";
+import { HalRepresentation, Repository } from "@scm-manager/ui-types";
+import DeploymentStatusSummary from "./DeploymentStatusSummary";
 
-dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:3.0.0"
-  optionalPlugin "sonia.scm.plugins:scm-mail-plugin:3.0.0"
-}
+type Props = {
+  repository: Repository;
+  pullRequest: { id: string } & HalRepresentation;
+};
 
-scmPlugin {
-  scmVersion = "3.0.0"
-  displayName = "Continuous Integration"
-  description = "Accepts analysis status and displays it"
-  author = "Cloudogu GmbH"
-  category = "Continuous Integration"
-
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ci.cistatus.api",
-      "com.cloudogu.scm.ci.deployment.api"
-    ]
+const PullRequestDeploymentStatusSummary: FC<Props> = ({ repository, pullRequest }) => {
+  if (!pullRequest?._links?.["deploymentStatus"]) {
+    return null;
   }
-}
+
+  return <DeploymentStatusSummary repository={repository} pullRequest={pullRequest} />;
+};
+
+export default PullRequestDeploymentStatusSummary;

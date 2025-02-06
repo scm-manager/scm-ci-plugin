@@ -19,7 +19,7 @@ import classNames from "classnames";
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
 import { CIStatus } from "./CIStatus";
-import { Icon } from "@scm-manager/ui-components";
+import { Button, Icon } from "@scm-manager/ui-core";
 
 type Props = WithTranslation & {
   backgroundColor: string;
@@ -29,10 +29,18 @@ type Props = WithTranslation & {
   ciStatus: CIStatus[];
 };
 
-const Notification = styled.div`
-  padding: 1rem 1.25rem;
-  line-height: 1;
-  border-top: none !important;
+type NotificationProps = {
+  isPointer: boolean;
+};
+
+export const Notification = styled(Button)<NotificationProps>`
+  width: 100%;
+  justify-content: start;
+  align-content: center;
+  height: max-content;
+  border: none !important;
+  font-weight: normal;
+  cursor: ${({ isPointer }) => (isPointer ? "pointer" : "default")};
 `;
 
 class StatusBar extends React.Component<Props> {
@@ -45,16 +53,18 @@ class StatusBar extends React.Component<Props> {
     const hasAnalyzes = ciStatus && ciStatus.length !== 0;
     return (
       <Notification
-        className={classNames("media", `notification is-${backgroundColor}`, hasAnalyzes ? "has-cursor-pointer" : "")}
+        className={classNames("media", `notification is-${backgroundColor}`)}
         onClick={hasAnalyzes ? onClick : undefined}
+        isPointer={hasAnalyzes}
+        aria-disabled={hasAnalyzes}
       >
-        <Icon className="fa-lg pr-2" color={iconColor} name={icon} />
+        <Icon className={classNames("is-medium pr-2", `has-text-${iconColor}`)}>{icon}</Icon>
         <span className="has-text-weight-bold">
           {t("scm-ci-plugin.statusbar.analysis", {
             count: ciStatus && ciStatus.length
           })}
         </span>
-        <i className="fas fa-angle-right mx-2 my-0" />
+        <Icon>angle-right</Icon>
         <span>
           {t("scm-ci-plugin.statusbar.error", {
             count: errors

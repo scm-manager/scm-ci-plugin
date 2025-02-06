@@ -14,39 +14,42 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-package com.cloudogu.scm.ci.cistatus.api;
+package com.cloudogu.scm.ci.deployment.api;
 
-import com.cloudogu.scm.review.pullrequest.service.PullRequest;
 import jakarta.inject.Inject;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.plugin.Extension;
-import sonia.scm.plugin.Requires;
+import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 
 import static com.cloudogu.scm.ci.PermissionCheck.mayRead;
 
-@Requires("scm-review-plugin")
-@Enrich(PullRequest.class)
 @Extension
-public class PullRequestLinkEnricher implements HalEnricher {
+@Enrich(Changeset.class)
+public class ChangesetDeploymentStatusEnricher implements HalEnricher {
 
-  private final CIStatusPathBuilder pathBuilder;
+  private final DeploymentStatusPathBuilder pathBuilder;
 
   @Inject
-  public PullRequestLinkEnricher(CIStatusPathBuilder pathBuilder) {
+  public ChangesetDeploymentStatusEnricher(DeploymentStatusPathBuilder pathBuilder) {
     this.pathBuilder = pathBuilder;
   }
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
     Repository repository = context.oneRequireByType(Repository.class);
-    PullRequest pullRequest = context.oneRequireByType(PullRequest.class);
+    Changeset changeset = context.oneRequireByType(Changeset.class);
 
-    if (pullRequest.isInProgress() && mayRead(repository)) {
-      appender.appendLink("ciStatus", pathBuilder.createPullRequestCiStatusCollectionUri(repository.getNamespace(), repository.getName(), pullRequest.getId()));
+    if (!mayRead(repository)) {
+      return;
     }
+
+    appender.appendLink(
+      "deploymentStatus",
+      pathBuilder.createGetChangesetDeploymentsLink(repository, changeset.getId())
+    );
   }
 }

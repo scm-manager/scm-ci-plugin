@@ -18,7 +18,7 @@ import React, { FC, useState } from "react";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import CIStatusModalView from "./CIStatusModalView";
 import StatusBar from "./StatusBar";
-import { getColor, getIcon } from "./StatusIcon";
+import { getColorForCIStatus, getIconForCIStatus } from "./StatusIcon";
 import { Branch, Repository } from "@scm-manager/ui-types";
 import { CIStatus, useCiStatus } from "./CIStatus";
 
@@ -33,8 +33,8 @@ const CIStatusBar: FC<Props> = ({ repository, pullRequest, branch }) => {
   const [icon, setIcon] = useState<string | undefined>();
   const [color, setColor] = useState<string | undefined>();
   const { error, isLoading, data: ciStatus } = useCiStatus(repository, { pullRequest, branch }, (ci: CIStatus[]) => {
-    setColor(getColor(ci));
-    setIcon(getIcon(ci));
+    setColor(getColorForCIStatus(ci));
+    setIcon(getIconForCIStatus(ci));
   });
 
   if (error) {

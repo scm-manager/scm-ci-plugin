@@ -15,44 +15,36 @@
  */
 
 import React, { FC } from "react";
+import { Deployment } from "./Deployment";
+import { Modal } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
+import DeploymentList from "./DeploymentList";
+import { HalRepresentation, Repository } from "@scm-manager/ui-types";
 
 type Props = {
-  status: any;
-  ciUrl: any;
+  repository: Repository;
+  pullRequest: HalRepresentation & { id: string };
+  deployments: Deployment[];
+  failedDeploymentsCount: number;
+  onClose: () => void;
 };
 
-export const OverlayLink = styled.a`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: calc(80px - 1.5rem);
-  pointer-events: all;
-  border-radius: 4px;
-  :hover {
-    cursor: pointer;
-  }
-`;
-
-const ModalRow: FC<Props> = ({ status, ciUrl }) => {
+const DeploymentStatusModalView: FC<Props> = ({
+  repository,
+  pullRequest,
+  deployments,
+  failedDeploymentsCount,
+  onClose
+}) => {
   const [t] = useTranslation("plugins");
-
   return (
-    <>
-      <div className="is-flex is-flex-direction-row px-0 py-4">
-        <OverlayLink
-          href={ciUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="has-hover-background-blue"
-          aria-label={t("overview.ariaLabel", { name: status })}
-        >
-          <span className="px-2 pb-2 has-text-default">{status}</span>
-        </OverlayLink>
-      </div>
-    </>
+    <Modal
+      title={t("scm-ci-plugin.deployment.modal.title", { count: failedDeploymentsCount })}
+      closeFunction={onClose}
+      active={true}
+      body={<DeploymentList repository={repository} pullRequest={pullRequest} deployments={deployments} />}
+    />
   );
 };
 
-export default ModalRow;
+export default DeploymentStatusModalView;

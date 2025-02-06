@@ -18,7 +18,7 @@ import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Modal } from "@scm-manager/ui-components";
 import { CIStatus } from "./CIStatus";
-import { getColor } from "./StatusIcon";
+import { getColorForCIStatus } from "./StatusIcon";
 import CIStatusList from "./CIStatusList";
 
 type Props = WithTranslation & {
@@ -35,12 +35,16 @@ class CIStatusModalView extends React.Component<Props> {
       ciStatus && ciStatus.length > 0
         ? ciStatus.filter(ci => ci.status === "FAILURE" || ci.status === "UNSTABLE").length
         : 0;
-    const color = ciStatus && ciStatus.length > 0 ? getColor(ciStatus) : "";
+    const color = ciStatus && ciStatus.length > 0 ? getColorForCIStatus(ciStatus) : "";
 
     return (
       <Modal
         title={
-          <strong className={`has-text-${color === "warning" ? "warning-invert" : color === "secondary" ? "default" : "white"}`}>
+          <strong
+            className={`has-text-${
+              color === "warning" ? "warning-invert" : color === "secondary" ? "default" : "white"
+            }`}
+          >
             {t("scm-ci-plugin.modal.title", {
               count: errors
             })}

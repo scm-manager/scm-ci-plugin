@@ -20,7 +20,7 @@ import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
 import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 import { Popover } from "@scm-manager/ui-overlays";
 import { CIStatus } from "./CIStatus";
-import StatusIcon, { getColor, getIcon, getTitle } from "./StatusIcon";
+import StatusIcon, { getColorForCIStatus, getIconForCIStatus, getTitleForCIStatus } from "./StatusIcon";
 import CIStatusList from "./CIStatusList";
 import { Card } from "@scm-manager/ui-layout";
 
@@ -54,7 +54,7 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, load
     );
   }
 
-  const icon = <StatusIcon icon={getIcon(ciStatus)} color={getColor(ciStatus)} size="lg" />;
+  const icon = <StatusIcon icon={getIconForCIStatus(ciStatus)} color={getColorForCIStatus(ciStatus)} size="lg" />;
 
   const errors =
     ciStatus && ciStatus.length > 0
@@ -64,7 +64,7 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, load
   const trigger = (
     <Card.Details.ButtonDetail
       aria-label={t("scm-ci-plugin.statusbar.aria.label", {
-        status: t(`scm-ci-plugin.statusbar.aria.status.${getTitle(ciStatus)}`)
+        status: t(`scm-ci-plugin.statusbar.aria.status.${getTitleForCIStatus(ciStatus)}`)
       })}
     >
       <Card.Details.Detail.Label>{t("scm-ci-plugin.statusbar.title")}</Card.Details.Detail.Label>

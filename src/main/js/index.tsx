@@ -25,14 +25,23 @@ import BranchDetailWrapper from "./BranchDetailWrapper";
 import BranchDetailsCIStatusSummary from "./BranchDetailsCIStatusSummary";
 import PullRequestDetailsCIStatusSummary from "./PullRequestDetailsCIStatusSummary";
 import React from "react";
+import BranchDetailsDeploymentStatusSummary from "./BranchDetailsDeploymentStatusSummary";
+import ChangesetDeploymentStatusSummary from "./ChangesetDeploymentStatusSummary";
+import PullRequestDeploymentStatusSummary from "./PullRequestDeploymentStatusSummary";
+import DeploymentStatusBar from "./DeploymentStatusBar";
 
 binder.bind<extensionPoints.ChangesetRight>("changeset.right", props => (
   <span className="ml-2">
     <CIStatusSummary {...props} />
+    <ChangesetDeploymentStatusSummary changeset={props.changeset} repository={props.repository} />
   </span>
 ));
 binder.bind<extensionPoints.BranchListDetail>("branches.list.detail", BranchDetailsCIStatusSummary);
+binder.bind<extensionPoints.BranchListDetail>("branches.list.detail", BranchDetailsDeploymentStatusSummary);
 binder.bind("reviewPlugin.pullrequest.top", CIStatusBar);
+binder.bind("reviewPlugin.pullrequest.top", DeploymentStatusBar, {
+  predicate: ({ pullRequest }) => pullRequest._links.deploymentStatus
+});
 
 binder.bind("reviewPlugin.workflow.config.CIStatusAllSuccessRule", CIStatusAllSuccessRuleConfiguration);
 binder.bind("reviewPlugin.workflow.config.CIStatusXSuccessRule", CIStatusXSuccessRuleConfiguration);
@@ -43,3 +52,4 @@ binder.bind("repos.branch-details.information", BranchDetailWrapper);
 binder.bind("pull-requests.list.detail", PullRequestDetailsCIStatusSummary, {
   predicate: ({ pullRequest }) => pullRequest._links.ciStatus
 });
+binder.bind("pull-requests.list.detail", PullRequestDeploymentStatusSummary);

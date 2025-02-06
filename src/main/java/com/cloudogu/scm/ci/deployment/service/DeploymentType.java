@@ -14,26 +14,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.17.0'
-}
+package com.cloudogu.scm.ci.deployment.service;
 
-dependencies {
-  optionalPlugin "sonia.scm.plugins:scm-review-plugin:3.0.0"
-  optionalPlugin "sonia.scm.plugins:scm-mail-plugin:3.0.0"
-}
+public enum DeploymentType {
+  PULL_REQUEST("pullRequestDeployments"), COMMIT("commitDeployments");
 
-scmPlugin {
-  scmVersion = "3.0.0"
-  displayName = "Continuous Integration"
-  description = "Accepts analysis status and displays it"
-  author = "Cloudogu GmbH"
-  category = "Continuous Integration"
+  public final String storeName;
 
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ci.cistatus.api",
-      "com.cloudogu.scm.ci.deployment.api"
-    ]
+  DeploymentType(String storeName) {
+    this.storeName = storeName;
   }
 }
