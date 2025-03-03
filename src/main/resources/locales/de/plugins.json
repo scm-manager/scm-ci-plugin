@@ -41,13 +41,7 @@
   },
   "permissions": {
     "repository": {
-      "readCIStatus": {
-        "*": {
-          "displayName": "CI- und Deployment-Status lesen",
-          "description": "Darf CI- und Deployment-Status aus allen Repositories lesen"
-        }
-      },
-      "readCIStatus,writeCIStatus": {
+      "writeCIStatus": {
         "*": {
           "displayName": "CI- und Deployment-Status setzen",
           "description": "Darf CI und Deployment-Status für alle Repositories setzen bzw. ändern"
@@ -57,10 +51,6 @@
   },
   "verbs": {
     "repository": {
-      "readCIStatus": {
-        "displayName": "CI und Deployment-Status lesen",
-        "description": "Darf Status-Tags von CI-Servern und Deployments lesen"
-      },
       "writeCIStatus": {
         "displayName": "CI-Status setzen",
         "description": "Darf Status-Tags für CI-Server und Deployments setzen"

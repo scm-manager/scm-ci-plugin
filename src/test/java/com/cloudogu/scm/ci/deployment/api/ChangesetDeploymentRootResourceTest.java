@@ -147,7 +147,7 @@ class ChangesetDeploymentRootResourceTest {
     }
 
     @Test
-    @SubjectAware(permissions = "repository:readCIStatus:1337")
+    @SubjectAware(permissions = "repository:read:1337")
     void shouldNotAddAnyWriteLinksBecauseWritePermissionIsMissing() throws URISyntaxException {
       MockHttpRequest request = MockHttpRequest.get(
         String.format("/v2/deployments/%s/%s/changesets/1337", repository.getNamespace(), repository.getName())

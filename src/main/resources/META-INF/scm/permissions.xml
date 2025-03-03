@@ -16,9 +16,6 @@
 
 <permissions>
   <permission>
-    <value>repository:readCIStatus:*</value>
-  </permission>
-  <permission>
-    <value>repository:readCIStatus,writeCIStatus:*</value>
+    <value>repository:writeCIStatus:*</value>
   </permission>
 </permissions>

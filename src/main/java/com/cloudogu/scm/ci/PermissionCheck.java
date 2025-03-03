@@ -21,18 +21,17 @@ import sonia.scm.repository.RepositoryPermissions;
 
 public final class PermissionCheck {
 
-  private static final String READ_CI_STATUS = "readCIStatus";
   private static final String WRITE_CI_STATUS = "writeCIStatus";
 
   private PermissionCheck() {
   }
 
   public static boolean mayRead(Repository repository) {
-    return RepositoryPermissions.custom(READ_CI_STATUS, repository).isPermitted();
+    return RepositoryPermissions.read(repository).isPermitted();
   }
 
   public static void checkRead(Repository repository) {
-    RepositoryPermissions.custom(READ_CI_STATUS, repository).check();
+    RepositoryPermissions.read(repository).check();
   }
 
   public static boolean mayWrite(Repository repository) {

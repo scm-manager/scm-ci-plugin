@@ -88,7 +88,7 @@ class ChangesetStatusEnricherTest {
 
   @Test
   void shouldAppendLink() {
-    when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
+    when(subject.isPermitted("repository:read:1")).thenReturn(true);
     when(ciStatusService.get(CIStatusStore.CHANGESET_STORE, REPOSITORY, CHANGESET.getId())).thenReturn(new CIStatusCollection());
     when(pathBuilder.createChangesetCiStatusCollectionUri("space", "X", "123")).thenReturn("http://scm.com");
 
@@ -99,7 +99,7 @@ class ChangesetStatusEnricherTest {
 
   @Test
   void shouldEmbedStatus() {
-    when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
+    when(subject.isPermitted("repository:read:1")).thenReturn(true);
     CIStatusCollection collection = new CIStatusCollection();
     CIStatus ciStatus = new CIStatus("ci", "status", null, Status.PENDING, "http://ci.com");
     collection.put(ciStatus);

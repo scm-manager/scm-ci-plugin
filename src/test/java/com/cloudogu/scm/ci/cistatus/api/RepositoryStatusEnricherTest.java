@@ -70,7 +70,7 @@ class RepositoryStatusEnricherTest {
 
   @Test
   void shouldAppendLink() {
-    when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
+    when(subject.isPermitted("repository:read:1")).thenReturn(true);
     when(pathBuilder.createChangesetCiStatusCollectionUri("space", "X", "REVISION")).thenReturn("http://scm.com/REVISION");
 
     enricher.enrich(context, appender);

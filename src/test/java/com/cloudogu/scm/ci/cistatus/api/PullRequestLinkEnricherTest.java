@@ -78,7 +78,7 @@ class PullRequestLinkEnricherTest {
   void shouldEnrichCILinkToPullRequestIfOpen() {
     pr.setStatus(PullRequestStatus.OPEN);
 
-    when(subject.isPermitted("repository:readCIStatus:1")).thenReturn(true);
+    when(subject.isPermitted("repository:read:1")).thenReturn(true);
     when(pathBuilder.createPullRequestCiStatusCollectionUri(REPOSITORY.getNamespace(), REPOSITORY.getName(), pr.getId())).thenReturn("http://scm.com/pullRequest/" + pr.getId());
 
     pullRequestLinkEnricher.enrich(context, appender);

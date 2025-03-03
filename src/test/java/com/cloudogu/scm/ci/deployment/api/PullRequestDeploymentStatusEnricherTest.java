@@ -71,7 +71,7 @@ class PullRequestDeploymentStatusEnricherTest {
   }
 
   @Test
-  @SubjectAware(permissions = "repository:readCIStatus:1337")
+  @SubjectAware(permissions = "repository:read:1337")
   void shouldEnrichDeploymentStatusLinkIfPullRequestIsOpen() {
     when(context.oneRequireByType(Repository.class)).thenReturn(repository);
     when(context.oneRequireByType(PullRequest.class)).thenReturn(pullRequest);
@@ -86,7 +86,7 @@ class PullRequestDeploymentStatusEnricherTest {
   }
 
   @Test
-  @SubjectAware(permissions = "repository:readCIStatus:1337")
+  @SubjectAware(permissions = "repository:read:1337")
   void shouldEnrichDeploymentStatusLinkIfPullRequestIsDraft() {
     when(context.oneRequireByType(Repository.class)).thenReturn(repository);
     when(context.oneRequireByType(PullRequest.class)).thenReturn(pullRequest);
@@ -101,7 +101,7 @@ class PullRequestDeploymentStatusEnricherTest {
   }
 
   @Test
-  @SubjectAware(permissions = "repository:readCIStatus:1337")
+  @SubjectAware(permissions = "repository:read:1337")
   void shouldNotEnrichDeploymentStatusLinkIfPullRequestIsRejected() {
     when(context.oneRequireByType(Repository.class)).thenReturn(repository);
     when(context.oneRequireByType(PullRequest.class)).thenReturn(pullRequest);
@@ -113,7 +113,7 @@ class PullRequestDeploymentStatusEnricherTest {
   }
 
   @Test
-  @SubjectAware(permissions = "repository:readCIStatus:1337")
+  @SubjectAware(permissions = "repository:read:1337")
   void shouldNotEnrichDeploymentStatusLinkIfPullRequestIsMerged() {
     when(context.oneRequireByType(Repository.class)).thenReturn(repository);
     when(context.oneRequireByType(PullRequest.class)).thenReturn(pullRequest);

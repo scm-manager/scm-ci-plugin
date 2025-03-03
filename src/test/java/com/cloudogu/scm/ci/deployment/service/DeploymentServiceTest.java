@@ -95,7 +95,7 @@ class DeploymentServiceTest {
     }
 
     @Test
-    @SubjectAware(permissions = "repository:readCIStatus:1337")
+    @SubjectAware(permissions = "repository:read:1337")
     void shouldThrowNotFoundBecauseNoChangesetsWereFoundForBranch() throws IOException {
       when(logCommandBuilder.getChangesets())
         .thenReturn(new ChangesetPagingResult(1, List.of()));
@@ -107,7 +107,7 @@ class DeploymentServiceTest {
     }
 
     @Test
-    @SubjectAware(permissions = "repository:readCIStatus:1337")
+    @SubjectAware(permissions = "repository:read:1337")
     void shouldGetAllDeploymentsOfBranch() throws IOException {
       when(logCommandBuilder.getChangesets())
         .thenReturn(
@@ -144,7 +144,7 @@ class DeploymentServiceTest {
     }
 
     @Test
-    @SubjectAware(permissions = "repository:readCIStatus:1337")
+    @SubjectAware(permissions = "repository:read:1337")
     void shouldGetAllDeploymentsOfCommit() {
       DeploymentCollection deployments = new DeploymentCollection();
       deployments.put(buildDefaultDeployment(DeploymentType.COMMIT, "1"));
@@ -169,7 +169,7 @@ class DeploymentServiceTest {
     }
 
     @Test
-    @SubjectAware(permissions = "repository:readCIStatus:1337")
+    @SubjectAware(permissions = "repository:read:1337")
     void shouldGetAllDeploymentsOfPullRequest() {
       DeploymentCollection deployments = new DeploymentCollection();
       deployments.put(buildDefaultDeployment(DeploymentType.PULL_REQUEST, "1"));

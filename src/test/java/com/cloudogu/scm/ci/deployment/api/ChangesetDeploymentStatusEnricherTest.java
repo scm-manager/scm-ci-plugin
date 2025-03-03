@@ -70,7 +70,7 @@ class ChangesetDeploymentStatusEnricherTest {
   }
 
   @Test
-  @SubjectAware(permissions = "repository:readCIStatus:1337")
+  @SubjectAware(permissions = "repository:read:1337")
   void shouldAppendLink() {
     when(context.oneRequireByType(Repository.class)).thenReturn(repository);
     when(context.oneRequireByType(Changeset.class)).thenReturn(changeset);

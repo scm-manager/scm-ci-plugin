@@ -16,26 +16,18 @@
 
 <repository-permissions>
   <verbs>
-    <verb read-only="true">readCIStatus</verb>
     <verb>writeCIStatus</verb>
   </verbs>
   <roles>
     <role>
-      <name>READ</name>
-      <verbs>
-        <verb>readCIStatus</verb>
-      </verbs>
-    </role>
-    <role>
       <name>WRITE</name>
       <verbs>
-        <verb>readCIStatus</verb>
+        <verb>writeCIStatus</verb>
       </verbs>
     </role>
     <role>
       <name>CI-SERVER</name>
       <verbs>
-        <verb>readCIStatus</verb>
         <verb>writeCIStatus</verb>
         <verb>read</verb>
         <verb>pull</verb>

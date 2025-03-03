@@ -82,7 +82,7 @@ public class ChangesetDeploymentResource {
   )
   @ApiResponse(
     responseCode = "403",
-    description = "the current user does not have the required 'readCIStatus' permission"
+    description = "the current user does not have the required 'read' permission for this repository"
   )
   @ApiResponse(
     responseCode = "500",

@@ -61,7 +61,7 @@ class BranchDetailsEnricherTest {
   private BranchDetailsEnricher enricher;
 
   @Test
-  @SubjectAware(value = "tricia", permissions = "repository:readCIStatus:42")
+  @SubjectAware(value = "tricia", permissions = "repository:read:42")
   void shouldEnrichWithStatus() {
     HalEnricherContext context = mockContext();
     CIStatusCollection ciStatus = createStatusCollection("jenkins", "sonar");
@@ -88,8 +88,8 @@ class BranchDetailsEnricherTest {
   }
 
   @Test
-  @SubjectAware(value = "tricia", permissions = "repository:readCIStatus:23")
-  void shouldSkipStatusWithoutPermission() {
+  @SubjectAware(value = "tricia", permissions = "repository:read:23")
+  void shouldSkipStatusWithoutPermissionForRepository() {
     HalEnricherContext context = mockContext();
 
     enricher.enrich(context, appender);

@@ -85,7 +85,7 @@ public class ChangesetCIStatusResource {
     )
   )
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
-  @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the \"readCIStatus\" privilege")
+  @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the \"read\" privilege for this repository")
   @ApiResponse(
     responseCode = "500",
     description = "internal server error",
@@ -117,7 +117,7 @@ public class ChangesetCIStatusResource {
     )
   )
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
-  @ApiResponse(responseCode = "403", description = "not authorized / the current user does not have the \"readCIStatus\" privilege")
+  @ApiResponse(responseCode = "403", description = "not authorized / the current user does not have the \"read\" privilege for this repository")
   @ApiResponse(responseCode = "404", description = "not found / ci status by given name not available")
   @ApiResponse(
     responseCode = "500",
