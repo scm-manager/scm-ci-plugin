@@ -45,8 +45,8 @@ public class NamespaceReadCIStatusPermissionUpdateStep implements NamespaceUpdat
       .withType(Namespace.class)
       .withName("namespaces")
       .build();
-    Namespace namespace = namespaceStore.get(namespaceUpdateContext.getNamespace());
-    permissionUpdater.removePermission(namespace, "readCIStatus");
+    namespaceStore.getOptional(namespaceUpdateContext.getNamespace())
+      .ifPresent(namespace -> permissionUpdater.removePermission(namespace, "readCIStatus"));
   }
 
   @Override

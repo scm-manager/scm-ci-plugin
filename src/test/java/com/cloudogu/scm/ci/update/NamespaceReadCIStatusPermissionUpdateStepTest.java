@@ -27,6 +27,8 @@ import sonia.scm.store.DataStore;
 import sonia.scm.store.InMemoryByteDataStoreFactory;
 import sonia.scm.update.RepositoryPermissionUpdater;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,5 +56,12 @@ class NamespaceReadCIStatusPermissionUpdateStepTest {
     step.doUpdate(new NamespaceUpdateContext(namespace.getId()));
 
     verify(permissionUpdater).removePermission(namespace, "readCIStatus");
+  }
+
+  @Test
+  void shouldIgnoreNamespacesWithoutStoreEntry() {
+    step.doUpdate(new NamespaceUpdateContext("Unknown"));
+
+    verify(permissionUpdater, never()).removePermission(any(), any());
   }
 }
