@@ -1,0 +1,2 @@
+- type: fixed
+  description: Error when creating CI status with spaces in the name

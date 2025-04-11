@@ -21,13 +21,20 @@ import sonia.scm.IllegalIdentifierChangeException;
 
 final class CIStatusUtil {
 
-  private CIStatusUtil() {}
+  private CIStatusUtil() {
+  }
 
-  static boolean validateCIStatus(String type, String ciName, CIStatusDto statusDto) {
-    if (!type.equals(statusDto.getType()) || !ciName.equals(statusDto.getName())) {
+  static void validateCIStatus(String type, String ciName, CIStatusDto statusDto) {
+    if (
+      !replacePlusCharacter(type).equals(replacePlusCharacter(statusDto.getType()))
+        || !replacePlusCharacter(ciName).equals(replacePlusCharacter(statusDto.getName()))
+    ) {
       throw new IllegalIdentifierChangeException(ContextEntry.ContextBuilder.entity(CIStatusDto.class,
         statusDto.getName() + ":" + statusDto.getType()), String.format("changing identifier attributes is not allowed (type '%s' != '%s' or name '%s' != '%s'", type, statusDto.getType(), ciName, statusDto.getName()));
     }
-    return true;
+  }
+
+  private static String replacePlusCharacter(String s) {
+    return s.replace('+', ' ');
   }
 }
