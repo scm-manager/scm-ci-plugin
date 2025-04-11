@@ -17,6 +17,8 @@
 package com.cloudogu.scm.ci.cistatus.api;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import sonia.scm.IllegalIdentifierChangeException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,17 +26,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CIStatusUtilTest {
 
-  @Test
-  void shouldBeValid() {
+  @ParameterizedTest
+  @MethodSource("validCiStatusProvider")
+  void shouldBeValid(String statusFromParameter, String statusFromDto) {
     String type = "Jenkins";
     String ciName = "SomeName";
     CIStatusDto ciStatusDto = new CIStatusDto();
     ciStatusDto.setType(type);
     ciStatusDto.setName(ciName);
 
-    boolean isValid = CIStatusUtil.validateCIStatus(type, ciName, ciStatusDto);
+    CIStatusUtil.validateCIStatus(type, ciName, ciStatusDto);
 
-    assertThat(isValid).isTrue();
+    // should not throw an exception
+  }
+
+  static Object[][] validCiStatusProvider() {
+    return new Object[][]{
+      {"SomeName", "SomeName"},
+      {"Some+Name", "Some Name"}, // plus char in a path parameter can either be a '+' or a space
+      {"Some+Name", "Some+Name"},
+      {"Some(Name)", "Some(Name)"}
+    };
   }
 
   @Test
