@@ -1,7 +1,7 @@
 {
     "name": "@scm-manager/scm-ci-plugin",
     "private": true,
-    "version": "3.0.2",
+    "version": "3.0.3-SNAPSHOT",
     "license": "AGPLv3",
     "main": "./src/main/js/index.tsx",
     "scripts": {
