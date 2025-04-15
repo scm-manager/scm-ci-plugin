@@ -1,6 +1,0 @@
-- type: added
-  description: External sources can now create status information about deployments for commits and pull requests
-- type: changed
-  description: CI Status to a button to adhere to accessibility requirements
-- type: fixed
-  description: Plural and singular forms of ci status labels

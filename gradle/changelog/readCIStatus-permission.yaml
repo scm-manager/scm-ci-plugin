@@ -1,2 +1,0 @@
-- type: changed
-  description: The `readCIStatus` permission is no longer needed to read CI Statuses of a repository. The read repository permission is now sufficient.
