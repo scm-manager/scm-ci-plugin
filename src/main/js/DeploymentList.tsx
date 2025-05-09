@@ -18,10 +18,9 @@ import React, { FC } from "react";
 import { Deployment, useDeleteDeployment } from "./Deployment";
 import { OverlayLink } from "./ModalRow";
 import { useTranslation } from "react-i18next";
-import { FailureIcon, PendingIcon, SuccessIcon } from "./StatusIcon";
 import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 import { BranchDetails, Changeset, HalRepresentation, Repository } from "@scm-manager/ui-types";
-import { Button, Icon } from "@scm-manager/ui-core";
+import { Button, Icon, StatusIcon, StatusVariants } from "@scm-manager/ui-core";
 
 type EntryProps = {
   deployment: Deployment;
@@ -42,11 +41,11 @@ const DeploymentContent: FC<Pick<EntryProps, "deployment">> = ({ deployment }) =
 
   switch (deployment.status) {
     case "FAILURE":
-      return <FailureIcon title={displayName} />;
+      return <><StatusIcon variant={StatusVariants.DANGER}/> {displayName}</>;
     case "SUCCESS":
-      return <SuccessIcon title={displayName} />;
+      return <><StatusIcon variant={StatusVariants.SUCCESS}/> {displayName}</>
     case "PENDING":
-      return <PendingIcon title={displayName} />;
+      return <><StatusIcon variant={StatusVariants.IN_PROGRESS}/> {displayName}</>
   }
 };
 

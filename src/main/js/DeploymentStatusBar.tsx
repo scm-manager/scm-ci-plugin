@@ -16,11 +16,11 @@
 
 import React, { FC, useState } from "react";
 import { HalRepresentation, Repository } from "@scm-manager/ui-types";
-import { ErrorNotification, Loading } from "@scm-manager/ui-core";
+import { ErrorNotification, Loading, StatusIcon } from "@scm-manager/ui-core";
 import { useDeployment } from "./Deployment";
 import { Notification } from "./StatusBar";
 import { Icon } from "@scm-manager/ui-buttons";
-import { getColorForDeployments, getIconForDeployments } from "./StatusIcon";
+import { getStatusVariantForDeployments } from "./CITitle";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
 import DeploymentStatusModalView from "./DeploymentStatusModalView";
@@ -61,9 +61,7 @@ const DeploymentStatusBar: FC<Props> = ({ repository, pullRequest }) => {
         />
       ) : null}
       <Notification className={"media notification is-secondary"} onClick={() => setIsModalOpen(true)} isPointer={true}>
-        <Icon className={classNames("is-medium pr-2", `has-text-${getColorForDeployments(deployments)}`)}>
-          {getIconForDeployments(deployments)}
-        </Icon>
+        <StatusIcon variant={getStatusVariantForDeployments(deployments)} className={classNames("is-medium mr-2")}/>
         <span className="has-text-weight-bold">
           {t("scm-ci-plugin.deployment.statusbar.analysis", { count: deployments.length })}
         </span>

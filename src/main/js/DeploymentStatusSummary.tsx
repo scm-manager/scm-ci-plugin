@@ -18,7 +18,7 @@ import React, { FC } from "react";
 import { useDeployment } from "./Deployment";
 import { Card } from "@scm-manager/ui-layout";
 import { useTranslation } from "react-i18next";
-import StatusIcon, { getColorForDeployments, getIconForDeployments } from "./StatusIcon";
+import CITitle, { getStatusVariantForDeployments } from "./CITitle";
 import { Popover } from "@scm-manager/ui-overlays";
 import DeploymentList from "./DeploymentList";
 import { BranchDetails, Changeset, HalRepresentation, Repository } from "@scm-manager/ui-types";
@@ -51,14 +51,10 @@ const DeploymentStatusSummary: FC<Props> = ({ repository, changeset, branchDetai
   const trigger = (
     <Card.Details.ButtonDetail aria-label={t("scm-ci-plugin.deployment.statusbar.title")}>
       <Card.Details.Detail.Label>{t("scm-ci-plugin.deployment.statusbar.title")}</Card.Details.Detail.Label>
-      <StatusIcon
-        icon={getIconForDeployments(deployments ?? [])}
-        color={getColorForDeployments(deployments ?? [])}
-        size="lg"
-      />
+      <CITitle variant={getStatusVariantForDeployments(deployments ?? [])} />
     </Card.Details.ButtonDetail>
   );
-  const failedDeploymentsCount = deployments.filter(deployment => deployment.status === "FAILURE").length;
+  const failedDeploymentsCount = deployments.filter((deployment) => deployment.status === "FAILURE").length;
   const title = (
     <h3 className="has-text-weight-bold is-size-5">
       {t("scm-ci-plugin.deployment.modal.title", { count: failedDeploymentsCount })}

@@ -20,9 +20,13 @@ import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
 import { SmallLoadingSpinner } from "@scm-manager/ui-components";
 import { Popover } from "@scm-manager/ui-overlays";
 import { CIStatus } from "./CIStatus";
-import StatusIcon, { getColorForCIStatus, getIconForCIStatus, getTitleForCIStatus } from "./StatusIcon";
+import {
+  getStatusVariantForCIStatus,
+  getTitleForCIStatus
+} from "./CITitle";
 import CIStatusList from "./CIStatusList";
 import { Card } from "@scm-manager/ui-layout";
+import { StatusIcon } from "@scm-manager/ui-core";
 
 type Props = {
   repository: Repository;
@@ -54,7 +58,7 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, load
     );
   }
 
-  const icon = <StatusIcon icon={getIconForCIStatus(ciStatus)} color={getColorForCIStatus(ciStatus)} size="lg" />;
+  const icon = <StatusIcon variant={getStatusVariantForCIStatus(ciStatus)} />;
 
   const errors =
     ciStatus && ciStatus.length > 0

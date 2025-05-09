@@ -18,7 +18,7 @@ import React, { FC, useState } from "react";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import CIStatusModalView from "./CIStatusModalView";
 import StatusBar from "./StatusBar";
-import { getColorForCIStatus, getIconForCIStatus } from "./StatusIcon";
+import { getStatusVariantForCIStatus } from "./CITitle";
 import { Branch, Repository } from "@scm-manager/ui-types";
 import { CIStatus, useCiStatus } from "./CIStatus";
 
@@ -31,10 +31,8 @@ type Props = {
 const CIStatusBar: FC<Props> = ({ repository, pullRequest, branch }) => {
   const [showModal, setShowModal] = useState(false);
   const [icon, setIcon] = useState<string | undefined>();
-  const [color, setColor] = useState<string | undefined>();
   const { error, isLoading, data: ciStatus } = useCiStatus(repository, { pullRequest, branch }, (ci: CIStatus[]) => {
-    setColor(getColorForCIStatus(ci));
-    setIcon(getIconForCIStatus(ci));
+    setIcon(getStatusVariantForCIStatus(ci));
   });
 
   if (error) {
@@ -50,11 +48,10 @@ const CIStatusBar: FC<Props> = ({ repository, pullRequest, branch }) => {
   return (
     <>
       {showModal && <CIStatusModalView onClose={() => setShowModal(false)} ciStatus={ciStatus} />}
-      {color && icon && (
+      {icon && (
         <StatusBar
           icon={icon}
           backgroundColor="secondary"
-          iconColor={color}
           onClick={() => setShowModal(true)}
           ciStatus={ciStatus}
         />

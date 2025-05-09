@@ -15,9 +15,10 @@
  */
 
 import React, { FC } from "react";
-import StatusIcon, { SuccessIcon, FailureIcon, UnstableIcon } from "./StatusIcon";
+import CITitle from "./CITitle";
 import ModalRow from "./ModalRow";
 import { CIStatus, getDisplayName } from "./CIStatus";
+import { StatusVariants } from "@scm-manager/ui-core";
 
 type Props = {
   ciStatus?: CIStatus[];
@@ -26,13 +27,37 @@ type Props = {
 const createRow = (ci: CIStatus) => {
   switch (ci.status) {
     case "SUCCESS":
-      return <ModalRow status={<SuccessIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
+      return (
+        <ModalRow
+          variant={StatusVariants.SUCCESS}
+          status={<CITitle titleType={ci.type} title={getDisplayName(ci)} />}
+          ciUrl={ci.url}
+        />
+      );
     case "FAILURE":
-      return <ModalRow status={<FailureIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
+      return (
+        <ModalRow
+          variant={StatusVariants.DANGER}
+          status={<CITitle titleType={ci.type} title={getDisplayName(ci)} />}
+          ciUrl={ci.url}
+        />
+      );
     case "UNSTABLE":
-      return <ModalRow status={<UnstableIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
+      return (
+        <ModalRow
+          variant={StatusVariants.WARNING}
+          status={<CITitle titleType={ci.type} title={getDisplayName(ci)} />}
+          ciUrl={ci.url}
+        />
+      );
     default:
-      return <ModalRow status={<StatusIcon titleType={ci.type} title={getDisplayName(ci)} />} ciUrl={ci.url} />;
+      return (
+        <ModalRow
+          variant={StatusVariants.IN_PROGRESS}
+          status={<CITitle titleType={ci.type} title={getDisplayName(ci)} />}
+          ciUrl={ci.url}
+        />
+      );
   }
 };
 

@@ -18,7 +18,7 @@ import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Modal } from "@scm-manager/ui-components";
 import { CIStatus } from "./CIStatus";
-import { getColorForCIStatus } from "./StatusIcon";
+import { getColorForCIStatus } from "./CITitle";
 import CIStatusList from "./CIStatusList";
 
 type Props = WithTranslation & {

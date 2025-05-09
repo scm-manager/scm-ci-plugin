@@ -20,11 +20,11 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
 import { CIStatus } from "./CIStatus";
 import { Button, Icon } from "@scm-manager/ui-core";
+import { StatusIcon } from "@scm-manager/ui-core";
 
 type Props = WithTranslation & {
   backgroundColor: string;
   icon: string;
-  iconColor: string;
   onClick: () => void;
   ciStatus: CIStatus[];
 };
@@ -40,38 +40,43 @@ export const Notification = styled(Button)<NotificationProps>`
   height: max-content;
   border: none !important;
   font-weight: normal;
+  padding: 1rem 1.25rem 1rem 1.75rem;
   cursor: ${({ isPointer }) => (isPointer ? "pointer" : "default")};
 `;
 
 class StatusBar extends React.Component<Props> {
   render() {
-    const { backgroundColor, icon, iconColor, ciStatus, onClick, t } = this.props;
+    const { backgroundColor, icon, ciStatus, onClick, t } = this.props;
     const errors =
       ciStatus && ciStatus.length > 0
-        ? ciStatus.filter(ci => ci.status === "FAILURE" || ci.status === "UNSTABLE").length
+        ? ciStatus.filter((ci) => ci.status === "FAILURE" || ci.status === "UNSTABLE").length
         : 0;
     const hasAnalyzes = ciStatus && ciStatus.length !== 0;
-    return (
-      <Notification
-        className={classNames("media", `notification is-${backgroundColor}`)}
-        onClick={hasAnalyzes ? onClick : undefined}
-        isPointer={hasAnalyzes}
-        aria-disabled={hasAnalyzes}
-      >
-        <Icon className={classNames("is-medium pr-2", `has-text-${iconColor}`)}>{icon}</Icon>
-        <span className="has-text-weight-bold">
-          {t("scm-ci-plugin.statusbar.analysis", {
-            count: ciStatus && ciStatus.length
-          })}
-        </span>
-        <Icon>angle-right</Icon>
-        <span>
-          {t("scm-ci-plugin.statusbar.error", {
-            count: errors
-          })}
-        </span>
-      </Notification>
-    );
+
+    if (ciStatus && ciStatus.length > 0) {
+      return (
+        <Notification
+          className={classNames("media", `notification is-${backgroundColor}`)}
+          onClick={hasAnalyzes ? onClick : undefined}
+          isPointer={hasAnalyzes}
+          aria-disabled={hasAnalyzes}
+        >
+          <StatusIcon variant={icon} className={classNames("is-medium mr-2")} />
+          <span className="has-text-weight-bold">
+            {t("scm-ci-plugin.statusbar.analysis", {
+              count: ciStatus && ciStatus.length,
+            })}
+          </span>
+          <Icon>angle-right</Icon>
+          <span>
+            {t("scm-ci-plugin.statusbar.error", {
+              count: errors,
+            })}
+          </span>
+        </Notification>
+      );
+    }
+    return <></>;
   }
 }
 

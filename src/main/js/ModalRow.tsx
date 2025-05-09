@@ -17,10 +17,12 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { StatusIcon } from "@scm-manager/ui-core";
 
 type Props = {
   status: any;
   ciUrl: any;
+  variant: any;
 };
 
 export const OverlayLink = styled.a`
@@ -30,17 +32,19 @@ export const OverlayLink = styled.a`
   height: calc(80px - 1.5rem);
   pointer-events: all;
   border-radius: 4px;
+
   :hover {
     cursor: pointer;
   }
 `;
 
-const ModalRow: FC<Props> = ({ status, ciUrl }) => {
+const ModalRow: FC<Props> = ({ status, variant, ciUrl }) => {
   const [t] = useTranslation("plugins");
 
   return (
     <>
       <div className="is-flex is-flex-direction-row px-0 py-4">
+        <StatusIcon iconSize="md" variant={variant} />
         <OverlayLink
           href={ciUrl}
           target="_blank"
@@ -48,7 +52,7 @@ const ModalRow: FC<Props> = ({ status, ciUrl }) => {
           className="has-hover-background-blue"
           aria-label={t("overview.ariaLabel", { name: status })}
         >
-          <span className="px-2 pb-2 has-text-default">{status}</span>
+          <span className="px-2 has-text-default">{status}</span>
         </OverlayLink>
       </div>
     </>
