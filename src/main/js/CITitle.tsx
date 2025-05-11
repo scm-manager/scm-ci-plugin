@@ -17,7 +17,7 @@
 import React, { FC } from "react";
 import { CIStatus } from "./CIStatus";
 import { Deployment } from "./Deployment";
-import { StatusIcon, StatusVariants } from "@scm-manager/ui-core";
+import { StatusVariants } from "@scm-manager/ui-core";
 
 type Props = {
   titleType?: string;

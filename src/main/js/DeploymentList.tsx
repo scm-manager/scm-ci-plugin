@@ -30,22 +30,26 @@ type EntryProps = {
   pullRequest?: { id: string } & HalRepresentation;
 };
 
-const DeploymentContent: FC<Pick<EntryProps, "deployment">> = ({ deployment }) => {
-  const [t] = useTranslation("plugins");
-  const displayName = deployment.displayName
-    ? deployment.displayName
-    : t("scm-ci-plugin.deployment.modal.sourceAndEnvironment", {
-        source: deployment.source,
-        environment: deployment.environment
-      });
-
+const DeploymentStatusIcon: FC<Pick<EntryProps, "deployment">> = ({ deployment }) => {
   switch (deployment.status) {
     case "FAILURE":
-      return <><StatusIcon variant={StatusVariants.DANGER}/> {displayName}</>;
+      return (
+        <>
+          <StatusIcon variant={StatusVariants.DANGER} iconSize="md" />
+        </>
+      );
     case "SUCCESS":
-      return <><StatusIcon variant={StatusVariants.SUCCESS}/> {displayName}</>
+      return (
+        <>
+          <StatusIcon variant={StatusVariants.SUCCESS} iconSize="md" />
+        </>
+      );
     case "PENDING":
-      return <><StatusIcon variant={StatusVariants.IN_PROGRESS}/> {displayName}</>
+      return (
+        <>
+          <StatusIcon variant={StatusVariants.IN_PROGRESS} iconSize="md" />
+        </>
+      );
   }
 };
 
@@ -71,18 +75,27 @@ const DeploymentDeleteButton: FC<EntryProps> = ({ deployment, repository, change
 };
 
 const DeploymentEntry: FC<EntryProps> = ({ deployment, repository, changeset, branchDetails, pullRequest }) => {
+  const [t] = useTranslation("plugins");
+  const displayName = deployment.displayName
+    ? deployment.displayName
+    : t("scm-ci-plugin.deployment.modal.sourceAndEnvironment", {
+        source: deployment.source,
+        environment: deployment.environment,
+      });
+
   return (
     <>
-      <OverlayLink
-        href={deployment.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="has-hover-background-blue"
-      >
-        <span className="px-2 pb-2 has-text-default">
-          <DeploymentContent deployment={deployment} />
-        </span>
-      </OverlayLink>
+      <div className="is-flex is-flex-direction-row px-0 py-4 is-flex-grow-1">
+        <DeploymentStatusIcon deployment={deployment} />
+        <OverlayLink
+          href={deployment.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="has-hover-background-blue"
+        >
+          <span className="px-2 has-text-default">{displayName}</span>
+        </OverlayLink>
+      </div>
       <DeploymentDeleteButton
         deployment={deployment}
         repository={repository}

@@ -18,11 +18,12 @@ import React, { FC } from "react";
 import { useDeployment } from "./Deployment";
 import { Card } from "@scm-manager/ui-layout";
 import { useTranslation } from "react-i18next";
-import CITitle, { getStatusVariantForDeployments } from "./CITitle";
+import { getStatusVariantForDeployments } from "./CITitle";
 import { Popover } from "@scm-manager/ui-overlays";
 import DeploymentList from "./DeploymentList";
 import { BranchDetails, Changeset, HalRepresentation, Repository } from "@scm-manager/ui-types";
 import { SmallLoadingSpinner } from "@scm-manager/ui-components";
+import { StatusIcon } from "@scm-manager/ui-core";
 
 type Props = {
   repository: Repository;
@@ -51,7 +52,7 @@ const DeploymentStatusSummary: FC<Props> = ({ repository, changeset, branchDetai
   const trigger = (
     <Card.Details.ButtonDetail aria-label={t("scm-ci-plugin.deployment.statusbar.title")}>
       <Card.Details.Detail.Label>{t("scm-ci-plugin.deployment.statusbar.title")}</Card.Details.Detail.Label>
-      <CITitle variant={getStatusVariantForDeployments(deployments ?? [])} />
+      <StatusIcon variant={getStatusVariantForDeployments(deployments ?? [])} />
     </Card.Details.ButtonDetail>
   );
   const failedDeploymentsCount = deployments.filter((deployment) => deployment.status === "FAILURE").length;
