@@ -37,7 +37,7 @@
       }
     },
     "popover": {
-      "noStatus" : "No status available"
+      "noStatus": "No status available"
     }
   },
   "permissions": {
@@ -52,6 +52,10 @@
   },
   "verbs": {
     "repository": {
+      "readCIStatus": {
+        "displayName": "read CI and deployment status (obsolete; replaced by repository read permission)",
+        "description": "No longer used permission (replaces by the default read permission for the repository)"
+      },
       "writeCIStatus": {
         "displayName": "set CI and deployment status",
         "description": "May set status tags for CI servers and deployments"
