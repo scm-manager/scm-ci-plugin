@@ -16,10 +16,9 @@
 
 import React, { FC, useState } from "react";
 import { HalRepresentation, Repository } from "@scm-manager/ui-types";
-import { ErrorNotification, Loading, StatusIcon } from "@scm-manager/ui-core";
+import { ErrorNotification, Loading, StatusIcon, Icon } from "@scm-manager/ui-core";
 import { useDeployment } from "./Deployment";
 import { Notification } from "./StatusBar";
-import { Icon } from "@scm-manager/ui-buttons";
 import { getStatusVariantForDeployments } from "./CITitle";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
@@ -47,7 +46,7 @@ const DeploymentStatusBar: FC<Props> = ({ repository, pullRequest }) => {
     return null;
   }
 
-  const failedDeploymentsCount = deployments.filter(deployment => deployment.status === "FAILURE").length;
+  const failedDeploymentsCount = deployments.filter((deployment) => deployment.status === "FAILURE").length;
 
   return (
     <>
@@ -61,14 +60,14 @@ const DeploymentStatusBar: FC<Props> = ({ repository, pullRequest }) => {
         />
       ) : null}
       <Notification className={"media notification is-secondary"} onClick={() => setIsModalOpen(true)} isPointer={true}>
-        <StatusIcon variant={getStatusVariantForDeployments(deployments)} className={classNames("is-medium mr-2")}/>
+        <StatusIcon variant={getStatusVariantForDeployments(deployments)} className={classNames("is-medium mr-2")} />
         <span className="has-text-weight-bold">
           {t("scm-ci-plugin.deployment.statusbar.analysis", { count: deployments.length })}
         </span>
         <Icon>angle-right</Icon>
         <span>
           {t("scm-ci-plugin.deployment.statusbar.failed_deployment", {
-            count: failedDeploymentsCount
+            count: failedDeploymentsCount,
           })}
         </span>
       </Notification>

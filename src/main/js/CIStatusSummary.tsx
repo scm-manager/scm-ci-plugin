@@ -18,15 +18,10 @@ import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { BranchDetails, Changeset, Repository } from "@scm-manager/ui-types";
 import { SmallLoadingSpinner } from "@scm-manager/ui-components";
-import { Popover } from "@scm-manager/ui-overlays";
 import { CIStatus } from "./CIStatus";
-import {
-  getStatusVariantForCIStatus,
-  getTitleForCIStatus
-} from "./CITitle";
+import { getStatusVariantForCIStatus, getTitleForCIStatus } from "./CITitle";
 import CIStatusList from "./CIStatusList";
-import { Card } from "@scm-manager/ui-layout";
-import { StatusIcon } from "@scm-manager/ui-core";
+import { StatusIcon, Card, Popover } from "@scm-manager/ui-core";
 
 type Props = {
   repository: Repository;
@@ -62,13 +57,13 @@ const CIStatusSummary: FC<Props> = ({ changeset, details, explicitCiStatus, load
 
   const errors =
     ciStatus && ciStatus.length > 0
-      ? ciStatus.filter(ci => ci.status === "FAILURE" || ci.status === "UNSTABLE").length
+      ? ciStatus.filter((ci) => ci.status === "FAILURE" || ci.status === "UNSTABLE").length
       : 0;
 
   const trigger = (
     <Card.Details.ButtonDetail
       aria-label={t("scm-ci-plugin.statusbar.aria.label", {
-        status: t(`scm-ci-plugin.statusbar.aria.status.${getTitleForCIStatus(ciStatus)}`)
+        status: t(`scm-ci-plugin.statusbar.aria.status.${getTitleForCIStatus(ciStatus)}`),
       })}
     >
       <Card.Details.Detail.Label>{t("scm-ci-plugin.statusbar.title")}</Card.Details.Detail.Label>

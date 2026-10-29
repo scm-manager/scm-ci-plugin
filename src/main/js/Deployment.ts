@@ -15,7 +15,7 @@
  */
 
 import { BranchDetails, Changeset, HalRepresentation, Link, Repository } from "@scm-manager/ui-types";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@scm-manager/ui-components";
 
 export type DeploymentStatus = "SUCCESS" | "PENDING" | "FAILURE";
@@ -70,28 +70,29 @@ const deploymentGetLink = ({ changeset, branchDetails, pullRequest }: Deployment
 };
 
 export const useDeployment = (deploymentOrigins: DeploymentOrigins) => {
-  const { data, isLoading, error } = useQuery<Deployment[], Error>(deploymentsQueryKey(deploymentOrigins), async () => {
-    const response = await apiClient.get(deploymentGetLink(deploymentOrigins));
-    return await response.json();
+  const { data, isLoading, error } = useQuery<Deployment[], Error>({
+    queryKey: [deploymentsQueryKey(deploymentOrigins)],
+    queryFn: async () => {
+      const response = await apiClient.get(deploymentGetLink(deploymentOrigins));
+      return await response.json();
+    },
   });
 
   return {
     deployments: data,
     isLoading,
-    error
+    error,
   };
 };
 
 export const useDeleteDeployment = (deploymentOrigins: DeploymentOrigins) => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading } = useMutation<unknown, Error, Deployment>(
-    deployment => apiClient.delete(requiredLink(deployment, "delete")),
-    {
-      onSuccess: () => {
-        return queryClient.invalidateQueries(deploymentsQueryKey(deploymentOrigins));
-      }
-    }
-  );
+  const { mutate, isPending: isLoading } = useMutation<unknown, Error, Deployment>({
+    mutationFn: (deployment) => apiClient.delete(requiredLink(deployment, "delete")),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({ queryKey: [deploymentsQueryKey(deploymentOrigins)] });
+    },
+  });
 
   return { mutate, isLoading };
 };

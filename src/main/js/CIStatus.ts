@@ -16,7 +16,7 @@
 
 import { apiClient } from "@scm-manager/ui-components";
 import { Branch, Link, Repository } from "@scm-manager/ui-types";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export type CIStatus = {
   type: string;
@@ -36,7 +36,7 @@ export type CiStatusContext = {
 export const useCiStatus = (
   repository: Repository,
   context: CiStatusContext,
-  callback?: (ciStatus: CIStatus[]) => void
+  callback?: (ciStatus: CIStatus[]) => void,
 ) => {
   let url: string | undefined;
   if (context.pullRequest) {
@@ -45,34 +45,32 @@ export const useCiStatus = (
     url = (context.branch._links.details as Link)?.href;
   }
 
-  const { error, isLoading, data } = useQuery<CIStatus[], Error, CIStatus[]>(
-    [
+  const { error, isLoading, data } = useQuery<CIStatus[], Error, CIStatus[]>({
+    queryKey: [
       "repository",
       repository.namespace,
       repository.name,
       "cistatus",
       context.pullRequest ? "pull-request" : "branch",
-      context.pullRequest?.id || context.branch?.name
+      context.pullRequest?.id || context.branch?.name,
     ],
-    () =>
+    queryFn: () =>
       apiClient
         .get(url!)
-        .then(response => response.json())
-        .then(json => json._embedded.ciStatus)
-        .then(ciStatus => {
+        .then((response) => response.json())
+        .then((json) => json._embedded.ciStatus)
+        .then((ciStatus) => {
           if (callback) {
             callback(ciStatus);
           }
           return ciStatus;
         }),
-    {
-      enabled: !!url
-    }
-  );
+    enabled: !!url,
+  });
 
   return {
     error,
     isLoading,
-    data
+    data,
   };
 };

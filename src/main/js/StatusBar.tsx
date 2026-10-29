@@ -19,8 +19,7 @@ import classNames from "classnames";
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "styled-components";
 import { CIStatus } from "./CIStatus";
-import { Button, Icon } from "@scm-manager/ui-core";
-import { StatusIcon } from "@scm-manager/ui-core";
+import { Button, Icon, StatusIcon } from "@scm-manager/ui-core";
 
 type Props = WithTranslation & {
   backgroundColor: string;
